@@ -1,116 +1,50 @@
-import React, { EventHandler, FocusEventHandler, useState } from 'react'
-import logo from './logo.svg'
+import React from 'react'
+import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
+import type { RouteObject } from 'react-router-dom'
 
-function parserString(str: string) {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(str, 'text/html')
+import LayoutView from './layout/Layout'
+import EditHtml from './views/EditHtml'
+import PartialRender from './views/PartialRender'
+import Visible from './views/Visible'
 
-  const elementArray: Element[] = []
-  let parent = doc.body.firstElementChild
-  while (parent) {
-    elementArray.push(parent)
-    parent = parent.firstElementChild
-  }
+type IRouteObject = RouteObject & { hidden?: boolean }
 
-  console.log(elementArray)
-
-  const ans = elementArray.map(item => {
-    const name = item.getAttribute('x:tag')
-    const type = item.tagName.toLowerCase()
-
-    const attrArray = item.getAttributeNames()
-    attrArray.splice(
-      attrArray.findIndex(item => item === 'x:tag'),
-      1
-    )
-    const attrValueArray = attrArray.map(attr => ({ [attr]: item.getAttribute(attr) }))
-    const optionProps = attrValueArray.map(item => {
-      const [[key, value]] = Object.entries(item)
-
-      let name = ''
-      let pattern = ''
-      if (key.startsWith('c:')) {
-        name = key.slice(2)
-        pattern = 'Contain'
-      } else if (key.startsWith('r:')) {
-        name = key.slice(2)
-        pattern = 'Regular'
-      } else {
-        name = key
-        pattern = 'Equal'
+export const routes: IRouteObject[] = [
+  { path: '/', element: <Navigate to="/ui" />, hidden: true },
+  {
+    path: '/ui',
+    element: <LayoutView />,
+    children: [
+      {
+        path: 'visible',
+        element: <Visible />
+      },
+      {
+        path: 'partialRender',
+        element: <PartialRender />
       }
-
-      return { name, pattern, value, selected: true }
-    })
-
-    return { name, type, optionProps, unSelected: false }
-  })
-
-  return ans
-}
-const longStr = `<wnd x:tag="Pane" title="MenuTr ee.t" c:class="Chr"  r:name="MenuTre" /><wnd x:tag="Document" title="Ch" att="Chrome_R"    /><uia x:tag="Group"  /> <uia x:tag="Window"  />`
-function App() {
-  const [count, setCount] = useState(0)
-
-  const [codeArray, setCodeArray] = useState(parserString(longStr))
-  console.log(codeArray)
-
-  const onBlur: FocusEventHandler<HTMLDivElement> = evt => {
-    const str = evt.target.innerText
-    console.log(str)
-
-    const array = parserString(str)
-    setCodeArray(array)
+    ]
+  },
+  {
+    path: '/edit',
+    element: <LayoutView />,
+    children: [
+      {
+        path: 'editHtml',
+        element: <EditHtml />
+      },
+      {
+        path: 'ee-2',
+        element: <div>ee 2</div>
+      }
+    ]
   }
+]
 
-  return (
-    <div className="App">
-      <div
-        className="container"
-        contentEditable
-        suppressContentEditableWarning
-        style={{ border: '2px solid purple', height: 500, padding: 10 }}
-        spellCheck={false}
-        onBlur={onBlur}
-      >
-        {codeArray.map((item, idx) => (
-          <Row codeItem={item} key={idx} />
-        ))}
-      </div>
-    </div>
-  )
-}
+const App: React.FC = () => {
+  const element = useRoutes(routes)
 
-type IOptionItem = { name: string; pattern: string; value: string | null; selected: boolean }
-type IProps = {
-  codeItem: {
-    name: string | null
-    type: string
-    optionProps: IOptionItem[]
-    unSelected: boolean
-  }
-}
-
-const Row: React.FC<IProps> = props => {
-  const { codeItem } = props
-  return (
-    <div className="row">
-      <span style={{ color: '#7c5000' }}>{`<${codeItem.type}`}</span>&nbsp;
-      <span style={{ color: 'red' }}>{`x:tag`}</span>
-      <span style={{ color: 'black' }}>{`=`}</span>
-      <span style={{ color: 'blue' }}>{`"${codeItem.name}"`}</span>&nbsp;
-      {/*  */}
-      {codeItem.optionProps.map((optionItem, idx) => (
-        <React.Fragment key={idx}>
-          <span style={{ color: 'red' }}>{optionItem.name}</span>
-          <span style={{ color: 'black' }}>{`=`}</span>
-          <span style={{ color: 'blue' }}>{`"${optionItem.value}"`}</span>&nbsp;
-        </React.Fragment>
-      ))}
-      {/*  */}
-      <span style={{ color: '#7c5000' }}>{' />'}</span>
-    </div>
-  )
+  return element
 }
 
 export default App
