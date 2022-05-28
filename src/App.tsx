@@ -4,8 +4,9 @@ import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from './layout/Layout'
 import EditHtml from './views/EditHtml'
-import PartialRender from './views/PartialRender'
 import Visible from './views/Visible'
+import ControlNotControl from './views/ControlNotControl'
+import Hooks from './views/Hooks'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -14,30 +15,22 @@ export const routes: IRouteObject[] = [
   {
     path: '/ui',
     element: <LayoutView />,
-    children: [
-      {
-        path: 'visible',
-        element: <Visible />
-      },
-      {
-        path: 'partialRender',
-        element: <PartialRender />
-      }
-    ]
+    children: [{ path: 'visible', element: <Visible /> }]
   },
   {
     path: '/edit',
     element: <LayoutView />,
-    children: [
-      {
-        path: 'editHtml',
-        element: <EditHtml />
-      },
-      {
-        path: 'ee-2',
-        element: <div>ee 2</div>
-      }
-    ]
+    children: [{ path: 'editHtml', element: <EditHtml /> }]
+  },
+  {
+    path: '/control-component',
+    element: <LayoutView />,
+    children: [{ path: 'control-not-control', element: <ControlNotControl /> }]
+  },
+  {
+    path: '/hooks',
+    element: <LayoutView />,
+    children: [{ path: 'hooks', element: <Hooks /> }]
   }
 ]
 

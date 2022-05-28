@@ -7,34 +7,32 @@ const LayoutView: React.FC = props => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const handle = (array: typeof routes) => {
+    return array
+      .filter(item => !item.hidden)
+      .map(item => ({
+        label: item.path,
+        key: item.path,
+        ...(item.children ? { children: handle(item.children) } : null)
+      }))
+  }
+
+  const items = handle(routes)
   return (
     <div style={{ display: 'flex' }}>
       <Menu
         style={{ width: 200, height: '100vh' }}
+        items={items}
         mode="inline"
         theme="dark"
+        onClick={({ key, keyPath }) => {
+          navigate(keyPath.reverse().join('/'))
+        }}
         defaultOpenKeys={routes.map(item => item.path)}
-        selectedKeys={[location.pathname]}
-      >
-        {routes.map(
-          routeItem =>
-            !routeItem.hidden && (
-              <Menu.SubMenu key={routeItem.path} title={routeItem.path}>
-                {routeItem.children &&
-                  routeItem.children.map(childItem => {
-                    const wholePath = routeItem.path + '/' + childItem.path
-                    return (
-                      <Menu.Item key={wholePath} onClick={() => navigate(wholePath)}>
-                        {wholePath.slice(1).replaceAll('/', '-')}
-                      </Menu.Item>
-                    )
-                  })}
-              </Menu.SubMenu>
-            )
-        )}
-      </Menu>
+        selectedKeys={[location.pathname.split('/')[2]]}
+      />
 
-      <section style={{ padding: 10 }}>{<Outlet />}</section>
+      <section style={{ padding: 10, flexGrow: 1 }}>{<Outlet />}</section>
     </div>
   )
 }
