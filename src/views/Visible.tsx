@@ -1,8 +1,25 @@
 import { Button } from 'antd'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const Visible: React.FC = props => {
   const [bool, setBool] = useState(false)
+
+  useEffect(() => {
+    const func = async () => {
+      console.log('a')
+      const count = await new Promise(resolve => {
+        setTimeout(() => {
+          resolve(1)
+        }, 2000)
+      })
+
+      return count > 10 ? Promise.resolve() : Promise.reject()
+    }
+
+    func().then(() => {
+      console.log('then')
+    })
+  }, [])
 
   return (
     <div className="v-v">

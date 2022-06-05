@@ -7,6 +7,7 @@ import EditHtml from './views/EditHtml'
 import Visible from './views/Visible'
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
+import CTextEditor from './views/CTextEditor'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -31,6 +32,11 @@ export const routes: IRouteObject[] = [
     path: '/hooks',
     element: <LayoutView />,
     children: [{ path: 'hooks', element: <Hooks /> }]
+  },
+  {
+    path: '/c',
+    element: <LayoutView />,
+    children: [{ path: 'ct', element: <CTextEditor /> }]
   }
 ]
 
