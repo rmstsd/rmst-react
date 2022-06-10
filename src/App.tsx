@@ -8,15 +8,19 @@ import Visible from './views/Visible'
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
 import CTextEditor from './views/CTextEditor'
+import TooltipEg from './views/TooltipEg'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
 export const routes: IRouteObject[] = [
-  { path: '/', element: <Navigate to="/ui" />, hidden: true },
+  { path: '/', element: <Navigate to="/ui-component" />, hidden: true },
   {
-    path: '/ui',
+    path: '/ui-component',
     element: <LayoutView />,
-    children: [{ path: 'visible', element: <Visible /> }]
+    children: [
+      { path: 'visible', index: true, element: <Visible /> },
+      { path: 'tooltipEg', element: <TooltipEg /> }
+    ]
   },
   {
     path: '/edit',

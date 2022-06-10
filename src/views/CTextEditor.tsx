@@ -3,6 +3,7 @@ import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react'
 import { Editor, Transforms, Range, createEditor, Descendant } from 'slate'
 import { withHistory } from 'slate-history'
 import { Slate, Editable, ReactEditor, withReact, useSelected, useFocused } from 'slate-react'
+import { parserMdString } from './mdParser'
 
 const Portal = ({ children }) => {
   return typeof document === 'object' ? ReactDOM.createPortal(children, document.body) : null
@@ -49,6 +50,11 @@ const MentionExample = () => {
     [index, search, target]
   )
 
+  const str = `你**好**哈哈哈 **<font color="#15B628">地方 好 </font>更好1**`
+  useEffect(() => {
+    parserMdString(str)
+  }, [])
+
   useEffect(() => {
     if (target && chars.length > 0) {
       const el = ref.current
@@ -60,72 +66,75 @@ const MentionExample = () => {
   }, [chars.length, editor, index, search, target])
 
   return (
-    <Slate
-      editor={editor}
-      value={initialValue}
-      onChange={() => {
-        const { selection } = editor
+    <div>
+      {str}
+      {/* <Slate
+        editor={editor}
+        value={initialValue}
+        onChange={() => {
+          const { selection } = editor
 
-        if (selection && Range.isCollapsed(selection)) {
-          console.log(5)
-          const [start] = Range.edges(selection)
-          const wordBefore = Editor.before(editor, start, { unit: 'word' })
-          const before = wordBefore && Editor.before(editor, wordBefore)
-          const beforeRange = before && Editor.range(editor, before, start)
-          const beforeText = beforeRange && Editor.string(editor, beforeRange)
-          
-          const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/)
-          const after = Editor.after(editor, start)
-          const afterRange = Editor.range(editor, start, after)
-          const afterText = Editor.string(editor, afterRange)
-          const afterMatch = afterText.match(/^(\s|$)/)
+          if (selection && Range.isCollapsed(selection)) {
+            console.log(5)
+            const [start] = Range.edges(selection)
+            const wordBefore = Editor.before(editor, start, { unit: 'word' })
+            const before = wordBefore && Editor.before(editor, wordBefore)
+            const beforeRange = before && Editor.range(editor, before, start)
+            const beforeText = beforeRange && Editor.string(editor, beforeRange)
 
-          if (beforeMatch && afterMatch) {
-            setTarget(beforeRange)
-            setSearch(beforeMatch[1])
-            setIndex(0)
-            return
-          }
-        }
+            const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/)
+            const after = Editor.after(editor, start)
+            const afterRange = Editor.range(editor, start, after)
+            const afterText = Editor.string(editor, afterRange)
+            const afterMatch = afterText.match(/^(\s|$)/)
 
-        setTarget(null)
-      }}
-    >
-      <Editable renderElement={renderElement} onKeyDown={onKeyDown} placeholder="Enter some text..." />
-      {target && chars.length > 0 && (
-        <>
-          <div
-            ref={ref}
-            style={
-              {
-                // top: '-9999px',
-                // left: '-9999px',
-                // position: 'absolute',
-                // zIndex: 1,
-                // padding: '3px',
-                // background: 'white',
-                // borderRadius: '4px',
-                // boxShadow: '0 1px 5px rgba(0,0,0,.2)'
-              }
+            if (beforeMatch && afterMatch) {
+              setTarget(beforeRange)
+              setSearch(beforeMatch[1])
+              setIndex(0)
+              return
             }
-            data-cy="mentions-portal"
-          >
-            {chars.map((char, i) => (
-              <div
-                key={char}
-                style={{
-                  padding: '1px 3px',
-                  borderRadius: '3px',
-                  background: i === index ? '#B4D5FF' : 'transparent'
-                }}
-              >
-                {char}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </Slate>
+          }
+
+          setTarget(null)
+        }}
+      >
+        <Editable renderElement={renderElement} onKeyDown={onKeyDown} placeholder="Enter some text..." />
+        {target && chars.length > 0 && (
+          <>
+            <div
+              ref={ref}
+              style={
+                {
+                  // top: '-9999px',
+                  // left: '-9999px',
+                  // position: 'absolute',
+                  // zIndex: 1,
+                  // padding: '3px',
+                  // background: 'white',
+                  // borderRadius: '4px',
+                  // boxShadow: '0 1px 5px rgba(0,0,0,.2)'
+                }
+              }
+              data-cy="mentions-portal"
+            >
+              {chars.map((char, i) => (
+                <div
+                  key={char}
+                  style={{
+                    padding: '1px 3px',
+                    borderRadius: '3px',
+                    background: i === index ? '#B4D5FF' : 'transparent'
+                  }}
+                >
+                  {char}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </Slate> */}
+    </div>
   )
 }
 
