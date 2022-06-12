@@ -5,6 +5,7 @@ const Visible: React.FC = props => {
   const [bool, setBool] = useState(false)
 
   useEffect(() => {
+    return
     const func = async () => {
       console.log('a')
       const count = await new Promise(resolve => {

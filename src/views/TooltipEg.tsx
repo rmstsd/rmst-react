@@ -1,17 +1,40 @@
-import { cloneElement, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { cloneElement, Fragment, isValidElement, useEffect, useRef, useState } from 'react'
+import { createPortal, unmountComponentAtNode } from 'react-dom'
 import { Button, Tooltip as AntdTooltip } from 'antd'
 
+const longText = '长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本'
+const shortText = '短文本'
+
 const TooltipEg = () => {
+  // 短文本容器宽度
+  const [width, setWidth] = useState(100)
+
   return (
     <div>
-      <Tooltip>
-        <div>666</div>
-      </Tooltip>
+      <br />
+      <br />
+      <br />
+      <br />
 
-      <AntdTooltip title="咣咣咣">
-        <Button>1</Button>
-      </AntdTooltip>
+      <Tooltip content={longText}>
+        <div
+          className="ellipsis"
+          style={{ width: 200, height: 30, border: '1px solid red', padding: '0 10px' }}
+        >
+          {longText}
+        </div>
+      </Tooltip>
+      <Tooltip content={shortText}>
+        <div className="ellipsis" style={{ width, height: 30, border: '1px solid red' }}>
+          {shortText}
+        </div>
+      </Tooltip>
+      <Button onClick={() => setWidth(30)}>修改为30</Button>
+
+      <br />
+      <br />
+      <br />
+      <AntdTooltip title="咣咣咣">112333</AntdTooltip>
       <AntdTooltip title="咣咣咣">
         <Button>2</Button>
       </AntdTooltip>
@@ -21,36 +44,88 @@ const TooltipEg = () => {
 
 export default TooltipEg
 
-const Tooltip = ({ children }) => {
-  let divDom = document.querySelector('.t-tooltip')
-  console.log('render')
-  if (!divDom) {
-    divDom = document.createElement('div')
-    divDom.classList.add('t-tooltip')
-
-    document.body.appendChild(divDom)
-  }
-
+const Tooltip = ({ children, content }) => {
   const [visible, setVisible] = useState(false)
+  const [position, setPosition] = useState({ left: 0, top: 0 })
+
+  const mountContainerRef = useRef<HTMLDivElement>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const childrenRef = useRef<HTMLElement>(null)
+
+  const timer = useRef<NodeJS.Timeout>(null)
+  const initRef = useRef(false)
+  if (visible) initRef.current = true
+
+  useEffect(() => {
+    return () => {
+      mountContainerRef.current && unmountComponentAtNode(mountContainerRef.current)
+      mountContainerRef.current?.remove()
+    }
+  }, [])
 
   const cloned = cloneElement(children, {
-    onClick: () => {
-      setVisible(!visible)
+    ref: childrenRef,
+    onMouseEnter: evt => {
+      // 如果没出现...，就不显示 toolTip
+      if (!childrenRef.current) return
+      const range = document.createRange()
+      range.setStart(childrenRef.current, 0)
+      range.setEnd(childrenRef.current, childrenRef.current.childNodes.length)
+      const rangeWidth = range.getBoundingClientRect().width
+      const containerWidth = childrenRef.current.getBoundingClientRect().width
+
+      if (rangeWidth <= containerWidth) return
+
+      if (!mountContainerRef.current) {
+        mountContainerRef.current = document.createElement('div')
+        document.body.appendChild(mountContainerRef.current)
+      }
+
+      if (visible) {
+        clearTimeout(timer.current)
+        return
+      }
+      setVisible(true)
+
+      Promise.resolve().then(() => {
+        const rect = (evt.target as HTMLElement).getBoundingClientRect()
+        const tooltipRect = tooltipRef.current.getBoundingClientRect()
+
+        const left = rect.left + rect.width / 2 - tooltipRect.width / 2
+        const top = rect.top - tooltipRect.height - 8
+
+        setPosition({ left, top })
+      })
     },
-    onMouseEnter: evt => {},
-    onMouseLeave: evt => {}
+    onMouseLeave: evt => delayHide()
   })
+
+  const delayHide = () => {
+    timer.current = setTimeout(() => setVisible(false), 200)
+  }
 
   return (
     <>
       {cloned}
 
-      {createPortal(
-        <h1 style={{ display: visible ? 'initial' : 'none', position: 'fixed', right: 0, top: 0 }}>
-          哈哈哈
-        </h1>,
-        divDom
-      )}
+      {initRef.current &&
+        createPortal(
+          <div
+            ref={tooltipRef}
+            className="ant-tooltip-inner t-tooltip"
+            style={{
+              position: 'fixed',
+              left: position.left,
+              top: position.top,
+              display: visible ? 'initial' : 'none'
+            }}
+            onMouseEnter={() => clearTimeout(timer.current)}
+            onMouseLeave={delayHide}
+          >
+            {content}
+          </div>,
+          mountContainerRef.current
+        )}
     </>
   )
 }

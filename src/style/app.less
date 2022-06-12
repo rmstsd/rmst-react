@@ -3,3 +3,28 @@
 @tailwind utilities;
 
 @import 'antd/dist/antd.css';
+
+.t-tooltip {
+  max-width: 400px;
+
+  &::after {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    bottom: -16px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border: 8px solid rgba(0, 0, 0, 0.75);
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    content: ' ';
+  }
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
