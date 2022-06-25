@@ -10,6 +10,7 @@ import Hooks from './views/Hooks'
 import CTextEditor from './views/CTextEditor'
 import TooltipEg from './views/TooltipEg'
 import ScrollList from './views/ScrollList'
+import VCardList from './views/VCardList'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -21,7 +22,8 @@ export const routes: IRouteObject[] = [
     children: [
       { path: 'visible', index: true, element: <Visible /> },
       { path: 'tooltipEg', element: <TooltipEg /> },
-      { path: 'scroll-list', element: <ScrollList /> }
+      { path: 'scroll-list', element: <ScrollList /> },
+      { path: 'VCardList', element: <VCardList /> }
     ]
   },
   {
