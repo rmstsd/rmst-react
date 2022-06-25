@@ -9,6 +9,7 @@ import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
 import CTextEditor from './views/CTextEditor'
 import TooltipEg from './views/TooltipEg'
+import VCardList from './views/VCardList'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -19,7 +20,8 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'visible', index: true, element: <Visible /> },
-      { path: 'tooltipEg', element: <TooltipEg /> }
+      { path: 'tooltipEg', element: <TooltipEg /> },
+      { path: 'VCardList', element: <VCardList /> }
     ]
   },
   {
