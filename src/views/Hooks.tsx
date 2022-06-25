@@ -1,13 +1,16 @@
 import { useDebounce } from '@/utils/hooks'
-import { Input } from 'antd'
-import { useState } from 'react'
+import { Button, Input } from 'antd'
+import { useEffect, useState } from 'react'
 
 const Hooks = () => {
   const [value, setValue] = useState(1)
+  const [bool, setBool] = useState(false)
 
-  const func = useDebounce(() => {
-    console.log(value)
-  })
+  useEffect(() => {
+    if (bool) {
+      console.log(value)
+    }
+  }, [bool])
 
   return (
     <div
@@ -18,14 +21,9 @@ const Hooks = () => {
         // func()
       }}
     >
-      Hooks
-      <Input
-        value={value}
-        onChange={evt => {
-          setValue(evt.target.value)
-          func()
-        }}
-      />
+      Hooks {value}
+      <Button onClick={() => setValue(value + 1)}>++</Button>
+      <Button onClick={() => setBool(!bool)}>set bool</Button>
     </div>
   )
 }

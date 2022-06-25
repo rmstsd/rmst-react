@@ -21,7 +21,7 @@ const LayoutView: React.FC = props => {
   return (
     <div style={{ display: 'flex' }}>
       <Menu
-        style={{ width: 200, height: '100vh' }}
+        style={{ width: 200, height: '100vh', flexShrink: 0, position: 'sticky', top: 0 }}
         items={items}
         mode="inline"
         theme="dark"

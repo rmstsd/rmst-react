@@ -1,9 +1,8 @@
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import CryptoJS from 'crypto-js'
 
 import App from './App'
-import './style/app.less'
+import './app.less'
 
 ReactDOM.render(
   <BrowserRouter>

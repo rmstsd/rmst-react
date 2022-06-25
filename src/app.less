@@ -15,7 +15,7 @@
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border: 8px solid rgba(0, 0, 0, 0.75);
+    border: 8px solid rgba(0; 0; 0; 0.75);
     border-left-color: transparent;
     border-right-color: transparent;
     border-bottom-color: transparent;
@@ -27,4 +27,26 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.scroll-list-wrapper {
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0 1px red;
+  overflow: auto;
+}
+
+.scroll-list-container {
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.scroll-list-item {
+  width: 200px;
+  height: 140px;
+  background-color: pink;
+  box-shadow: 0 0 0 1px blue;
 }
