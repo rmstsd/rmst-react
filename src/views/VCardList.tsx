@@ -121,3 +121,17 @@ const VCardList = () => {
 export default VCardList
 
 // --------------------------------------------------------------------------------------------------------------------
+
+type func = (a: number, b: boolean) => string
+type Parameter<T> = T extends (...args: infer P) => infer R ? P : any
+type s = Parameter<func>
+
+type arr = boolean[]
+type sin<T extends unknown[]> = T extends (infer U)[] ? U : never
+type res = sin<arr>
+
+type pro = string
+type inner = pro extends Promise<infer R> ? R : 6
+
+const tut = ['a', 'b'] as const
+type uni = typeof tut[number]
