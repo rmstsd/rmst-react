@@ -1,3 +1,4 @@
+import { Divider } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 
 const useLatestState = <S,>(value: S) => {
@@ -9,21 +10,22 @@ const useLatestState = <S,>(value: S) => {
 }
 
 const VCardList = () => {
-  const totalList = Array.from({ length: 100 }, (_, idx) => idx)
+  const totalList = Array.from({ length: 99 }, (_, idx) => idx)
 
   const containerHeight = 500
 
   const cardWidth = 150
   const cardHeight = 100
 
-  const rowCountRef = useRef(3)
-  const visibleRow = Math.ceil(containerHeight / cardHeight)
-  console.log(visibleRow)
+  const gridColumnGap = 0
+  const gridRowGap = 0
 
-  const totalRow = Math.floor(totalList.length / rowCountRef.current)
+  const rowCountRef = useRef(1)
+  const visibleRow = Math.ceil(containerHeight / cardHeight)
+  const totalRow = Math.ceil(totalList.length / rowCountRef.current)
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const [visibleList, setVisibleList] = useState(totalList)
+  const [visibleList, setVisibleList] = useState([])
 
   const [startRowRef, setStartRow] = useLatestState(0)
 
@@ -36,7 +38,6 @@ const VCardList = () => {
 
     const startIdx = startRow * rowCountRef.current
     const endIdx = (startRow + visibleRow + 1) * rowCountRef.current
-    console.log(startIdx, endIdx)
 
     setVisibleList(totalList.slice(startIdx, endIdx))
   }
@@ -44,7 +45,9 @@ const VCardList = () => {
   useEffect(() => {
     const ob = new ResizeObserver(() => {
       const { scrollTop, clientWidth } = containerRef.current
-      const nvRowCount = Math.floor(clientWidth / cardWidth)
+      const nvRowCount = Math.floor((clientWidth + gridColumnGap) / (cardWidth + gridColumnGap))
+
+      console.log(nvRowCount)
 
       rowCountRef.current = nvRowCount
 
@@ -57,26 +60,30 @@ const VCardList = () => {
   const handleView = () => {
     const startIdx = startRowRef.current * rowCountRef.current
     const endIdx = (startRowRef.current + visibleRow + 1) * rowCountRef.current
-    console.log(startIdx, endIdx)
 
     setVisibleList(totalList.slice(startIdx, endIdx))
   }
 
   return (
-    <div
-      ref={containerRef}
-      style={{ height: containerHeight, overflow: 'auto', position: 'relative' }}
-      onScroll={onScroll}
-    >
-      <section style={{ height: totalRow * cardHeight }}>
+    <div>
+      <div
+        ref={containerRef}
+        style={{ height: containerHeight, overflow: 'auto', position: 'relative' }}
+        onScroll={onScroll}
+      >
+        <section style={{ height: totalRow * cardHeight }} />
+
         <main
           style={{
             width: '100%',
             display: 'grid',
             gridTemplateColumns: `repeat(auto-fill, minmax(${cardWidth}px, 1fr))`,
+            gridColumnGap,
+            gridRowGap,
             alignContent: 'flex-start',
             position: 'absolute',
-            top: startRowRef.current * cardHeight
+            top: 0,
+            transform: `translateY(${startRowRef.current * cardHeight}px)`
           }}
         >
           {visibleList.map(item => (
@@ -85,9 +92,32 @@ const VCardList = () => {
             </div>
           ))}
         </main>
-      </section>
+      </div>
+
+      <Divider />
+
+      <div>
+        <main
+          style={{
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: `repeat(auto-fill, minmax(${cardWidth}px, 1fr))`,
+            alignContent: 'flex-start',
+            height: 400,
+            overflow: 'auto'
+          }}
+        >
+          {totalList.map(item => (
+            <div className="v-c-item" key={item} style={{ height: cardHeight }}>
+              {item}
+            </div>
+          ))}
+        </main>
+      </div>
     </div>
   )
 }
 
 export default VCardList
+
+// --------------------------------------------------------------------------------------------------------------------
