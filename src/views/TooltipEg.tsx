@@ -16,6 +16,10 @@ const TooltipEg = () => {
       <br />
       <br />
 
+      <div className="ellipsis ellipsis-2" style={{ width: 100 }}>
+        谁都可以谁都可以谁都可以谁都可以谁都可以
+      </div>
+
       <Tooltip content={longText}>
         <div
           className="ellipsis"
@@ -56,6 +60,8 @@ const Tooltip = ({ children, content }) => {
   const initRef = useRef(false)
   if (visible) initRef.current = true
 
+  const [isUseTooltip, setIsUseTooltip] = useState(false)
+
   useEffect(() => {
     return () => {
       mountContainerRef.current && unmountComponentAtNode(mountContainerRef.current)
@@ -74,6 +80,9 @@ const Tooltip = ({ children, content }) => {
       const rangeWidth = range.getBoundingClientRect().width
       const containerWidth = childrenRef.current.getBoundingClientRect().width
 
+      if (rangeWidth > containerWidth) setIsUseTooltip(true)
+
+      return
       if (rangeWidth <= containerWidth) return
 
       if (!mountContainerRef.current) {
@@ -97,12 +106,26 @@ const Tooltip = ({ children, content }) => {
         setPosition({ left, top })
       })
     },
-    onMouseLeave: evt => delayHide()
+    onMouseLeave: evt => {
+      console.log('leave')
+      delayHide()
+    }
   })
 
   const delayHide = () => {
-    timer.current = setTimeout(() => setVisible(false), 200)
+    timer.current = setTimeout(() => {
+      setIsUseTooltip(false)
+      setVisible(false)
+    }, 200)
   }
+
+  return isUseTooltip ? (
+    <AntdTooltip title="444" visible={isUseTooltip}>
+      {cloned}
+    </AntdTooltip>
+  ) : (
+    <>{cloned}</>
+  )
 
   return (
     <>
