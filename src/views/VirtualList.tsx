@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 const data = Array.from({ length: 100 }, (_, index) => ({
   height: Math.floor(40 + Math.random() * 60),
@@ -12,7 +12,9 @@ const VirtualList = () => {
 
   const totalHeight = data.reduce((acc, cur) => acc + cur.height, 0)
 
-  const [visibleData, setVisibleData] = useState(data)
+  const mainRef = useRef<HTMLDivElement>(null)
+
+  const [visibleData, setVisibleData] = useState([])
   const [startIndex, setStartIndex] = useState(0)
   const [top, setTop] = useState(0)
 
@@ -51,6 +53,17 @@ const VirtualList = () => {
     setVisibleData(data.slice(startIndex, startIndex + count))
   }
 
+  const cacheHeights = useRef<{ [key: number]: number }[]>([])
+
+  useLayoutEffect(() => {
+    Array.from(mainRef.current.childNodes).forEach((domItem: HTMLDivElement) => {
+      const index = domItem.getAttribute('row-key')
+      cacheHeights.current[index] = domItem.getBoundingClientRect().height
+    })
+
+    console.log(cacheHeights.current)
+  }, [visibleData])
+
   return (
     <div>
       <div
@@ -60,9 +73,10 @@ const VirtualList = () => {
       >
         <div style={{ height: totalHeight }}></div>
 
-        <main className="absolute w-full" style={{ top }}>
+        <main ref={mainRef} className="absolute w-full" style={{ top }}>
           {visibleData.map(item => (
             <div
+              row-key={item.onlyKey}
               className="border-2 border-purple-800 box-border text-2xl"
               style={{ height: item.height }}
               key={item.onlyKey}
