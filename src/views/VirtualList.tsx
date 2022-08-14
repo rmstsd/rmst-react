@@ -9,11 +9,11 @@ console.log(data)
 
 const VirtualList = () => {
   const containerHeight = 700
-
-  const totalHeight = data.reduce((acc, cur) => acc + cur.height, 0)
+  const estimatedHeight = 40
 
   const mainRef = useRef<HTMLDivElement>(null)
 
+  const [totalHeight, setTotalHeight] = useState(2000)
   const [visibleData, setVisibleData] = useState([])
   const [startIndex, setStartIndex] = useState(0)
   const [top, setTop] = useState(0)
@@ -53,7 +53,7 @@ const VirtualList = () => {
     setVisibleData(data.slice(startIndex, startIndex + count))
   }
 
-  const cacheHeights = useRef<{ [key: number]: number }[]>([])
+  const cacheHeights = useRef<number[]>([])
 
   useLayoutEffect(() => {
     Array.from(mainRef.current.childNodes).forEach((domItem: HTMLDivElement) => {
@@ -62,6 +62,12 @@ const VirtualList = () => {
     })
 
     console.log(cacheHeights.current)
+
+    const cacheTotalHeight = cacheHeights.current.reduce((acc, item) => item + acc, 0)
+
+    const totalHeight = cacheTotalHeight + (data.length - cacheHeights.current.length) * estimatedHeight
+
+    setTotalHeight(totalHeight)
   }, [visibleData])
 
   return (

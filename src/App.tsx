@@ -11,6 +11,7 @@ import CTextEditor from './views/CTextEditor'
 import TooltipEg from './views/TooltipEg'
 import VCardList from './views/VCardList'
 import VirtualList from './views/VirtualList'
+import AVlistNotHeight from './views/AVlistNotHeight/App'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -24,7 +25,8 @@ export const routes: IRouteObject[] = [
       { path: 'tooltipEg', element: <TooltipEg /> },
       { path: 'VCardList', element: <VCardList /> },
 
-      { path: 'VirtualList', element: <VirtualList /> }
+      { path: 'VirtualList', element: <VirtualList /> },
+      { path: 'AVlistNotHeight', element: <AVlistNotHeight /> }
     ]
   },
   {
