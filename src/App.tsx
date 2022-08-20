@@ -12,6 +12,7 @@ import TooltipEg from './views/TooltipEg'
 import VCardList from './views/VCardList'
 import VirtualList from './views/VirtualList'
 import AVlistNotHeight from './views/AVlistNotHeight/App'
+import Prosemirror from './views/Prosemirror'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -26,7 +27,8 @@ export const routes: IRouteObject[] = [
       { path: 'VCardList', element: <VCardList /> },
 
       { path: 'VirtualList', element: <VirtualList /> },
-      { path: 'AVlistNotHeight', element: <AVlistNotHeight /> }
+      { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
+      { path: 'Prosemirror', element: <Prosemirror /> }
     ]
   },
   {
