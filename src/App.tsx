@@ -3,16 +3,20 @@ import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from './layout/Layout'
-import EditHtml from './views/EditHtml'
-import Visible from './views/Visible'
+
+import Visible from './views/UiComponent/Visible'
+import TooltipEg from './views/UiComponent/TooltipEg'
+import VCardList from './views/UiComponent/VCardList'
+import VirtualList from './views/UiComponent/VirtualList'
+import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
+import Prosemirror from './views/UiComponent/Prosemirror/Prosemirror'
+import Prosemirror2 from './views/UiComponent/Prosemirror/Prosemirror-2'
+
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
 import CTextEditor from './views/CTextEditor'
-import TooltipEg from './views/TooltipEg'
-import VCardList from './views/VCardList'
-import VirtualList from './views/VirtualList'
-import AVlistNotHeight from './views/AVlistNotHeight/App'
-import Prosemirror from './views/Prosemirror'
+
+import EditHtml from './views/EditHtml'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -28,7 +32,8 @@ export const routes: IRouteObject[] = [
 
       { path: 'VirtualList', element: <VirtualList /> },
       { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
-      { path: 'Prosemirror', element: <Prosemirror /> }
+      { path: 'Prosemirror', element: <Prosemirror /> },
+      { path: 'Prosemirror-2', element: <Prosemirror2 /> }
     ]
   },
   {
