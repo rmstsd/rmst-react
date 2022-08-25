@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 
@@ -17,6 +17,7 @@ import Hooks from './views/Hooks'
 import CTextEditor from './views/CTextEditor'
 
 import EditHtml from './views/EditHtml'
+import WangEditor from './views/UiComponent/WangEditor'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -33,7 +34,8 @@ export const routes: IRouteObject[] = [
       { path: 'VirtualList', element: <VirtualList /> },
       { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
       { path: 'Prosemirror', element: <Prosemirror /> },
-      { path: 'Prosemirror-2', element: <Prosemirror2 /> }
+      { path: 'Prosemirror-2', element: <Prosemirror2 /> },
+      { path: 'WangEditor', element: <WangEditor /> }
     ]
   },
   {
