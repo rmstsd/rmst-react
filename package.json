@@ -34,7 +34,8 @@
     "react-window": "^1.8.7",
     "slate": "^0.80.0",
     "slate-history": "^0.66.0",
-    "slate-react": "^0.80.0"
+    "slate-react": "^0.80.0",
+    "sprite-animator": "^1.11.5"
   },
   "devDependencies": {
     "@types/node": "^17.0.24",

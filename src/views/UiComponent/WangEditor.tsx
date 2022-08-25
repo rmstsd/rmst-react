@@ -74,12 +74,12 @@ function renderAttachment(elem: SlateElement, children: VNode[] | null, editor: 
     'span',
     // HTML 属性、样式、事件
     {
-      props: { contentEditable: false }, // HTML 属性，驼峰式写法
-      style: { display: 'inline-block', marginLeft: '3px' /* 其他... */ }, // style ，驼峰式写法
+      props: { contentEditable: false, className: 'attachment' }, // HTML 属性，驼峰式写法
+      style: {},
       on: {
         click() {
           console.log('clicked', link)
-        } /* 其他... */
+        }
       }
     },
     // 子节点
@@ -158,20 +158,30 @@ const WangEditor = () => {
       const toolbar = DomEditor.getToolbar(editor)
       const toolbarConfig = toolbar.getConfig()
       toolbarConfig.insertKeys = {
-        index: 5, // 插入的位置，基于当前的 toolbarKeys
+        index: 8, // 插入的位置，基于当前的 toolbarKeys
         keys: ['menu1']
       }
     }
   }, [editor])
 
   // 工具栏配置
-  const toolbarConfig: Partial<IToolbarConfig> = {} // TS 语法
+  const toolbarConfig: Partial<IToolbarConfig> = {
+    toolbarKeys: ['bold', 'blockquote', 'insertLink', 'code', 'headerSelect', 'color']
+  } // TS 语法
 
   // 编辑器配置
-  const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...' }
+  const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...', MENU_CONF: {} }
+  editorConfig.MENU_CONF['color'] = {
+    colors: ['red', 'pink']
+  }
 
   // 及时销毁 editor ，重要！
   useEffect(() => {
+    if (!editor) return
+    console.log(editor?.getAllMenuKeys())
+
+    console.log(editor.getMenuConfig('color'))
+
     return () => {
       if (editor == null) return
       editor.destroy()
@@ -189,6 +199,16 @@ const WangEditor = () => {
       >
         var
       </button>
+
+      <button
+        onMouseDown={evt => evt.stopPropagation()}
+        onClick={() => {
+          console.log(editor.children)
+        }}
+      >
+        打印children
+      </button>
+
       <div style={{ border: '1px solid #ccc', zIndex: 100 }}>
         <Toolbar
           editor={editor}
