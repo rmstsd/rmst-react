@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
+import importHTML from 'import-html-entry'
 
 import LayoutView from './layout/Layout'
 

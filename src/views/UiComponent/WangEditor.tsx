@@ -9,9 +9,14 @@ import {
   IButtonMenu
 } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
+import formulaModule from '@wangeditor/plugin-formula'
+
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 
 import { h, VNode } from 'snabbdom'
+
+// 注册。要在创建编辑器之前注册，且只能注册一次，不可重复注册。
+Boot.registerModule(formulaModule)
 
 function withAttachment<T extends IDomEditor>(editor: T) {
   // TS 语法
@@ -75,7 +80,7 @@ function renderAttachment(elem: SlateElement, children: VNode[] | null, editor: 
     // HTML 属性、样式、事件
     {
       props: { contentEditable: false, className: 'attachment' }, // HTML 属性，驼峰式写法
-      style: {},
+      style: { margin: '0 5px' },
       on: {
         click() {
           console.log('clicked', link)
@@ -175,7 +180,6 @@ const WangEditor = () => {
     colors: ['red', 'pink']
   }
 
-  // 及时销毁 editor ，重要！
   useEffect(() => {
     if (!editor) return
     console.log(editor?.getAllMenuKeys())
