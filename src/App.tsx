@@ -10,8 +10,6 @@ import TooltipEg from './views/UiComponent/TooltipEg'
 import VCardList from './views/UiComponent/VCardList'
 import VirtualList from './views/UiComponent/VirtualList'
 import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
-import Prosemirror from './views/UiComponent/Prosemirror/Prosemirror'
-import Prosemirror2 from './views/UiComponent/Prosemirror/Prosemirror-2'
 
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
@@ -34,8 +32,7 @@ export const routes: IRouteObject[] = [
 
       { path: 'VirtualList', element: <VirtualList /> },
       { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
-      { path: 'Prosemirror', element: <Prosemirror /> },
-      { path: 'Prosemirror-2', element: <Prosemirror2 /> },
+
       { path: 'WangEditor', element: <WangEditor /> }
     ]
   },
