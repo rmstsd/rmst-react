@@ -75,15 +75,12 @@ let menu = menuPlugin([
   { command: wrapIn(mySchema.nodes.blockquote), dom: icon('>', 'blockquote') }
 ])
 
-console.log(menu)
-
 const dinoSchema = new Schema({
   nodes: schema.spec.nodes.addBefore('image', 'dino', dinoNodeSpec),
   marks: schema.spec.marks
 })
 
 let dinoType = dinoSchema.nodes.dino
-console.log(dinoType)
 
 function insertDino(type) {
   return function (state, dispatch) {

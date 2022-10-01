@@ -7,7 +7,7 @@ import LayoutView from './layout/Layout'
 import Visible from './views/UiComponent/Visible'
 import TooltipEg from './views/UiComponent/TooltipEg'
 import VCardList from './views/UiComponent/VCardList'
-import VirtualList from './views/UiComponent/VirtualList'
+import VirtualListDemo from './views/UiComponent/VirtualListDemo'
 import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
 import Prosemirror from './views/UiComponent/Prosemirror/Prosemirror'
 import Prosemirror2 from './views/UiComponent/Prosemirror/Prosemirror-2'
@@ -31,7 +31,7 @@ export const routes: IRouteObject[] = [
       { path: 'tooltipEg', element: <TooltipEg /> },
       { path: 'VCardList', element: <VCardList /> },
 
-      { path: 'VirtualList', element: <VirtualList /> },
+      { path: 'VirtualList', element: <VirtualListDemo /> },
       { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
       { path: 'Prosemirror', element: <Prosemirror /> },
       { path: 'Prosemirror-2', element: <Prosemirror2 /> },

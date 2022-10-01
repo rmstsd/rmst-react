@@ -199,6 +199,7 @@ export default class VirtualList extends React.Component<VirtualListProps> {
    */
   renderDisplayContent = () => {
     const content = []
+    console.log(this.endIndex - this.startIndex)
     for (let i = this.startIndex; i <= this.endIndex; ++i) {
       content.push(this.props.rowRenderer(i, {}))
     }
