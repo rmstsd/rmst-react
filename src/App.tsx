@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
+import importHTML from 'import-html-entry'
 
 import LayoutView from './layout/Layout'
 
@@ -9,8 +10,6 @@ import TooltipEg from './views/UiComponent/TooltipEg'
 import VCardList from './views/UiComponent/VCardList'
 import VirtualListDemo from './views/UiComponent/VirtualListDemo'
 import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
-import Prosemirror from './views/UiComponent/Prosemirror/Prosemirror'
-import Prosemirror2 from './views/UiComponent/Prosemirror/Prosemirror-2'
 
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
@@ -33,8 +32,7 @@ export const routes: IRouteObject[] = [
 
       { path: 'VirtualList', element: <VirtualListDemo /> },
       { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
-      { path: 'Prosemirror', element: <Prosemirror /> },
-      { path: 'Prosemirror-2', element: <Prosemirror2 /> },
+
       { path: 'WangEditor', element: <WangEditor /> }
     ]
   },
