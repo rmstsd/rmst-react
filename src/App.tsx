@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Navigate, Route, Routes, useRoutes } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
-import importHTML from 'import-html-entry'
 
 import LayoutView from './layout/Layout'
 
@@ -13,10 +12,10 @@ import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
 
 import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
-import CTextEditor from './views/CTextEditor'
 
 import EditHtml from './views/EditHtml'
 import WangEditor from './views/UiComponent/WangEditor'
+import TriggerDemo from './views/UiComponent/TriggerDemo'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -27,13 +26,16 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'visible', index: true, element: <Visible /> },
-      { path: 'tooltipEg', element: <TooltipEg /> },
-      { path: 'VCardList', element: <VCardList /> },
 
-      { path: 'VirtualList', element: <VirtualListDemo /> },
-      { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
+      // { path: 'tooltipEg', element: <TooltipEg /> },
+      // { path: 'VCardList', element: <VCardList /> },
 
-      { path: 'WangEditor', element: <WangEditor /> }
+      // { path: 'VirtualList', element: <VirtualListDemo /> },
+      // { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
+
+      // { path: 'WangEditor', element: <WangEditor /> },
+
+      { path: 'TriggerDemo', element: <TriggerDemo /> }
     ]
   },
   {
@@ -50,11 +52,6 @@ export const routes: IRouteObject[] = [
     path: '/hooks',
     element: <LayoutView />,
     children: [{ path: 'hooks', element: <Hooks /> }]
-  },
-  {
-    path: '/c',
-    element: <LayoutView />,
-    children: [{ path: 'ct', element: <CTextEditor /> }]
   }
 ]
 

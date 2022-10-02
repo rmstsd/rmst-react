@@ -9,14 +9,11 @@ import {
   IButtonMenu
 } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
-import formulaModule from '@wangeditor/plugin-formula'
 
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 
 import { h, VNode } from 'snabbdom'
-
-// 注册。要在创建编辑器之前注册，且只能注册一次，不可重复注册。
-Boot.registerModule(formulaModule)
+import { Button } from '@arco-design/web-react'
 
 function withAttachment<T extends IDomEditor>(editor: T) {
   // TS 语法
@@ -62,16 +59,18 @@ function renderAttachment(elem: SlateElement, children: VNode[] | null, editor: 
   const { fileName = '', link = '' } = elem
 
   // 附件 icon 图标 vnode
-  const iconVnode = h(
-    // HTML tag
-    'img',
-    // HTML 属性
-    {
-      props: { src: 'xxxx.png' }, // HTML 属性，驼峰式写法
-      style: { width: '1em', marginRight: '0.1em', backgroundColor: 'purple' /* 其他... */ } // HTML style ，驼峰式写法
-    }
-    // img 没有子节点，所以第三个参数不用写
-  )
+  const iconVnode = h('svg', { attrs: { width: 100, height: 100 } }, [
+    h('circle', {
+      attrs: {
+        cx: 50,
+        cy: 50,
+        r: 40,
+        stroke: 'green',
+        'stroke-width': 4,
+        fill: 'yellow'
+      }
+    })
+  ])
 
   // 附件元素 vnode
   const attachVnode = h(
@@ -88,7 +87,7 @@ function renderAttachment(elem: SlateElement, children: VNode[] | null, editor: 
       }
     },
     // 子节点
-    [fileName]
+    [fileName, iconVnode]
   )
 
   return attachVnode
@@ -101,41 +100,27 @@ const renderElemConf = {
 Boot.registerRenderElem(renderElemConf)
 
 class MyButtonMenu implements IButtonMenu {
-  // TS 语法
-  // class MyButtonMenu {                       // JS 语法
+  title = ''
+  tag = ''
 
   constructor() {
-    this.title = 'My menu title' // 自定义菜单标题
-    // this.iconSvg = '<svg>...</svg>' // 可选
+    this.title = 'My menu title'
     this.tag = 'button'
   }
 
-  // 获取菜单执行时的 value ，用不到则返回空 字符串或 false
   getValue(editor: IDomEditor): string | boolean {
-    // TS 语法
-    // getValue(editor) {                              // JS 语法
     return ' hello '
   }
 
-  // 菜单是否需要激活（如选中加粗文本，“加粗”菜单会激活），用不到则返回 false
   isActive(editor: IDomEditor): boolean {
-    // TS 语法
-    // isActive(editor) {                    // JS 语法
     return false
   }
 
-  // 菜单是否需要禁用（如选中 H1 ，“引用”菜单被禁用），用不到则返回 false
   isDisabled(editor: IDomEditor): boolean {
-    // TS 语法
-    // isDisabled(editor) {                     // JS 语法
     return false
   }
 
-  // 点击菜单时触发的函数
   exec(editor: IDomEditor, value: string | boolean) {
-    // TS 语法
-    // exec(editor, value) {                              // JS 语法
-    // if (this.isDisabled(editor)) return
     editor.insertNode(myResume)
 
     // editor.insertText(value) // value 即 this.value(editor) 的返回值
@@ -182,9 +167,6 @@ const WangEditor = () => {
 
   useEffect(() => {
     if (!editor) return
-    console.log(editor?.getAllMenuKeys())
-
-    console.log(editor.getMenuConfig('color'))
 
     return () => {
       if (editor == null) return
@@ -195,23 +177,23 @@ const WangEditor = () => {
 
   return (
     <>
-      <button
+      <Button
         onMouseDown={evt => evt.stopPropagation()}
         onClick={() => {
           editor.insertNode(myResume)
         }}
       >
         var
-      </button>
+      </Button>
 
-      <button
+      <Button
         onMouseDown={evt => evt.stopPropagation()}
         onClick={() => {
           console.log(editor.children)
         }}
       >
         打印children
-      </button>
+      </Button>
 
       <div style={{ border: '1px solid #ccc', zIndex: 100 }}>
         <Toolbar
@@ -230,6 +212,8 @@ const WangEditor = () => {
         />
       </div>
       <div style={{ marginTop: '15px' }}>{html}</div>
+
+      <hr />
     </>
   )
 }

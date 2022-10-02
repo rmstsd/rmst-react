@@ -1,6 +1,6 @@
 import { cloneElement, Fragment, isValidElement, useEffect, useRef, useState } from 'react'
 import { createPortal, unmountComponentAtNode } from 'react-dom'
-import { Button, Tooltip as AntdTooltip } from 'antd'
+import { Button, Tooltip as AntdTooltip } from '@arco-design/web-react'
 
 const longText = '长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本'
 const shortText = '短文本'

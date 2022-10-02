@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button } from 'antd'
+import { Button } from '@arco-design/web-react'
 const imgMap = {
   long: 'https://naturobot-studio.oss-cn-shanghai.aliyuncs.com/test1230/image_library/2022-04-27/a37c5ded-1ece-419e-b4e2-b4c1a05e10c1.png',
   high: 'https://naturobot-studio.oss-cn-shanghai.aliyuncs.com/test1230/image_library/2022-04-27/e24fbe86-e45b-4dcd-92fe-f4b236be0d8f.png',

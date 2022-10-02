@@ -1,5 +1,5 @@
 import { binarySearch, CompareResult } from './bst'
-import { Empty } from 'antd'
+import { Empty } from '@arco-design/web-react'
 import React, { ReactNode } from 'react'
 
 export interface VirtualListProps {

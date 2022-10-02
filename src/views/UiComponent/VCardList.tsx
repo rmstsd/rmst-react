@@ -1,4 +1,4 @@
-import { Divider } from 'antd'
+import { Divider } from '@arco-design/web-react'
 import { useEffect, useRef, useState } from 'react'
 
 const useLatestState = <S,>(value: S) => {
