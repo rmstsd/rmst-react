@@ -10,7 +10,6 @@ import VCardList from './views/UiComponent/VCardList'
 import VirtualListDemo from './views/UiComponent/VirtualListDemo'
 import AVlistNotHeight from './views/UiComponent/AVlistNotHeight/App'
 
-import ControlNotControl from './views/ControlNotControl'
 import Hooks from './views/Hooks'
 
 import EditHtml from './views/EditHtml'
@@ -44,11 +43,7 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [{ path: 'editHtml', element: <EditHtml /> }]
   },
-  {
-    path: '/control-component',
-    element: <LayoutView />,
-    children: [{ path: 'control-not-control', element: <ControlNotControl /> }]
-  },
+
   {
     path: '/hooks',
     element: <LayoutView />,
