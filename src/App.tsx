@@ -15,6 +15,8 @@ import Hooks from './views/Hooks'
 import EditHtml from './views/EditHtml'
 import WangEditor from './views/UiComponent/WangEditor'
 import TriggerDemo from './views/UiComponent/TriggerDemo'
+import EllipsisDemo from './views/UiComponent/EllipsisDemo'
+import ImageViewDemo from './views/UiComponent/ImageViewDemo'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -26,15 +28,14 @@ export const routes: IRouteObject[] = [
     children: [
       { path: 'visible', index: true, element: <Visible /> },
 
-      // { path: 'tooltipEg', element: <TooltipEg /> },
       // { path: 'VCardList', element: <VCardList /> },
 
       // { path: 'VirtualList', element: <VirtualListDemo /> },
       // { path: 'AVlistNotHeight', element: <AVlistNotHeight /> },
 
-      // { path: 'WangEditor', element: <WangEditor /> },
-
-      { path: 'TriggerDemo', element: <TriggerDemo /> }
+      { path: 'trigger-demo', element: <TriggerDemo /> },
+      { path: 'ellipsis-demo', element: <EllipsisDemo /> },
+      { path: 'image-view-demo', element: <ImageViewDemo /> }
     ]
   },
   {
