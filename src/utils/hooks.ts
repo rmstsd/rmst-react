@@ -1,7 +1,10 @@
 import { useRef, useState } from 'react'
 
 export const useDebounce = (cb: any, delay: number = 500) => {
-  const debounceRef = useRef<{ timer: NodeJS.Timeout; cb: () => void }>({ timer: null, cb })
+  const debounceRef = useRef<{ timer: NodeJS.Timeout; cb: () => void }>({
+    timer: null,
+    cb
+  })
   debounceRef.current.cb = cb
 
   return () => {

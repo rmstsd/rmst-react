@@ -17,6 +17,7 @@ import WangEditor from './views/UiComponent/WangEditor'
 import TriggerDemo from './views/UiComponent/TriggerDemo'
 import EllipsisDemo from './views/UiComponent/EllipsisDemo'
 import ImageViewDemo from './views/UiComponent/ImageViewDemo'
+import Nesting from './views/Nesting/Nesting'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -48,6 +49,12 @@ export const routes: IRouteObject[] = [
     path: '/hooks',
     element: <LayoutView />,
     children: [{ path: 'hooks', element: <Hooks /> }]
+  },
+
+  {
+    path: '/nesting',
+    element: <LayoutView />,
+    children: [{ path: 'nesting', element: <Nesting /> }]
   }
 ]
 
