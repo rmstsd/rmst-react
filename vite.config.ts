@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import babel from 'vite-babel-plugin'
+
 const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [babel(), react()],
   server: {
     port: 10000
   },

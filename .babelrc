@@ -1,0 +1,11 @@
+{
+  "plugins": [
+    [
+      "@emotion",
+      {
+        "autoLabel": "always",
+        "labelFormat": "[local]"
+      }
+    ]
+  ]
+}

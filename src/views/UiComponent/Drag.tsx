@@ -1,10 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { css } from '@emotion/css'
+import classNames from 'classnames'
+
+const containerEmo = css`
+  display: flex;
+  flex-direction: column;
+  // gap: 20px;
+`
+
+const itemEmo = css`
+  height: 50px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  label: itemStyle;
+`
 
 const Drag = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    const container: HTMLDivElement = document.querySelector('.container')
+    const container = containerRef.current
 
-    let items = [...document.querySelectorAll('.item')] as HTMLDivElement[]
+    let items = [...container.childNodes] as HTMLDivElement[]
     let rects = items.map(o => o.getBoundingClientRect())
 
     let dragDom: HTMLDivElement
@@ -90,7 +108,7 @@ const Drag = () => {
       // }
 
       // 真实数据
-      console.log(dragIndex, targetIndex)
+      // console.log(dragIndex, targetIndex)
       // setRenderData()
 
       dragIndex = undefined
@@ -120,10 +138,7 @@ const Drag = () => {
         if (clientY > rectItem.top && clientY < rectItem.bottom) {
           targetIndex = i
 
-          // console.log('dragIndex: ', dragIndex, 'targetIndex: ', targetIndex)
-
-          dragDomTranslateY = rectItem.top - dragDomRect.top
-          dragDom.style.translate = `0 ${dragDomTranslateY}px`
+          console.log('dragIndex: ', dragIndex, 'targetIndex: ', targetIndex)
 
           let startIndex: number
           let endIndex: number
@@ -136,19 +151,23 @@ const Drag = () => {
             endIndex = dragIndex
           }
 
+          const totalHeight = rects.slice(startIndex, endIndex).reduce((acc, o) => acc + o.height, 0)
+          dragDomTranslateY = dragIndex < targetIndex ? totalHeight : -totalHeight
+          dragDom.style.translate = `0 ${dragDomTranslateY}px`
+
           if (startIndex === endIndex) {
             items.forEach(item => {
               item.style.translate = ``
             })
           } else {
             const batchMoveItems = items.slice(startIndex, endIndex)
-            console.log(dragDomRect.top, rectItem.top)
 
-            console.log(rects.slice(startIndex, endIndex))
+            const translateY = -dragDomRect.height
 
-            const translateY = -dragDomRect.height - 20
+            items[targetIndex].style.translate = `0 ${`${
+              dragIndex < targetIndex ? translateY : -translateY
+            }px`}`
 
-            items[targetIndex].style.translate = `0 ${`${translateY}px`}`
             // batchMoveItems.forEach(item => {
             //   item.style.translate = `0 ${`${translateY}px`}`
             // })
@@ -168,10 +187,10 @@ const Drag = () => {
   const [list, setList] = useState([0, 1, 2, 3, 4, 5, 6])
 
   return (
-    <div className="container">
+    <div className={containerEmo} ref={containerRef}>
       {list.map((item, index) => (
         <div
-          className="item"
+          className={classNames(itemEmo, 'item')}
           data-index={index}
           key={item}
           style={{
