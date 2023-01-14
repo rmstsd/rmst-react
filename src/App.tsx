@@ -4,8 +4,6 @@ import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from './layout/Layout'
 
-import Visible from './views/UiComponent/Visible'
-
 import EditHtml from './views/EditHtml'
 import TriggerDemo from './views/UiComponent/TriggerDemo'
 import EllipsisDemo from './views/UiComponent/EllipsisDemo'
@@ -22,8 +20,6 @@ export const routes: IRouteObject[] = [
     path: '/ui-component',
     element: <LayoutView />,
     children: [
-      { path: 'visible', index: true, element: <Visible /> },
-
       // { path: 'VCardList', element: <VCardList /> },
 
       // { path: 'VirtualList', element: <VirtualListDemo /> },

@@ -6,7 +6,12 @@ const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [babel(), react()],
+  plugins: [
+    babel(),
+    react({
+      exclude: '**/*.tsx'
+    })
+  ],
   server: {
     port: 10000
   },
