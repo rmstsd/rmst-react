@@ -11,6 +11,7 @@ import ImageViewDemo from './views/UiComponent/ImageViewDemo'
 
 import Drag from './views/UiComponent/Drag'
 import DndKit from './views/UiComponent/DndKit/DndKit'
+import Sector from './views/Sector'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -36,6 +37,11 @@ export const routes: IRouteObject[] = [
     path: '/edit',
     element: <LayoutView />,
     children: [{ path: 'editHtml', element: <EditHtml /> }]
+  },
+  {
+    path: '/sector',
+    element: <LayoutView />,
+    children: [{ path: 'sector', element: <Sector /> }]
   }
 ]
 
