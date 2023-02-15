@@ -1,5 +1,5 @@
 import { css } from '@emotion/css'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 const pathEmo = css({
   label: 'pathStyle',
@@ -12,6 +12,8 @@ const pathEmo = css({
 
 const Sector = () => {
   const [list] = useState(['#f6d365', '#fbc2eb', '#8fd3f4'])
+
+  const [count, setCount] = useState(1)
 
   const svgWidth = 300
   const svgHeight = 300

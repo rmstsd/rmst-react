@@ -4,7 +4,6 @@ import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from './layout/Layout'
 
-import EditHtml from './views/EditHtml'
 import TriggerDemo from './views/UiComponent/TriggerDemo'
 import EllipsisDemo from './views/UiComponent/EllipsisDemo'
 import ImageViewDemo from './views/UiComponent/ImageViewDemo'
@@ -34,15 +33,15 @@ export const routes: IRouteObject[] = [
     ]
   },
   {
-    path: '/edit',
-    element: <LayoutView />,
-    children: [{ path: 'editHtml', element: <EditHtml /> }]
-  },
-  {
     path: '/sector',
     element: <LayoutView />,
     children: [{ path: 'sector', element: <Sector /> }]
   }
+  // {
+  //   path: '*',
+  //   element: <LayoutView />,
+  //   children: [{ path: 'sector', element: <Sector /> }]
+  // }
 ]
 
 const App: React.FC = () => {
