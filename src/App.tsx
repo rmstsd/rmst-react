@@ -11,6 +11,9 @@ import ImageViewDemo from './views/UiComponent/ImageViewDemo'
 import Drag from './views/UiComponent/Drag'
 import DndKit from './views/UiComponent/DndKit/DndKit'
 import Sector from './views/Sector'
+import CssTransitionDe from './views/CssTransitionDe'
+
+import CanvaskitWasmDe from './views/CanvaskitWasmDe'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -29,13 +32,18 @@ export const routes: IRouteObject[] = [
       { path: 'ellipsis-demo', element: <EllipsisDemo /> },
       { path: 'image-view-demo', element: <ImageViewDemo /> },
       { path: 'drag', element: <Drag /> },
-      { path: 'dndKit', element: <DndKit /> }
+      { path: 'dndKit', element: <DndKit /> },
+      { path: 'react-transition-group', element: <DndKit /> }
     ]
   },
   {
     path: '/sector',
     element: <LayoutView />,
-    children: [{ path: 'sector', element: <Sector /> }]
+    children: [
+      { path: 'sector', element: <Sector /> },
+      { path: 'CssTransition', element: <CssTransitionDe /> },
+      { path: 'CanvaskitWasmDe', element: <CanvaskitWasmDe /> }
+    ]
   }
   // {
   //   path: '*',
