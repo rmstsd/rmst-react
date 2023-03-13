@@ -14,6 +14,7 @@ import Sector from './views/Sector'
 import CssTransitionDe from './views/CssTransitionDe'
 
 import CanvaskitWasmDe from './views/CanvaskitWasmDe'
+import FormDe from './views/Form/FormDe'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -44,6 +45,11 @@ export const routes: IRouteObject[] = [
       { path: 'CssTransition', element: <CssTransitionDe /> },
       { path: 'CanvaskitWasmDe', element: <CanvaskitWasmDe /> }
     ]
+  },
+  {
+    path: '/form',
+    element: <LayoutView />,
+    children: [{ path: 'formDe', element: <FormDe /> }]
   }
   // {
   //   path: '*',
