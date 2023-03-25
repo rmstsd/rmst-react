@@ -41,9 +41,9 @@ export const routes: IRouteObject[] = [
     children: [{ path: 'formDe', element: <FormDe /> }]
   },
   {
-    path: '/stuCore',
+    path: '/std',
     element: <LayoutView />,
-    children: [{ path: 'stuCore', element: <StuCore /> }]
+    children: [{ path: 'std', element: <StuCore /> }]
   },
   {
     path: '*',

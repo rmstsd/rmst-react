@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type CommandType = 'normal' | 'if-start' | 'else-if' | 'else' | 'for-start' | 'break' | 'continue'
 
@@ -15,8 +15,22 @@ const genMainItem = oo => {
 
 const normalCommandList = Array.from({ length: 6 }, () => {
   const id = getOnlyKey()
-  return { id, type: 'normal', name: '记录日志 - ' + id }
+  return { id, type: 'normal', name: 'nor - ' + id }
 })
+
+const fakeFlowList = [
+  {
+    id: 2,
+    onlyKey: 'aa',
+    type: 'if-start',
+    name: 'if 开始',
+    children: [
+      { id: 1, onlyKey: 'bb', type: 'normal', name: '记录日志' },
+      { id: 1, onlyKey: 'awe', type: 'normal', name: '记录日志' }
+    ]
+  },
+  { id: 5, onlyKey: 'oo', type: 'if-end', name: 'if-end' }
+]
 
 const StuCore = () => {
   const commandList = [
@@ -32,35 +46,74 @@ const StuCore = () => {
   ]
 
   const [mainFlowList, setMainFlowList] = useState<MainFlow[]>([
-    // {
-    //   id: 2,
-    //   onlyKey: 'aa',
-    //   type: 'if-start',
-    //   name: 'if 开始',
-    //   children: [
-    //     { id: 1, onlyKey: 'bb', type: 'normal', name: '记录日志' },
-    //     { id: 1, onlyKey: 'awe', type: 'normal', name: '记录日志' }
-    //   ]
-    // },
-    // { id: 5, onlyKey: 'oo', type: 'if-end', name: 'if-end' }
+    genMainItem(normalCommandList[0]),
+    genMainItem(normalCommandList[1])
   ])
+  const [highlightIndex, setHighlightIndex] = useState(null)
 
   const flatFlowList = flat(mainFlowList)
   console.log(flatFlowList)
+
+  const dragCommandRef = useRef(null)
+  const domListRef = useRef<HTMLDivElement[]>([])
+
+  useEffect(() => {
+    document.addEventListener('mouseup', () => {
+      dragCommandRef.current = null
+    })
+  }, [])
 
   return (
     <div className="flex">
       <ul className="border-r">
         {commandList.map(item => (
-          <li key={item.id} className="py-2 px-3 select-none hover:bg-slate-200">
+          <li
+            key={item.id}
+            className="py-2 px-3 select-none hover:bg-slate-200"
+            onMouseDown={() => {
+              dragCommandRef.current = item
+            }}
+          >
             {item.name}
           </li>
         ))}
       </ul>
 
-      <section className="flex-grow p-3">
+      <section
+        className="flex-grow p-3 border"
+        onMouseMove={evt => {
+          const offsetY = evt.clientY
+
+          for (let i = 0; i < domListRef.current.length; i++) {
+            const domItem = domListRef.current[i]
+            const { height, top, bottom } = domItem.getBoundingClientRect()
+
+            if (offsetY < top) {
+              console.log('top', i)
+
+              return
+            }
+
+            if (offsetY > bottom) {
+              console.log('bottom', i)
+
+              return
+            }
+          }
+        }}
+        onMouseUp={() => {
+          if (!dragCommandRef.current) return
+
+          if (!flatFlowList.length) {
+            setMainFlowList([genMainItem(dragCommandRef.current)])
+          }
+        }}
+      >
         {flatFlowList.map((item, index) => (
           <div
+            ref={el => {
+              domListRef.current[index] = el
+            }}
             key={index}
             data-index={index}
             style={{ marginLeft: item.depth * 20 }}
@@ -75,6 +128,7 @@ const StuCore = () => {
             className="py-3 px-3 select-none border my-4"
           >
             {item.name} - {index}
+            <div style={{ height: 2, backgroundColor: highlightIndex === index ? 'red' : '' }}></div>
           </div>
         ))}
       </section>
