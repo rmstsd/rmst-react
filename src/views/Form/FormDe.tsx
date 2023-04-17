@@ -1,62 +1,30 @@
 import { Form, Input, Button, InputNumber } from '@arco-design/web-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Schema } from 'b-validate'
+import { useUpdate } from '@/utils/hooks'
 
 const FormItem = Form.Item
 
+const Child = props => {
+  const [count, setCount] = useState(props.count)
+
+  return <div onClick={() => setCount(props.count + 1)}>{count}</div>
+}
+
 function App() {
-  const [form] = Form.useForm()
+  const u = useUpdate()
 
-  useEffect(() => {
-    const schema = new Schema({
-      name: [
-        { type: 'string', required: true, message: '必填字段' },
-        { type: 'string', maxLength: 10, message: '最大长度是10' }
-      ],
-      age: [{ type: 'number', min: 2, max: 5, message: '在2和5之间' }],
-      email: [{ type: 'email', message: '邮箱格式不对' }],
-      ip: [{ type: 'ip', message: 'ip格式不对' }],
-      url: [{ type: 'url', message: 'url格式不对' }],
-      custom: [
-        {
-          validator: (value, callback) => {
-            if (value > 10) {
-              callback('不能大于10！')
-            }
-          }
-        }
-      ],
-      // Async validate
-      async: [
-        {
-          validator: async (value, callback) => {
-            if (value > 10) {
-              callback('不能大于10！')
-            }
-          }
-        }
-      ]
-    })
+  const one = <Child count={1} />
+  const two = <Child count={2} />
 
-    schema.validate(
-      {
-        name: 'pengjiyuan is a nice boy',
-        age: 23,
-        email: 'pengjiyuan@bytedance.com',
-        ip: '127.0.0.1',
-        url: 'https://ncecom',
-        custom: 20,
-        async: 20
-      },
-      errors => {
-        console.log(errors)
-      }
-    )
-  }, [])
+  console.log(one)
+  console.log(two)
 
   return (
     <>
-      <Input value={undefined} placeholder="pl"></Input>
+      <button onClick={() => u()}>r</button>
+      {one}
+      {two}
     </>
   )
 }
