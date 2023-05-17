@@ -12,6 +12,7 @@ import CanvaskitWasmDe from './views/CanvaskitWasmDe'
 import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
 import StuCore from './views/StuCore/StuCore'
+import SlateDemo from './views/UiComponent/SlateDemo'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -44,6 +45,11 @@ export const routes: IRouteObject[] = [
     path: '/std',
     element: <LayoutView />,
     children: [{ path: 'std', element: <StuCore /> }]
+  },
+  {
+    path: '/slate',
+    element: <LayoutView />,
+    children: [{ path: 'slate', element: <SlateDemo /> }]
   },
   {
     path: '*',
