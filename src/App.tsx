@@ -12,7 +12,7 @@ import CanvaskitWasmDe from './views/CanvaskitWasmDe'
 import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
 import StuCore from './views/StuCore/StuCore'
-import SlateDemo from './views/UiComponent/SlateDemo'
+import SlateDemo from './views/SlateDemo'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 

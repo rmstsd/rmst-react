@@ -1,17 +1,30 @@
-import { useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 const Misc = () => {
-  const [dom, setDom] = useState(null)
-  const [bool, setBool] = useState(true)
+  const ref = useRef({})
 
-  console.log(dom)
+  useEffect(() => {
+    console.log(ref.current.getValue?.())
+  }, [])
 
   return (
     <div>
-      <button onClick={() => setBool(!bool)}>sb</button>
-      {bool ? <div ref={setDom}>Misc</div> : null}
+      <Child ref={ref}></Child>
     </div>
   )
 }
 
 export default Misc
+const Child = forwardRef((props, ref) => {
+  const [v, sv] = useState(1)
+
+  useEffect(() => {
+    sv(2)
+  }, [])
+
+  useImperativeHandle(ref, () => ({
+    getValue: () => v
+  }))
+
+  return <>123</>
+})
