@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import babel from 'vite-babel-plugin'
 
 const path = require('path')
 
@@ -8,7 +7,6 @@ const path = require('path')
 export default defineConfig({
   base: './',
   plugins: [
-    babel(),
     react({
       exclude: '**/*.tsx'
     })

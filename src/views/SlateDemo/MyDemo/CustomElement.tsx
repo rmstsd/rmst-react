@@ -38,10 +38,23 @@ export const DefaultElement = (props: RenderElementProps) => {
   return <p {...props.attributes}>{props.children}</p>
 }
 
-// Define a React component to render leaves with bold text.
+export const BlockquoteElement = (props: RenderElementProps) => {
+  return <blockquote {...props.attributes}>{props.children}</blockquote>
+}
+
+export const H1Element = (props: RenderElementProps) => {
+  return <h1 {...props.attributes}>{props.children}</h1>
+}
+
 export const Leaf = (props: RenderLeafProps) => {
+  const style = Object.entries(props.leaf).reduce<React.CSSProperties>((acc, [keyItem, valueItem]) => {
+    if (keyItem === 'bold' && valueItem === true) acc.fontWeight = 'bold'
+
+    return acc
+  }, {})
+
   return (
-    <span {...props.attributes} style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}>
+    <span {...props.attributes} style={style}>
       {props.children}
     </span>
   )
