@@ -13,6 +13,7 @@ import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
 import StuCore from './views/StuCore/StuCore'
 import SlateDemo from './views/SlateDemo'
+import Dm from './views/Dm/Dm'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -33,7 +34,8 @@ export const routes: IRouteObject[] = [
     children: [
       { path: 'sector', element: <Sector /> },
       { path: 'CanvaskitWasmDe', element: <CanvaskitWasmDe /> },
-      { path: 'Misc', element: <Misc /> }
+      { path: 'Misc', element: <Misc /> },
+      { path: 'dm', element: <Dm /> }
     ]
   },
   {

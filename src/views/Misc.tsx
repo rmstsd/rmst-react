@@ -27,8 +27,9 @@ const Misc = () => {
 
   return (
     <div>
+      remote：
       <button
-        className="disabled:cursor-not-allowed"
+        className="disabled:cursor-not-allowed disabled:bg-gray-200"
         disabled={count > 0}
         onClick={() => {
           console.log('抢券')
@@ -52,13 +53,13 @@ const data = [
   { id: 4, name: 'John', age: 30 }
 ]
 
-const ans = query(data)
-  .where(item => item.age > 0)
-  .sortBy('id')
-  .groupBy('name')
-  .execute()
+// const ans = query(data)
+//   .where(item => item.age > 0)
+//   .sortBy('id')
+//   .groupBy('name')
+//   .execute()
 
-console.log(ans)
+// console.log(ans)
 
 function query<T extends Record<string, any>>(data: T[]) {
   type GroupItem = T[]
