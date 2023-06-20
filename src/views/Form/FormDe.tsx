@@ -1,32 +1,88 @@
-import { Form, Input, Button, InputNumber } from '@arco-design/web-react'
-import { useEffect, useState } from 'react'
+import { Form, Input, Button, InputNumber, Tooltip } from '@arco-design/web-react'
+import { memo, useEffect, useState, createContext, useContext } from 'react'
 import { Schema } from 'b-validate'
 import { useUpdate } from '@/utils/hooks'
+import classNames from 'classnames'
+import { create } from 'zustand'
 
-const FormItem = Form.Item
-
-const Child = props => {
-  const [count, setCount] = useState(props.count)
-
-  return <div onClick={() => setCount(props.count + 1)}>{count}</div>
+interface BearState {
+  bears: number
+  increase: (by: number) => void
 }
 
+const useBearStore = create<BearState>()(set => ({
+  bears: 0,
+  increase: by => set(state => ({ bears: state.bears + by }))
+}))
+
+const data = Array.from({ length: 5 }, (_, index) => ({ id: index }))
+
+const Context = createContext(undefined)
+
+type State = {
+  activeIndex: number
+}
+
+type Actions = {
+  setActiveIndex: (index: number) => void
+}
+
+const useActiveStore = create<State & Actions>(set => ({
+  activeIndex: 0,
+  setActiveIndex: index => set({ activeIndex: index })
+}))
+
 function App() {
-  const u = useUpdate()
+  console.log('p render')
 
-  const one = <Child count={1} />
-  const two = <Child count={2} />
+  const store = useActiveStore()
 
-  console.log(one)
-  console.log(two)
+  const up = useUpdate()
 
   return (
-    <>
-      <button onClick={() => u()}>r</button>
-      {one}
-      {two}
-    </>
+    <div className="border-2 p-2">
+      <button
+        onClick={() => {
+          // setActiveIndex(2)
+          // up()
+
+          store.setActiveIndex(2)
+        }}
+      >
+        set {store.activeIndex}
+      </button>
+
+      {data.map(item => (
+        <Item key={item.id} item={item}></Item>
+      ))}
+    </div>
   )
+}
+
+const Item = ({ item }) => {
+  // const activeIndex = useContext(Context)
+  const activeIndex = useActiveStore(state => state.activeIndex)
+
+  // console.log('item', item)
+  console.log('store.activeIndex', activeIndex)
+
+  return <div className={classNames(activeIndex === item.id ? 'bg-pink-200 h-[50px]' : '')}>{item.id}</div>
+}
+
+function arePropsEqual(oldProps, newProps) {
+  // console.log('oldProps', oldProps)
+  // console.log('newProps', newProps)
+
+  if (newProps.activeIndex === newProps.item.id) {
+    return false
+  }
+
+  if (oldProps.activeIndex === newProps.item.id) {
+    return false
+  }
+
+  // 不render
+  return true
 }
 
 export default App

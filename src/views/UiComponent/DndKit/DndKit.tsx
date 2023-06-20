@@ -1,4 +1,4 @@
-import { DndContext, useDroppable, useDraggable } from '@dnd-kit/core'
+import { DndContext, useDroppable, useDraggable, closestCenter } from '@dnd-kit/core'
 import { useState } from 'react'
 
 const DndKit = () => {
@@ -9,11 +9,18 @@ const DndKit = () => {
     console.log(event)
     if (event.over && event.over.id === 'droppable') {
       setIsDropped(true)
+    } else {
+      setIsDropped(false)
     }
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext
+      onDragEnd={handleDragEnd}
+      onDragOver={evt => {
+        console.log('over', evt)
+      }}
+    >
       {!isDropped ? draggableMarkup : null}
 
       <Droppable>{isDropped ? draggableMarkup : 'Drop here'}</Droppable>
@@ -29,16 +36,14 @@ export function Draggable(props) {
   const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined
 
   return (
-    <button ref={setNodeRef} style={style} {...listeners}>
+    <button ref={setNodeRef} style={style} {...listeners} className="w-[140px] h-[50px]">
       {props.children}
     </button>
   )
 }
 
 export function Droppable(props) {
-  const { isOver, setNodeRef } = useDroppable({
-    id: 'droppable'
-  })
+  const { isOver, setNodeRef } = useDroppable({ id: 'droppable' })
 
   const style = { color: isOver ? 'green' : undefined }
 
