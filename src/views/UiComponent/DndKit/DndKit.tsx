@@ -1,67 +1,50 @@
-import React, { useState } from 'react'
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverlay
-} from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy
-} from '@dnd-kit/sortable'
-
-import { SortableItem } from '../DndKit/SortableItem'
-import { css } from '@emotion/css'
-import classNames from 'classnames'
-
-const dndKitEmo = css({
-  label: 'dndKitEmo'
-})
+import { DndContext, useDroppable, useDraggable } from '@dnd-kit/core'
+import { useState } from 'react'
 
 const DndKit = () => {
-  const [items, setItems] = useState([1, 2, 3, 4, 5, 6, 7])
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  )
+  const [isDropped, setIsDropped] = useState(false)
+  const draggableMarkup = <Draggable>Drag me</Draggable>
 
-  const handleDragEnd = event => {
-    const { active, over } = event
-
-    console.log(active.id, over.id)
-
-    if (active.id !== over.id) {
-      setItems(items => {
-        const oldIndex = items.indexOf(active.id)
-        const newIndex = items.indexOf(over.id)
-
-        return arrayMove(items, oldIndex, newIndex)
-      })
+  function handleDragEnd(event) {
+    console.log(event)
+    if (event.over && event.over.id === 'droppable') {
+      setIsDropped(true)
     }
   }
 
   return (
-    <div className={classNames(dndKitEmo, 'border')}>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          {items.map((id, index) => (
-            <SortableItem key={id} id={id} index={index} />
-          ))}
-        </SortableContext>
+    <DndContext onDragEnd={handleDragEnd}>
+      {!isDropped ? draggableMarkup : null}
 
-        <DragOverlay>
-          <button>zz</button>
-        </DragOverlay>
-      </DndContext>
-    </div>
+      <Droppable>{isDropped ? draggableMarkup : 'Drop here'}</Droppable>
+    </DndContext>
   )
 }
 
 export default DndKit
+
+export function Draggable(props) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'draggable' })
+
+  const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined
+
+  return (
+    <button ref={setNodeRef} style={style} {...listeners}>
+      {props.children}
+    </button>
+  )
+}
+
+export function Droppable(props) {
+  const { isOver, setNodeRef } = useDroppable({
+    id: 'droppable'
+  })
+
+  const style = { color: isOver ? 'green' : undefined }
+
+  return (
+    <div ref={setNodeRef} style={style} className="border-2 h-[400px] mt-[10px]">
+      {props.children}
+    </div>
+  )
+}
