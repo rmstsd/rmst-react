@@ -5,7 +5,7 @@ import type { RouteObject } from 'react-router-dom'
 import LayoutView from './layout/Layout'
 
 import Drag from './views/UiComponent/Drag'
-import DndKit from './views/UiComponent/DndKit/DndKit'
+import DndKit from './views/UiComponent/DndKit/IndexDndKit'
 import Sector from './views/Sector'
 
 import CanvaskitWasmDe from './views/CanvaskitWasmDe'
