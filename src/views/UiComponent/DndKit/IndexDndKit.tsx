@@ -1,10 +1,13 @@
+import Zero from './Zero/Zero'
 import Base from './demo/Base'
-import Sort from './demo/Sort'
+import { MultipleContainers } from './demo/MultiContainer/MultiContainer'
+import Stu from './demo/Stu/Stu'
 
 const IndexDndKit = () => {
   return (
     <div>
-      <Sort></Sort>
+      <Zero></Zero>
+      {/* <MultipleContainers></MultipleContainers> */}
     </div>
   )
 }
