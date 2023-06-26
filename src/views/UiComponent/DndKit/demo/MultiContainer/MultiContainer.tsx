@@ -65,10 +65,10 @@ function DroppableContainer({
   const { active, attributes, isDragging, listeners, over, setNodeRef, transition, transform } = useSortable({
     id,
     data: {
-      type: 'container',
-      children: items
-    },
-    animateLayoutChanges
+      type: 'container'
+      // children: items
+    }
+    // animateLayoutChanges
   })
   const isOverContainer = over
     ? (id === over.id && active?.data.current?.type !== 'container') || items.includes(over.id)
@@ -161,8 +161,6 @@ export function MultipleContainers({
     B: createRange(itemCount, index => `B${index + 1}`)
   }))
   const [containers, setContainers] = useState(Object.keys(items) as UniqueIdentifier[])
-
-  console.log(containers)
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const lastOverId = useRef<UniqueIdentifier | null>(null)
@@ -266,7 +264,6 @@ export function MultipleContainers({
   }
 
   const onDragOver = ({ active, over }: DragOverEvent) => {
-    console.log('drag over')
     const overId = over?.id
 
     if (overId == null || overId === TRASH_ID || active.id in items) {
@@ -287,8 +284,9 @@ export function MultipleContainers({
         const overIndex = overItems.indexOf(overId)
         const activeIndex = activeItems.indexOf(active.id)
 
-        let newIndex: number
+        console.log('overId', overId)
 
+        let newIndex: number
         // items = { A: ['a'], B: ['b'] }
         if (overId in items) {
           newIndex = overItems.length + 1

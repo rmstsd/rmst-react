@@ -5,7 +5,7 @@ import type { Transform } from '@dnd-kit/utilities'
 
 import { Handle, Remove } from './components'
 
-import styles from './Item.module.css'
+import styles from './Item.module.less'
 
 export interface Props {
   dragOverlay?: boolean

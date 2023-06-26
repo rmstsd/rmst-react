@@ -7,7 +7,10 @@ const IndexDndKit = () => {
   return (
     <div>
       <Zero></Zero>
-      {/* <MultipleContainers></MultipleContainers> */}
+
+      <br />
+
+      <MultipleContainers></MultipleContainers>
     </div>
   )
 }

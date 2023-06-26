@@ -13,11 +13,9 @@ const Zero = () => {
   const addedMainItemRef = useRef(null)
 
   const [mainList, setMainList] = useState([
-    { id: 3, name: 'a', nid: 'right-lj9ypzi1' },
-    { id: 4, name: 'b', nid: 'right-lj9yq01k' }
+    // { id: 3, name: 'a', nid: 'right-lj9ypzi1' },
+    // { id: 4, name: 'b', nid: 'right-lj9yq01k' }
   ])
-
-  console.log(mainList)
 
   const [activeCommandId, setActiveCommandId] = useState(null)
 
@@ -30,16 +28,19 @@ const Zero = () => {
   }
 
   const onDragOver = (evt: DragOverEvent) => {
-    console.log(evt)
-
     if (evt.active.data.current.type === 'command') {
       if (evt.over) {
+        console.log('over', evt.over)
         if (mainList.find(item => item.nid === addedMainItemRef.current?.nid)) {
           return
         }
 
         if (evt.over.id === 'container') {
-          addedMainItemRef.current ??= { ...activeCommandItem, nid: 'right-' + Date.now().toString(36) }
+          addedMainItemRef.current ??= {
+            ...activeCommandItem,
+            nid: activeCommandItem.id
+            // 'right-' + Date.now().toString(36)
+          }
 
           // 这里需要自己计算位置
 
