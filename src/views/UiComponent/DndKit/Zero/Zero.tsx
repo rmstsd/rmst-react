@@ -55,44 +55,47 @@ const Zero = () => {
   }
 
   const onDragEnd = (evt: DragEndEvent) => {
+    return
     if (evt.over) {
       // const nv = mainList.map(item => {
       //   const nvItem = item.nid === activeCommandItem.nid ? { ...item, nid: genUniqueId() } : item
       //   return nvItem
       // })
 
-      setTimeout(() => {
-        setMainList([{ ...activeCommandItem, nid: genUniqueId() }])
+      setMainList([{ ...activeCommandItem, nid: genUniqueId() }])
 
-        setActiveCommandId(null)
-      }, 0)
+      setActiveCommandId(null)
     }
   }
 
-  const up = useUpdate()
+  const upNid = () => {
+    setMainList([{ ...activeCommandItem, nid: genUniqueId() }])
+  }
 
   return (
-    <div className="flex gap-3 h-[600px]">
-      {/* <button onClick={up}>up</button> */}
+    <>
+      <button onClick={upNid}>up nid</button>
 
-      <DndContext onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
-        <section className="border w-[140px]">
-          {commandList.map(item => (
-            <CommandItem key={item.id} id={item.id} item={item} />
-          ))}
-        </section>
+      <div className="flex gap-3 h-[600px]">
+        <DndContext onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+          <section className="border w-[140px]">
+            {commandList.map(item => (
+              <CommandItem key={item.id} id={item.id} item={item} />
+            ))}
+          </section>
 
-        <SortableContext items={mainList}>
-          <RightMain mainList={mainList} />
-        </SortableContext>
+          <SortableContext items={mainList.map(item => item.nid)}>
+            <RightMain mainList={mainList} />
+          </SortableContext>
 
-        <DragOverlay dropAnimation={null}>
-          {activeCommandItem ? (
-            <CommandItem id={activeCommandItem.id} item={activeCommandItem} isOver />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-    </div>
+          <DragOverlay dropAnimation={null}>
+            {activeCommandItem ? (
+              <CommandItem id={activeCommandItem.id} item={activeCommandItem} isOver />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      </div>
+    </>
   )
 }
 
