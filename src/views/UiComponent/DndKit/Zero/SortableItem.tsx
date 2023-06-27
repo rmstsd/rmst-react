@@ -5,13 +5,14 @@ import classNames from 'classnames'
 
 export const CommandItem = props => {
   const { id, item, isOver } = props
-  const { listeners, setNodeRef } = useDraggable({ id, data: { type: 'command' } })
+
+  const { listeners, setNodeRef } = useDraggable({ id })
 
   return (
     <div
       ref={setNodeRef}
       {...listeners}
-      className={classNames('p-2 border-b', isOver && 'bg-white shadow-lg')}
+      className={classNames('p-2 border-b', isOver && 'bg-white shadow-xl rounded-lg border')}
     >
       {item.name}
     </div>
