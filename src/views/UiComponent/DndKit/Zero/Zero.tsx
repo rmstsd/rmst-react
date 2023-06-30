@@ -9,9 +9,10 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import classNames from 'classnames'
 import { useState, useRef, useEffect } from 'react'
-import SortableItem, { CommandItem } from './SortableItem'
+import SortableItem, { CommandItem, MainItemOverlap } from './SortableItem'
 import { useUpdate } from '@/utils/hooks'
 import { arrayMove } from '../demo/utils'
+import { snapCenterToCursor } from '@dnd-kit/modifiers'
 
 const genUniqueId = () => {
   return Date.now().toString(36)
@@ -26,8 +27,10 @@ const Zero = () => {
   ])
 
   const [mainList, setMainList] = useState<MainItem[]>([
-    // { id: 3, name: 'a', nid: 'lj9ypzi1' }
-    // { id: 4, name: 'b', nid: 'lj9yq01k' }
+    { id: 3, name: 'a', nid: 'lj9ypzi1' },
+    { id: 4, name: 'b', nid: 'lj9yq01k' },
+    { id: 5, name: 'c', nid: 'asdasfdgfg' },
+    { id: 6, name: 'd', nid: 'wseyghj' }
   ])
 
   const [rk, setRk] = useState(0)
@@ -43,9 +46,8 @@ const Zero = () => {
     return null
   })()
 
-  const [activeMainId, setActiveMainId] = useState(null)
-
-  const activeMainItem = activeMainId ? mainList.find(item => item.id === activeMainId) : null
+  const [activeMainNid, setActiveMainNid] = useState(null)
+  const activeMainItem = activeMainNid ? mainList.find(item => item.nid === activeMainNid) : null
 
   const onDragStart = (evt: DragStartEvent) => {
     const { active } = evt
@@ -53,21 +55,36 @@ const Zero = () => {
     if (active.data.current.type === 'command') {
       setActiveCommandId(active.id)
     } else {
-      setActiveMainId(active.id)
+      setActiveMainNid(active.id)
     }
   }
 
   const onDragOver = (evt: DragOverEvent) => {
     const { active, over } = evt
+
+    // 如果是拖拽左侧的 item over 时
+    console.log(active.data.current.type)
     if (active.data.current.type === 'command') {
       if (evt.over) {
-        if (mainList.find(item => item.nid === activeCommandItem.nid)) {
-          return
-        }
+        const nvItem = { ...activeCommandItem }
 
-        const nv = [...mainList, { ...activeCommandItem }]
+        const overIndex = mainList.findIndex(item => item.nid === over.id)
 
-        setMainList(nv)
+        const isBelowOverItem =
+          over &&
+          active.rect.current.translated &&
+          active.rect.current.translated.top > over.rect.top + over.rect.height
+
+        const modifier = isBelowOverItem ? 1 : 0
+        const newIndex = overIndex >= 0 ? overIndex + modifier : mainList.length + 1
+
+        const nvMainList = [
+          ...mainList.slice(0, newIndex),
+          nvItem,
+          ...mainList.slice(newIndex, mainList.length)
+        ]
+
+        setMainList(nvMainList)
       } else {
         setMainList(mainList.filter(item => item.nid !== activeCommandItem.nid))
       }
@@ -82,6 +99,7 @@ const Zero = () => {
     // 如果是拖拽左侧的 item 放下后
     if (activeCommandId) {
       if (evt.over) {
+        console.log('command end sort')
         const MainList = mainList.map(item => {
           const nvItem = item.nid === activeCommandItem.nid ? { ...item, nid: genUniqueId() } : item
           return nvItem
@@ -89,9 +107,6 @@ const Zero = () => {
 
         setMainList(MainList)
       }
-
-      setActiveCommandId(null)
-      setRk(rk + 1)
     } else {
       console.log('end sort')
 
@@ -102,6 +117,14 @@ const Zero = () => {
         setMainList(arrayMove(mainList, activeIndex, overIndex))
       }
     }
+
+    resetState()
+  }
+
+  const resetState = () => {
+    setActiveMainNid(null)
+    setActiveCommandId(null)
+    setRk(rk + 1)
   }
 
   const upNid = () => {
@@ -124,10 +147,12 @@ const Zero = () => {
             <RightMain mainList={mainList} />
           </SortableContext>
 
-          <DragOverlay dropAnimation={null}>
+          <DragOverlay dropAnimation={null} modifiers={activeMainItem ? [snapCenterToCursor] : undefined}>
             {activeCommandItem ? (
               <CommandItem id={activeCommandItem.id} item={activeCommandItem} isOver />
             ) : null}
+
+            {activeMainItem ? <MainItemOverlap item={activeMainItem} isOver /> : null}
           </DragOverlay>
         </DndContext>
       </div>

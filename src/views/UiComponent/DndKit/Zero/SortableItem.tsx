@@ -35,6 +35,16 @@ const SortableItem = props => {
       className={classNames('p-2 bg-pink-300 my-2', isDragging && 'opacity-60')}
       style={style}
     >
+      {item.name} - nid: {item.nid} - id: {item.id}
+    </div>
+  )
+}
+
+export const MainItemOverlap = props => {
+  const { item } = props
+
+  return (
+    <div className="inline-block p-3 border shadow-lg bg-pink-100 rounded-lg">
       {item.name} - {item.nid}
     </div>
   )
