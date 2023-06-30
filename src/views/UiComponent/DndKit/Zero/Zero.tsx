@@ -19,13 +19,13 @@ const genUniqueId = () => {
 type MainItem = { id: number | string; name: string; nid: number | string }
 
 const Zero = () => {
-  const [commandList] = useState([
+  const [commandList, setCommandList] = useState([
     { id: 1, name: 'a' }
     // { id: 2, name: 'b' }
   ])
 
   const [mainList, setMainList] = useState<MainItem[]>([
-    // { id: 3, name: 'a', nid: 'lj9ypzi1' },
+    { id: 3, name: 'a', nid: 'lj9ypzi1' }
     // { id: 4, name: 'b', nid: 'lj9yq01k' }
   ])
 
@@ -46,6 +46,7 @@ const Zero = () => {
         return
       }
 
+      console.log(activeCommandItem)
       const nv = [{ ...activeCommandItem }]
 
       setMainList(nv)
@@ -55,16 +56,13 @@ const Zero = () => {
   }
 
   const onDragEnd = (evt: DragEndEvent) => {
-    return
     if (evt.over) {
       // const nv = mainList.map(item => {
       //   const nvItem = item.nid === activeCommandItem.nid ? { ...item, nid: genUniqueId() } : item
       //   return nvItem
       // })
-
-      setMainList([{ ...activeCommandItem, nid: genUniqueId() }])
-
-      setActiveCommandId(null)
+      // setMainList([{ ...activeCommandItem, nid: genUniqueId() }])
+      // setActiveCommandId(null)
     }
   }
 

@@ -6,7 +6,7 @@ import classNames from 'classnames'
 export const CommandItem = props => {
   const { id, item, isOver } = props
 
-  const { listeners, setNodeRef } = useDraggable({ id })
+  const { listeners, setNodeRef } = useSortable({ id })
 
   return (
     <div
