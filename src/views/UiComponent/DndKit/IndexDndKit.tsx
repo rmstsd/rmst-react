@@ -8,13 +8,13 @@ import Stu from './demo/Stu/Stu'
 const IndexDndKit = () => {
   return (
     <div>
-      <TestUn></TestUn>
+      {/* <TestUn></TestUn> */}
 
       <hr />
 
-      <CopyItem></CopyItem>
+      {/* <CopyItem></CopyItem> */}
 
-      {/* <Zero></Zero> */}
+      <Zero></Zero>
 
       <br />
 
