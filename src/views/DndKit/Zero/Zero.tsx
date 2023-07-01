@@ -68,6 +68,13 @@ const Zero = () => {
       if (evt.over) {
         const nvItem = { ...activeCommandItem }
 
+        if (evt.over.id === 'container') {
+          if (mainList.length === 0) {
+            setMainList([nvItem])
+            return
+          }
+        }
+
         const overIndex = mainList.findIndex(item => item.nid === over.id)
 
         const isBelowOverItem =
@@ -163,7 +170,10 @@ const Zero = () => {
 const RightMain = props => {
   const { mainList } = props
 
-  const { isOver, over, active, setNodeRef } = useDroppable({ id: 'container' })
+  const { isOver, over, active, setNodeRef } = useDroppable({
+    id: 'container',
+    disabled: mainList.length > 0
+  })
 
   return (
     <main className={classNames('border-2 flex-grow p-3', isOver && 'border-orange-400')} ref={setNodeRef}>

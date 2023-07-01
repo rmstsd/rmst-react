@@ -35,7 +35,7 @@ const SortableItem = props => {
       className={classNames('p-2 bg-pink-300 my-2', isDragging && 'opacity-60')}
       style={style}
     >
-      {item.name} - nid: {item.nid} - id: {item.id}
+      {item.name}: id: {item.id} - nid: {item.nid}
     </div>
   )
 }

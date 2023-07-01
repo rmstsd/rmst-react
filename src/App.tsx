@@ -4,22 +4,21 @@ import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from './layout/Layout'
 
-import Drag from './views/UiComponent/Drag'
-import DndKit from './views/UiComponent/DndKit/IndexDndKit'
+import Drag from './views/Drag'
+import DndKit from './views/DndKit/IndexDndKit'
 import Sector from './views/Sector'
 
 import CanvaskitWasmDe from './views/CanvaskitWasmDe'
 import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
-import StuCore from './views/StuCore/StuCore'
 import SlateDemo from './views/SlateDemo'
 import Dm from './views/Dm/Dm'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
 export const routes: IRouteObject[] = [
-  { path: '/', element: <Navigate to="/ui-component/drag" />, hidden: true },
-  { path: '/ui-component', element: <Navigate to="/ui-component/drag" />, hidden: true },
+  { path: '/', element: <Navigate to="/ui-component/dndKit" />, hidden: true },
+  { path: '/ui-component', element: <Navigate to="/ui-component/dndKit" />, hidden: true },
   {
     path: '/ui-component',
     element: <LayoutView />,
@@ -42,11 +41,6 @@ export const routes: IRouteObject[] = [
     path: '/form',
     element: <LayoutView />,
     children: [{ path: 'formDe', element: <FormDe /> }]
-  },
-  {
-    path: '/std',
-    element: <LayoutView />,
-    children: [{ path: 'std', element: <StuCore /> }]
   },
   {
     path: '/slate',
