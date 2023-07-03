@@ -23,7 +23,8 @@ const SortableItem = props => {
   const { item } = props
 
   const { setNodeRef, listeners, transform, transition, isSorting, isDragging } = useSortable({
-    id: item.nid
+    id: item.nid,
+    data: { item }
   })
 
   const style = { transform: CSS.Transform.toString(transform), transition }

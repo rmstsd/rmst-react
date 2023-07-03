@@ -27,10 +27,10 @@ const Zero = () => {
   ])
 
   const [mainList, setMainList] = useState<MainItem[]>([
-    { id: 3, name: 'a', nid: 'lj9ypzi1' },
-    { id: 4, name: 'b', nid: 'lj9yq01k' },
-    { id: 5, name: 'c', nid: 'asdasfdgfg' },
-    { id: 6, name: 'd', nid: 'wseyghj' }
+    // { id: 3, name: 'a', nid: 'lj9ypzi1' },
+    // { id: 4, name: 'b', nid: 'lj9yq01k' },
+    // { id: 5, name: 'c', nid: 'asdasfdgfg' },
+    // { id: 6, name: 'd', nid: 'wseyghj' }
   ])
 
   const [rk, setRk] = useState(0)
@@ -60,11 +60,19 @@ const Zero = () => {
   }
 
   const onDragOver = (evt: DragOverEvent) => {
+    console.log(evt)
     const { active, over } = evt
 
     // 如果是拖拽左侧的 item over 时
     console.log(active.data.current.type)
-    if (active.data.current.type === 'command') {
+
+    if (over?.id === 'container') {
+      if (mainList.length) {
+        return
+      }
+    }
+
+    if (active.data.current.type === 'command' && activeCommandId) {
       if (evt.over) {
         const nvItem = { ...activeCommandItem }
 
@@ -101,18 +109,35 @@ const Zero = () => {
   }
 
   const onDragEnd = (evt: DragEndEvent) => {
+    resetState()
+
     const { active, over } = evt
+
+    console.log(active)
 
     // 如果是拖拽左侧的 item 放下后
     if (activeCommandId) {
       if (evt.over) {
-        console.log('command end sort')
-        const MainList = mainList.map(item => {
-          const nvItem = item.nid === activeCommandItem.nid ? { ...item, nid: genUniqueId() } : item
-          return nvItem
-        })
+        const activeIndex = mainList.findIndex(item => item.nid === item.id)
+        if (over.id === mainList[activeIndex].nid) {
+          setMainList(getNewMainList())
+          return
+        }
 
-        setMainList(MainList)
+        const _mainList = getNewMainList()
+        const overIndex = _mainList.findIndex(item => item.nid === over.id)
+
+        if (activeIndex !== overIndex) {
+          setMainList(arrayMove(_mainList, activeIndex, overIndex))
+        }
+
+        function getNewMainList() {
+          const _mainList = mainList.map(item =>
+            item.nid === item.id ? { ...item, nid: genUniqueId() } : item
+          )
+
+          return _mainList
+        }
       }
     } else {
       console.log('end sort')
@@ -124,8 +149,6 @@ const Zero = () => {
         setMainList(arrayMove(mainList, activeIndex, overIndex))
       }
     }
-
-    resetState()
   }
 
   const resetState = () => {
