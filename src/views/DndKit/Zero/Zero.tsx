@@ -113,8 +113,6 @@ const Zero = () => {
 
     const { active, over } = evt
 
-    console.log(active)
-
     // 如果是拖拽左侧的 item 放下后
     if (activeCommandId) {
       if (evt.over) {
