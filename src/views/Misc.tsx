@@ -47,28 +47,16 @@ const ItemComponent = item => {
     >
       <Tag># {item.index}</Tag>
       <NameComponent index={item.index} name={item.source.name}></NameComponent>
-
-      <Form style={{ width: 600 }} autoComplete="off">
-        <Form.Item label="Username">
-          <Input placeholder="please enter your username..." />
-        </Form.Item>
-        <Form.Item label="Post">
-          <Input placeholder="please enter your post..." />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 5 }}>
-          <Checkbox>I have read the manual</Checkbox>
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 5 }}>
-          <TimePicker style={{ width: 194 }} />
-          <Button type="primary">Submit</Button>
-        </Form.Item>
-      </Form>
     </div>
   )
 }
 
 const NameComponent = ({ index, name }) => {
   if (index % 3 === 0) return null
+
+  let date = Date.now()
+
+  while (Date.now() - date < 10) {}
 
   return (
     <>
