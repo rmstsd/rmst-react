@@ -1,122 +1,80 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import VirtualList from '@/components/virtual-scroll-list'
+import { Form, Button, Input, Tag, Checkbox, TimePicker } from '@arco-design/web-react'
 
-const useCountDown = (initialCount: number) => {
-  const [count, setCount] = useState(initialCount)
+const TOTAL_COUNT = 1000
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout
-
-    timer = setInterval(() => {
-      setCount(_count => {
-        const nv = _count - 1
-
-        if (nv === 0) {
-          clearInterval(timer)
-        }
-
-        return nv
-      })
-    }, 1000)
-  }, [])
-
-  return count
+const dataSources = []
+let count = TOTAL_COUNT
+while (count--) {
+  const index = TOTAL_COUNT - count
+  dataSources.push({
+    index,
+    name: index + '-name',
+    id: index
+  })
 }
 
 const Misc = () => {
-  const count = useCountDown(4)
-
   return (
     <div>
-      remote：
-      <button
-        className="disabled:cursor-not-allowed disabled:bg-gray-200"
-        disabled={count > 0}
-        onClick={() => {
-          console.log('抢券')
-        }}
-      >
-        {count}
-      </button>
+      <VirtualList
+        className="list"
+        style={{ height: 600, overflow: 'auto', border: '2px solid #333' }}
+        dataKey="id"
+        dataSources={dataSources}
+        dataComponent={ItemComponent}
+        keeps={50}
+        estimateSize={30}
+        // header={<div style={{ height: 100 }}>header</div>}
+        // footer={<div style={{ height: 80 }}>footer</div>}
+      />
     </div>
   )
 }
 
-export default Misc
+const ItemComponent = item => {
+  return (
+    <div
+      className="item-inner"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        height: 30,
+        overflow: 'hidden',
+        borderBottom: '1px solid #aaa'
+      }}
+    >
+      <Tag># {item.index}</Tag>
+      <NameComponent index={item.index} name={item.source.name}></NameComponent>
 
-const data = [
-  { id: 1, name: 'John', age: 8 },
-  { id: 10, name: 'aa', age: 11 },
-  { id: 9, name: 'bb', age: 13 },
-  { id: 3, name: 'aa', age: 55 },
-  { id: 8, name: 'dd', age: 13 },
-  { id: 5, name: 'ee', age: 20 },
-  { id: 4, name: 'John', age: 30 }
-]
-
-// const ans = query(data)
-//   .where(item => item.age > 0)
-//   .sortBy('id')
-//   .groupBy('name')
-//   .execute()
-
-// console.log(ans)
-
-function query<T extends Record<string, any>>(data: T[]) {
-  type GroupItem = T[]
-  class Q {
-    constructor(data: T[]) {
-      this.arrayData = data
-    }
-
-    arrayData: (GroupItem | T)[]
-
-    tasks: Function[] = []
-
-    where(filterFunc: (value: T, index: number, array: T[]) => boolean) {
-      const whereTask = () => {
-        console.log('whereTask')
-        this.arrayData = this.arrayData.filter(filterFunc)
-      }
-      this.tasks.push(whereTask)
-
-      return this
-    }
-
-    sortBy(sortKey: string) {
-      const sortByTask = () => {
-        console.log('sortByTask')
-        this.arrayData = this.arrayData.sort((a, b) => a[sortKey] - b[sortKey])
-      }
-      this.tasks.push(sortByTask)
-
-      return this
-    }
-
-    groupBy(groupKey: string) {
-      const groupByTask = () => {
-        console.log('groupByTask')
-        const keys = new Set(this.arrayData.map(item => item[groupKey]))
-
-        const ans: GroupItem[] = []
-
-        for (const key of keys) {
-          const gItem = (this.arrayData as T[]).filter(item => item[groupKey] === key)
-          ans.push(gItem)
-        }
-
-        this.arrayData = ans
-      }
-      this.tasks.push(groupByTask)
-
-      return this
-    }
-
-    execute() {
-      this.tasks.forEach(taskItem => taskItem())
-
-      return this.arrayData
-    }
-  }
-
-  return new Q(data)
+      <Form style={{ width: 600 }} autoComplete="off">
+        <Form.Item label="Username">
+          <Input placeholder="please enter your username..." />
+        </Form.Item>
+        <Form.Item label="Post">
+          <Input placeholder="please enter your post..." />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 5 }}>
+          <Checkbox>I have read the manual</Checkbox>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 5 }}>
+          <TimePicker style={{ width: 194 }} />
+          <Button type="primary">Submit</Button>
+        </Form.Item>
+      </Form>
+    </div>
+  )
 }
+
+const NameComponent = ({ index, name }) => {
+  if (index % 3 === 0) return null
+
+  return (
+    <>
+      <Button>{name}</Button>
+    </>
+  )
+}
+
+export default Misc
