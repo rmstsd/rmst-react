@@ -24,6 +24,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
+    "react-tiny-virtual-list": "^2.2.0",
     "react-transition-group": "^4.4.5",
     "slate": "^0.94.1",
     "slate-history": "^0.93.0",
