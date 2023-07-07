@@ -136,7 +136,7 @@ const Drag = () => {
   )
 }
 
-export default Drag
+// export default Drag
 
 const containerEmo = css`
   display: flex;
@@ -150,3 +150,47 @@ const itemEmo = css({
   backgroundColor: '#fff',
   label: 'itemStyle'
 })
+
+const data = [1, 2, 3, 4, 5]
+
+const NativeDrag = () => {
+  return (
+    <div>
+      {data.map(item => (
+        <div
+          draggable
+          onDragOver={evt => {
+            evt.preventDefault()
+          }}
+          onDragExit={() => {
+            console.log('exit')
+          }}
+          onDragEnter={() => {
+            console.log('enter')
+          }}
+          onDragLeave={() => {
+            console.log('leave')
+          }}
+          onDragStart={() => {
+            console.log('start')
+          }}
+          onDragEnd={() => {
+            console.log('end')
+          }}
+          onDrag={() => {
+            console.log('drag')
+          }}
+          onDrop={() => {
+            console.log('drop')
+          }}
+          key={item}
+          className="border my-2"
+        >
+          {item}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default NativeDrag

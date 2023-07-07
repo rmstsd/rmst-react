@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
-import VirtualTinyList from 'react-tiny-virtual-list'
+import { sleep } from '@/utils/utils'
 
 const TOTAL_COUNT = 1000
 
@@ -16,42 +16,45 @@ while (count--) {
   })
 }
 
-const data = [...Array(100)]
-
 const Misc = () => {
+  const ref = useRef<HTMLDivElement>()
+
   return (
-    <div>
-      <VirtualTinyList
-        width={300}
-        height={300}
-        itemCount={data.length}
-        itemSize={30}
-        style={{ border: '1px solid' }}
-        renderItem={Item}
-      />
-      {/*   
+    <div ref={ref} className="">
+      {/* {data.map((item, index) => (
+        <h2 key={item}>{item}</h2>
+      ))} */}
+
       <VirtualList
         className="list"
         style={{ height: 600, overflow: 'auto', border: '2px solid #333' }}
         dataKey="id"
         dataSources={dataSources}
         dataComponent={ItemComponent}
-        keeps={50}
+        keeps={22}
         estimateSize={30}
         // header={<div style={{ height: 100 }}>header</div>}
         // footer={<div style={{ height: 80 }}>footer</div>}
-      /> */}
+      />
     </div>
   )
 }
 
-const Item = ({ index, style }) => {
-  let date = Date.now()
-
+const ItemComponent = item => {
   return (
-    <div key={index} style={style}>
-      Row: #{index}
-      <br />
+    <div
+      className="item-inner"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        height: 30,
+        overflow: 'hidden',
+        borderBottom: '1px solid #aaa'
+      }}
+    >
+      <Tag># {item.index}</Tag>
+      <NameComponent index={item.index} name={item.source.name}></NameComponent>
+
       <Form autoComplete="off">
         <Form.Item label="Layout">
           <Radio.Group type="button" name="layout">
@@ -79,30 +82,10 @@ const Item = ({ index, style }) => {
   )
 }
 
-const ItemComponent = item => {
-  return (
-    <div
-      className="item-inner"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        height: 30,
-        overflow: 'hidden',
-        borderBottom: '1px solid #aaa'
-      }}
-    >
-      <Tag># {item.index}</Tag>
-      <NameComponent index={item.index} name={item.source.name}></NameComponent>
-    </div>
-  )
-}
-
 const NameComponent = ({ index, name }) => {
   if (index % 3 === 0) return null
 
-  let date = Date.now()
-
-  while (Date.now() - date < 10) {}
+  // sleep(20)
 
   return (
     <>

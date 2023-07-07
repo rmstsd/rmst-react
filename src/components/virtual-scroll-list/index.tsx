@@ -1,18 +1,27 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Item, { Slot } from './Item'
 import Virtual from './virtual'
 import classNames from 'classnames'
+import { throttle } from 'throttle-debounce'
 
-const throttle = func => {
-  let bb = true
+export function getMouseCoordInContainer(clientX: number, clientY: number, outerContainer: HTMLElement) {
+  const containerRect = outerContainer.getBoundingClientRect()
 
-  return evt => {
-    if (bb) {
-      bb = false
-      func(evt)
+  const offsetX = clientX - containerRect.left + outerContainer.scrollLeft
+  const offsetY = clientY - containerRect.top + outerContainer.scrollTop
 
+  return { offsetX, offsetY }
+}
+
+const throttleRaf = func => {
+  let b = true
+
+  return () => {
+    if (b) {
+      b = false
       requestAnimationFrame(() => {
-        bb = true
+        func()
+        b = true
       })
     }
   }
@@ -54,6 +63,8 @@ type VirtualListProps = {
   footer?: React.ReactNode
 }
 
+let scrollTop = 0
+
 const VirtualList = (props: VirtualListProps) => {
   const combineProps = Object.assign({}, defaultProps, props)
 
@@ -82,15 +93,52 @@ const VirtualList = (props: VirtualListProps) => {
   useEffect(() => {
     installVirtual()
 
-    const onScroll = (evt: HTMLElementEventMap['scroll']) => {
-      evt.preventDefault()
-
+    const onScroll = () => {
       const offset = getOffset()
       virtualRef.current.handleScroll(offset)
     }
 
     rootRef.current.addEventListener('scroll', onScroll)
+
+    rootRef.current.addEventListener('wheel', evt => {
+      console.log(rootRef.current.scrollTop)
+
+      evt.preventDefault()
+
+      // xia()
+    })
+
+    rootRef.current.addEventListener('mousedown', evt => {
+      console.log(evt)
+
+      evt.preventDefault()
+
+      const { offsetX, offsetY } = getMouseCoordInContainer(evt.clientX, evt.clientY, rootRef.current)
+
+      console.log(offsetX, offsetY)
+      console.log(rootRef.current.clientWidth)
+    })
+
+    rootRef.current.addEventListener('mousemove', evt => {
+      evt.preventDefault()
+    })
+
+    // 测试滚动
+    // requestAnimationFrame(function dd() {
+    //   xia()
+    //   requestAnimationFrame(dd)
+    // })
   }, [])
+
+  const xia = () => {
+    scrollTop += 500
+
+    virtualRef.current.handleScroll(scrollTop)
+  }
+
+  useLayoutEffect(() => {
+    // rootRef.current.scrollTo({ top: scrollTop })
+  }, [range])
 
   useEffect(() => {
     virtualRef.current.updateParam('uniqueIds', getUniqueIdFromDataSources())
@@ -98,7 +146,7 @@ const VirtualList = (props: VirtualListProps) => {
   }, [dataSources])
 
   const installVirtual = () => {
-    const buffer = Math.round(keeps / 3) // recommend for a third of keeps
+    const buffer = 0 // Math.round(keeps / 3) // recommend for a third of keeps
 
     virtualRef.current = new Virtual(
       {
@@ -194,25 +242,28 @@ const VirtualList = (props: VirtualListProps) => {
   const wrapperStyle = wrapStyle ? Object.assign({}, wrapStyle, paddingStyle) : paddingStyle
 
   return (
-    <div ref={rootRef} className={classNames('v-n-list', className)} style={style}>
-      {header && (
-        <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
-          {header}
-        </Slot>
-      )}
+    <>
+      <button onClick={xia}>++</button>
+      <div ref={rootRef} className={classNames('v-n-list', className)} style={style}>
+        {header && (
+          <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
+            {header}
+          </Slot>
+        )}
 
-      <div className="wrap" {...{ role: 'group' }} style={wrapperStyle}>
-        {getRenderSlots()}
+        <div className="wrap" {...{ role: 'group' }} style={wrapperStyle}>
+          {getRenderSlots()}
+        </div>
+
+        {footer && (
+          <Slot {...universalProps} uniqueKey={Slot_Type.Footer} event={Event_Type.Slot}>
+            {footer}
+          </Slot>
+        )}
+
+        {/* <div ref={shepherdRef} style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }}></div> */}
       </div>
-
-      {footer && (
-        <Slot {...universalProps} uniqueKey={Slot_Type.Footer} event={Event_Type.Slot}>
-          {footer}
-        </Slot>
-      )}
-
-      {/* <div ref={shepherdRef} style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }}></div> */}
-    </div>
+    </>
   )
 }
 
