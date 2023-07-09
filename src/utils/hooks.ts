@@ -17,9 +17,9 @@ export const useDebounce = (cb: any, delay: number = 500) => {
 }
 
 export const useUpdate = () => {
-  const [b, sb] = useState(true)
+  const [, sb] = useState(true)
 
   return () => {
-    sb(!b)
+    sb(v => !v)
   }
 }
