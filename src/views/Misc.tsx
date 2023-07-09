@@ -41,6 +41,8 @@ const Misc = () => {
 }
 
 const ItemComponent = item => {
+  // sleep(20)
+
   return (
     <div
       className="item-inner"
@@ -84,8 +86,6 @@ const ItemComponent = item => {
 
 const NameComponent = ({ index, name }) => {
   if (index % 3 === 0) return null
-
-  // sleep(20)
 
   return (
     <>

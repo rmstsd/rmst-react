@@ -93,12 +93,7 @@ const VirtualList = (props: VirtualListProps) => {
   useEffect(() => {
     installVirtual()
 
-    const onScroll = () => {
-      const offset = getOffset()
-      virtualRef.current.handleScroll(offset)
-    }
-
-    rootRef.current.addEventListener('scroll', onScroll)
+    // rootRef.current.addEventListener('scroll', onScroll)
 
     // rootRef.current.addEventListener('wheel', evt => {
     //   console.log(rootRef.current.scrollTop)
@@ -129,6 +124,11 @@ const VirtualList = (props: VirtualListProps) => {
     //   requestAnimationFrame(dd)
     // })
   }, [])
+
+  const onScroll = () => {
+    const offset = getOffset()
+    virtualRef.current.handleScroll(offset)
+  }
 
   const xia = () => {
     scrollTop += 500
@@ -244,7 +244,12 @@ const VirtualList = (props: VirtualListProps) => {
   return (
     <>
       <button onClick={xia}>++</button>
-      <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
+      <div
+        ref={rootRef}
+        onScroll={onScroll}
+        className={classNames('v-n-list', className)}
+        style={{ ...style }}
+      >
         {header && (
           <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
             {header}

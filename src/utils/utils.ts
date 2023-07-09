@@ -115,3 +115,36 @@ export function sleep(ms: number) {
   let t = Date.now()
   while (Date.now() - t < ms) {}
 }
+
+export const lossFrame = (container, func) => {
+  const state = { lock: false, prev: 0, target: 0 }
+  let realTarget = 0
+  let timer
+
+  return () => {
+    if (state.lock) {
+      return
+    }
+
+    state.lock = true
+    realTarget = container.scrollTop
+
+    container.scrollTo({ top: state.target })
+
+    // console.log('real scroll')
+
+    state.target = realTarget
+
+    cancelAnimationFrame(timer)
+    timer = requestAnimationFrame(() => {
+      sleep(100)
+
+      func?.()
+
+      container.scrollTo({ top: state.target })
+      queueMicrotask(() => {
+        state.lock = false
+      })
+    })
+  }
+}
