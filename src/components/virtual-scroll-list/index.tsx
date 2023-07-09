@@ -100,28 +100,28 @@ const VirtualList = (props: VirtualListProps) => {
 
     rootRef.current.addEventListener('scroll', onScroll)
 
-    rootRef.current.addEventListener('wheel', evt => {
-      console.log(rootRef.current.scrollTop)
+    // rootRef.current.addEventListener('wheel', evt => {
+    //   console.log(rootRef.current.scrollTop)
 
-      evt.preventDefault()
+    //   evt.preventDefault()
 
-      // xia()
-    })
+    //   // xia()
+    // })
 
-    rootRef.current.addEventListener('mousedown', evt => {
-      console.log(evt)
+    // rootRef.current.addEventListener('mousedown', evt => {
+    //   console.log(evt)
 
-      evt.preventDefault()
+    //   evt.preventDefault()
 
-      const { offsetX, offsetY } = getMouseCoordInContainer(evt.clientX, evt.clientY, rootRef.current)
+    //   const { offsetX, offsetY } = getMouseCoordInContainer(evt.clientX, evt.clientY, rootRef.current)
 
-      console.log(offsetX, offsetY)
-      console.log(rootRef.current.clientWidth)
-    })
+    //   console.log(offsetX, offsetY)
+    //   console.log(rootRef.current.clientWidth)
+    // })
 
-    rootRef.current.addEventListener('mousemove', evt => {
-      evt.preventDefault()
-    })
+    // rootRef.current.addEventListener('mousemove', evt => {
+    //   evt.preventDefault()
+    // })
 
     // 测试滚动
     // requestAnimationFrame(function dd() {
@@ -244,14 +244,23 @@ const VirtualList = (props: VirtualListProps) => {
   return (
     <>
       <button onClick={xia}>++</button>
-      <div ref={rootRef} className={classNames('v-n-list', className)} style={style}>
+      <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
         {header && (
           <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
             {header}
           </Slot>
         )}
 
-        <div className="wrap" {...{ role: 'group' }} style={wrapperStyle}>
+        <div
+          className="wrap"
+          {...{ role: 'group' }}
+          style={{
+            ...wrapperStyle,
+            transform: 'translate3d(0px, 0px, 0px)',
+            overflow: 'hidden',
+            contain: 'strict'
+          }}
+        >
           {getRenderSlots()}
         </div>
 

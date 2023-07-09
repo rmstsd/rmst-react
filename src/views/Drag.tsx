@@ -10,27 +10,26 @@ const Drag = () => {
   useEffect(() => {
     const container = containerRef.current
 
-    const domList = ([...container.childNodes] as HTMLDivElement[]).map(item => ({
-      dom: item,
-      rect: item.getBoundingClientRect()
-    }))
-    domListRef.current = domList
-
     let dragDom: HTMLDivElement
     let dragDomRect: DOMRect
 
-    let dragIndex: number
-    let targetIndex: number
+    let activeIndex: number
+    let overIndex: number
 
     // 鼠标按下时
     container.addEventListener('mousedown', evt => {
       const target = evt.target as HTMLDivElement
 
       if (target.classList.contains('item')) {
+        domListRef.current = ([...container.childNodes] as HTMLDivElement[]).map(item => ({
+          dom: item,
+          rect: item.getBoundingClientRect()
+        }))
+
         dragDom = target
         dragDomRect = dragDom.getBoundingClientRect()
 
-        domList.forEach(item => {
+        domListRef.current.forEach(item => {
           item.dom.style.transition = 'all 0.3s ease-out'
         })
 
@@ -42,49 +41,49 @@ const Drag = () => {
     document.addEventListener('mouseup', evt => {
       document.removeEventListener('mousemove', addCurrMove)
 
-      domList.forEach(item => {
+      domListRef.current.forEach(item => {
         item.dom.style.translate = ''
         item.dom.style.transition = ''
       })
 
-      dragIndex = undefined
-      targetIndex = undefined
+      activeIndex = undefined
+      overIndex = undefined
     })
 
     function addCurrMove(evt: MouseEvent) {
       evt.preventDefault()
       const { clientX, clientY } = evt
 
-      dragIndex = Number(dragDom.getAttribute('data-index'))
+      activeIndex = Number(dragDom.getAttribute('data-index'))
 
-      for (let i = 0; i < domList.length; i++) {
-        const targetRectItem = domList[i].rect
+      for (let i = 0; i < domListRef.current.length; i++) {
+        const targetRectItem = domListRef.current[i].rect
 
         if (clientY > targetRectItem.top && clientY < targetRectItem.bottom) {
-          targetIndex = i
+          overIndex = i
 
-          console.log('dragIndex: ', dragIndex, 'targetIndex: ', targetIndex)
+          console.log('dragIndex: ', activeIndex, 'overIndex: ', overIndex)
 
           let startIndex: number
           let endIndex: number
 
-          if (dragIndex < targetIndex) {
-            startIndex = dragIndex + 1
-            endIndex = targetIndex + 1
+          if (activeIndex < overIndex) {
+            startIndex = activeIndex + 1
+            endIndex = overIndex + 1
           } else {
-            startIndex = targetIndex
-            endIndex = dragIndex
+            startIndex = overIndex
+            endIndex = activeIndex
           }
 
           const dragDomTranslateY =
-            dragIndex < targetIndex
+            activeIndex < overIndex
               ? targetRectItem.bottom - dragDomRect.bottom
               : targetRectItem.top - dragDomRect.top
 
           dragDom.style.translate = `0 ${dragDomTranslateY}px`
 
           if (startIndex === endIndex) {
-            domList.forEach(item => {
+            domListRef.current.forEach(item => {
               item.dom.style.translate = ``
             })
 
@@ -94,14 +93,16 @@ const Drag = () => {
           console.log('触发 sort')
 
           const translateY = (() => {
-            if (dragIndex < targetIndex) return dragDomRect.top - domList[dragIndex + 1].rect.top
-            else return dragDomRect.bottom - domList[dragIndex - 1].rect.bottom
+            if (activeIndex < overIndex) return dragDomRect.top - domListRef.current[activeIndex + 1].rect.top
+            else return dragDomRect.bottom - domListRef.current[activeIndex - 1].rect.bottom
           })()
 
-          domList[targetIndex].dom.style.translate = `0 ${translateY}px`
+          domListRef.current[overIndex].dom.style.translate = `0 ${translateY}px`
 
-          const batchMoveItems = domList.slice(startIndex, endIndex)
-          const needResetItems = domList.filter(o => !batchMoveItems.includes(o) && o.dom !== dragDom)
+          const batchMoveItems = domListRef.current.slice(startIndex, endIndex)
+          const needResetItems = domListRef.current.filter(
+            o => !batchMoveItems.includes(o) && o.dom !== dragDom
+          )
           needResetItems.forEach(item => {
             item.dom.style.translate = ``
           })
@@ -136,7 +137,7 @@ const Drag = () => {
   )
 }
 
-// export default Drag
+export default Drag
 
 const containerEmo = css`
   display: flex;
@@ -193,4 +194,4 @@ const NativeDrag = () => {
   )
 }
 
-export default NativeDrag
+// export default NativeDrag
