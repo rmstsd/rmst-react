@@ -93,7 +93,7 @@ const VirtualList = (props: VirtualListProps) => {
   useEffect(() => {
     installVirtual()
 
-    // rootRef.current.addEventListener('scroll', onScroll)
+    rootRef.current.addEventListener('scroll', onScroll, { passive: true })
 
     // rootRef.current.addEventListener('wheel', evt => {
     //   console.log(rootRef.current.scrollTop)
@@ -244,12 +244,7 @@ const VirtualList = (props: VirtualListProps) => {
   return (
     <>
       <button onClick={xia}>++</button>
-      <div
-        ref={rootRef}
-        onScroll={onScroll}
-        className={classNames('v-n-list', className)}
-        style={{ ...style }}
-      >
+      <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
         {header && (
           <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
             {header}

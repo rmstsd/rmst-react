@@ -5,6 +5,43 @@
     <link rel="icon" href="/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite react</title>
+    <script>
+      const noop = cb => {
+        cb()
+      }
+
+      window.setTimeout = noop
+      window.setInterval = noop
+      window.requestIdleCallback = noop
+      window.requestAnimationFrame = noop
+
+      class MessageChannel2 {
+        constructor() {}
+
+        port1 = {
+          onmessage: undefined,
+          postMessage: arg => {
+            this.port2.onmessage(arg)
+          }
+        }
+        port2 = {
+          onmessage: undefined,
+          postMessage: arg => {
+            this.port1.onmessage({ data: arg })
+          }
+        }
+      }
+
+      MessageChannel = MessageChannel2
+
+      const channel = new MessageChannel()
+      const port = channel.port2
+      channel.port1.onmessage = a => {
+        console.log(1, a)
+      }
+
+      port.postMessage(456)
+    </script>
   </head>
   <body>
     <div id="root"></div>
