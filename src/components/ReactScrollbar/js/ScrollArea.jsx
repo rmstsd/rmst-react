@@ -153,7 +153,9 @@ export default class ScrollArea extends React.Component {
       marginTop: -this.state.topPosition,
       marginLeft: -this.state.leftPosition
     }
-    let springifiedContentStyle = withMotion ? modifyObjValues(contentStyle, x => spring(x)) : contentStyle
+    let springifiedContentStyle = withMotion
+      ? modifyObjValues(contentStyle, x => spring(x, { stiffness: 90, damping: 15 }))
+      : contentStyle
 
     return (
       <Motion style={springifiedContentStyle}>
@@ -268,10 +270,10 @@ export default class ScrollArea extends React.Component {
      * https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode
      */
 
-    if (e.deltaMode === 1) {
-      deltaY = deltaY * this.lineHeightPx
-      deltaX = deltaX * this.lineHeightPx
-    }
+    // if (e.deltaMode === 1) {
+    //   deltaY = deltaY * this.lineHeightPx
+    //   deltaX = deltaX * this.lineHeightPx
+    // }
 
     deltaY = deltaY * this.props.speed
     deltaX = deltaX * this.props.speed
