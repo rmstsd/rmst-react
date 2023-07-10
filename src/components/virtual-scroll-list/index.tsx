@@ -3,6 +3,7 @@ import Item, { Slot } from './Item'
 import Virtual from './virtual'
 import classNames from 'classnames'
 import { throttle } from 'throttle-debounce'
+import { lossFrame } from '@/utils/utils'
 
 export function getMouseCoordInContainer(clientX: number, clientY: number, outerContainer: HTMLElement) {
   const containerRect = outerContainer.getBoundingClientRect()
@@ -93,7 +94,10 @@ const VirtualList = (props: VirtualListProps) => {
   useEffect(() => {
     installVirtual()
 
-    rootRef.current.addEventListener('scroll', onScroll, { passive: true })
+    const lossFunc = lossFrame(rootRef.current, () => {
+      onScroll()
+    })
+    rootRef.current.addEventListener('scroll', lossFunc, { passive: true })
 
     // rootRef.current.addEventListener('wheel', evt => {
     //   console.log(rootRef.current.scrollTop)

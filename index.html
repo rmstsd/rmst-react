@@ -15,32 +15,36 @@
       window.requestIdleCallback = noop
       window.requestAnimationFrame = noop
 
-      class MessageChannel2 {
-        constructor() {}
-
-        port1 = {
-          onmessage: undefined,
-          postMessage: arg => {
-            this.port2.onmessage(arg)
+      class SyncMessageChannel {
+        constructor() {
+          this.port1 = {
+            postMessage: this.postMessage.bind(this),
+            onmessage: null
+          }
+          this.port2 = {
+            postMessage: this.postMessage.bind(this),
+            onmessage: null
           }
         }
-        port2 = {
-          onmessage: undefined,
-          postMessage: arg => {
-            this.port1.onmessage({ data: arg })
+
+        postMessage(message) {
+          if (typeof this.port1.onmessage === 'function') {
+            this.port1.onmessage({ data: message })
+          } else if (typeof this.port2.onmessage === 'function') {
+            this.port2.onmessage({ data: message })
           }
         }
       }
 
-      MessageChannel = MessageChannel2
+      // MessageChannel = SyncMessageChannel
 
-      const channel = new MessageChannel()
-      const port = channel.port2
-      channel.port1.onmessage = a => {
-        console.log(1, a)
-      }
+      // const channel = new MessageChannel()
+      // const port = channel.port2
+      // channel.port1.onmessage = a => {
+      //   console.log(1, a)
+      // }
 
-      port.postMessage(456)
+      // port.postMessage(456)
     </script>
   </head>
   <body>
