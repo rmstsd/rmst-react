@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
 import { sleep } from '@/utils/utils'
+import Scrollbar from '@/components/Scrollbar'
 
 const TOTAL_COUNT = 1000
 
@@ -19,6 +20,8 @@ while (count--) {
 const Misc = () => {
   const ref = useRef<HTMLDivElement>()
 
+  const list = [...new Array(100)]
+
   return (
     <div ref={ref} className="">
       {/* {data.map((item, index) => (
@@ -27,7 +30,10 @@ const Misc = () => {
 
       <VirtualList
         className="list"
-        style={{ height: 600, overflow: 'auto', border: '2px solid #333' }}
+        style={{
+          // height: 600, overflow: 'auto',
+          border: '2px solid #333'
+        }}
         dataKey="id"
         dataSources={dataSources}
         dataComponent={ItemComponent}

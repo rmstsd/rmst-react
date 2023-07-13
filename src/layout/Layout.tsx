@@ -2,7 +2,6 @@ import { Menu, Button } from '@arco-design/web-react'
 import React, { useEffect } from 'react'
 import { Outlet, useLocation, useMatch, useNavigate, useNavigation } from 'react-router-dom'
 import { routes } from '../App'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 const LayoutView: React.FC = props => {
   const navigate = useNavigate()

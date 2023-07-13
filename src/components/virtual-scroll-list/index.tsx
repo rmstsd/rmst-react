@@ -4,6 +4,7 @@ import Virtual from './virtual'
 import classNames from 'classnames'
 import { throttle } from 'throttle-debounce'
 import { lossFrame } from '@/utils/utils'
+import Scrollbar from '../Scrollbar'
 
 export function getMouseCoordInContainer(clientX: number, clientY: number, outerContainer: HTMLElement) {
   const containerRect = outerContainer.getBoundingClientRect()
@@ -17,11 +18,11 @@ export function getMouseCoordInContainer(clientX: number, clientY: number, outer
 const throttleRaf = func => {
   let b = true
 
-  return () => {
+  return (...args) => {
     if (b) {
       b = false
       requestAnimationFrame(() => {
-        func()
+        func(...args)
         b = true
       })
     }
@@ -64,7 +65,7 @@ type VirtualListProps = {
   footer?: React.ReactNode
 }
 
-let scrollTop = 0
+let syncScrollTop = 0
 
 const VirtualList = (props: VirtualListProps) => {
   const combineProps = Object.assign({}, defaultProps, props)
@@ -88,61 +89,36 @@ const VirtualList = (props: VirtualListProps) => {
   const directionKey = isHorizontal ? 'scrollLeft' : 'scrollTop'
 
   const virtualRef = useRef<Virtual>(null)
-  const rootRef = useRef<HTMLDivElement>(null)
+  let rootRef = useRef<HTMLDivElement>(null)
   const [range, setRange] = useState({} as Virtual['range'])
 
   useEffect(() => {
     installVirtual()
 
-    const lossFunc = lossFrame(rootRef.current, () => {
-      onScroll()
+    // rootRef.current.addEventListener('scroll', lossFunc, { passive: true })
+
+    rootRef.current.addEventListener('wheel', evt => {
+      evt.preventDefault()
+
+      syncScrollTop += evt.deltaY
+      virtualRef.current.handleScroll(syncScrollTop)
     })
-    rootRef.current.addEventListener('scroll', lossFunc, { passive: true })
-
-    // rootRef.current.addEventListener('wheel', evt => {
-    //   console.log(rootRef.current.scrollTop)
-
-    //   evt.preventDefault()
-
-    //   // xia()
-    // })
-
-    // rootRef.current.addEventListener('mousedown', evt => {
-    //   console.log(evt)
-
-    //   evt.preventDefault()
-
-    //   const { offsetX, offsetY } = getMouseCoordInContainer(evt.clientX, evt.clientY, rootRef.current)
-
-    //   console.log(offsetX, offsetY)
-    //   console.log(rootRef.current.clientWidth)
-    // })
-
-    // rootRef.current.addEventListener('mousemove', evt => {
-    //   evt.preventDefault()
-    // })
-
-    // 测试滚动
-    // requestAnimationFrame(function dd() {
-    //   xia()
-    //   requestAnimationFrame(dd)
-    // })
   }, [])
+
+  useLayoutEffect(() => {
+    rootRef.current.scrollTo({ top: syncScrollTop })
+  }, [range])
+
+  const xia = () => {
+    syncScrollTop += 500
+
+    virtualRef.current.handleScroll(syncScrollTop)
+  }
 
   const onScroll = () => {
     const offset = getOffset()
     virtualRef.current.handleScroll(offset)
   }
-
-  const xia = () => {
-    scrollTop += 500
-
-    virtualRef.current.handleScroll(scrollTop)
-  }
-
-  useLayoutEffect(() => {
-    // rootRef.current.scrollTo({ top: scrollTop })
-  }, [range])
 
   useEffect(() => {
     virtualRef.current.updateParam('uniqueIds', getUniqueIdFromDataSources())
@@ -245,10 +221,54 @@ const VirtualList = (props: VirtualListProps) => {
   }
   const wrapperStyle = wrapStyle ? Object.assign({}, wrapStyle, paddingStyle) : paddingStyle
 
+  const onSyncScroll = useMemo(() => {
+    return throttleRaf(({ scrollTop }) => {
+      syncScrollTop = scrollTop
+      virtualRef.current.handleScroll(scrollTop)
+    })
+  }, [])
+
   return (
     <>
       <button onClick={xia}>++</button>
-      <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
+
+      <Scrollbar
+        ref={ref => {
+          rootRef = ref?.wrap
+        }}
+        className={classNames('v-n-list', className)}
+        style={{ ...style }}
+        height={500}
+        always
+        onSyncScroll={onSyncScroll}
+      >
+        {header && (
+          <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
+            {header}
+          </Slot>
+        )}
+
+        <div
+          className="wrap"
+          {...{ role: 'group' }}
+          style={{
+            ...wrapperStyle,
+            transform: 'translate3d(0px, 0px, 0px)',
+            overflow: 'hidden',
+            contain: 'strict'
+          }}
+        >
+          {getRenderSlots()}
+        </div>
+
+        {footer && (
+          <Slot {...universalProps} uniqueKey={Slot_Type.Footer} event={Event_Type.Slot}>
+            {footer}
+          </Slot>
+        )}
+      </Scrollbar>
+
+      {/* <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
         {header && (
           <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
             {header}
@@ -274,8 +294,8 @@ const VirtualList = (props: VirtualListProps) => {
           </Slot>
         )}
 
-        {/* <div ref={shepherdRef} style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }}></div> */}
-      </div>
+        <div style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }}></div>
+      </div> */}
     </>
   )
 }

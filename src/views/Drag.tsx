@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { css } from '@emotion/css'
+
 import classNames from 'classnames'
 import { Button } from '@arco-design/web-react'
 
@@ -121,10 +121,10 @@ const Drag = () => {
     <div>
       {/* <Button onClick={moveItem}>0 - 5</Button> */}
 
-      <div className={classNames(containerEmo, 'border')} ref={containerRef}>
+      <div className={classNames('flex flex-col', 'border')} ref={containerRef}>
         {list.map((item, index) => (
           <div
-            className={classNames(itemEmo, 'item')}
+            className={classNames('h-[50px] border bg-white', 'item')}
             data-index={index}
             key={item}
             style={{ height: 20 * (index + 1), marginTop: 10 * (index + 1) }}
@@ -138,19 +138,6 @@ const Drag = () => {
 }
 
 export default Drag
-
-const containerEmo = css`
-  display: flex;
-  flex-direction: column;
-  // gap: 20px;
-`
-
-const itemEmo = css({
-  height: 50,
-  border: '1px solid #ddd',
-  backgroundColor: '#fff',
-  label: 'itemStyle'
-})
 
 const data = [1, 2, 3, 4, 5]
 

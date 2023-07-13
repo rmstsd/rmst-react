@@ -1,33 +1,18 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import ScrollArea from '@/components/ReactScrollbar/js/ScrollArea'
 import { useUpdate } from '@/utils/hooks'
 import { lossFrame, sleep } from '@/utils/utils'
 
 const data = Array.from({ length: 20 }, () => 1)
 
 const Sector = () => {
-  const ref = useRef<ScrollArea>()
-
   return (
     <>
-      <button
-        onClick={() => {
-          ref.current?.scrollYTo(100)
-        }}
-      >
-        g
-      </button>
-
-      <ScrollArea ref={ref} speed={1} style={{ height: 400 }} smoothScrolling={true} horizontal={false}>
-        {data.map((_, idx) => (
-          <h1 key={idx}>{idx}</h1>
-        ))}
-      </ScrollArea>
+      <button onClick={() => {}}>g</button>
     </>
   )
 }
 
-// export default Sector
+export default Sector
 
 const Sector2 = () => {
   const up = useUpdate()
@@ -68,4 +53,4 @@ const Sector2 = () => {
   )
 }
 
-export default Sector2
+// export default Sector2

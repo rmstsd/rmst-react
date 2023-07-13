@@ -1,6 +1,6 @@
+import classNames from 'classnames'
 import React, { Ref, PropsWithChildren } from 'react'
 import ReactDOM from 'react-dom'
-import { cx, css } from '@emotion/css'
 
 interface BaseProps {
   className: string
@@ -26,13 +26,16 @@ export const Button = React.forwardRef(
     <span
       {...props}
       ref={ref}
-      className={cx(
-        className,
-        css`
-          cursor: pointer;
-          color: ${reversed ? (active ? 'white' : '#aaa') : active ? 'black' : '#ccc'};
-        `
-      )}
+      className={
+        ''
+        //   cx(
+        //   className,
+        //   css`
+        //     cursor: pointer;
+        //     color: ${reversed ? (active ? 'white' : '#aaa') : active ? 'black' : '#ccc'};
+        //   `
+        // )
+      }
     />
   )
 )
@@ -55,37 +58,20 @@ export const EditorValue = React.forwardRef(
       .toArray()
       .join('\n')
     return (
-      <div
-        ref={ref}
-        {...props}
-        className={cx(
-          className,
-          css`
-            margin: 30px -20px 0;
-          `
-        )}
-      >
+      <div ref={ref} {...props} style={{ margin: '30px -20px 0' }} className={classNames(className)}>
         <div
-          className={css`
-            font-size: 14px;
-            padding: 5px 20px;
-            color: #404040;
-            border-top: 2px solid #eeeeee;
-            background: #f8f8f8;
-          `}
+          style={{
+            fontSize: 14,
+            padding: '5px 20px',
+            color: '#404040',
+            borderTop: '2px solid #eeeeee',
+            background: '#f8f8f8'
+          }}
         >
           Slate's value as text
         </div>
         <div
-          className={css`
-            color: #404040;
-            font: 12px monospace;
-            white-space: pre-wrap;
-            padding: 10px 20px;
-            div {
-              margin: 0 0 0.5em;
-            }
-          `}
+          style={{ color: '#404040', font: '12px monospace', whiteSpace: 'pre-wrap', padding: '10px 20px' }}
         >
           {textLines}
         </div>
@@ -96,18 +82,7 @@ export const EditorValue = React.forwardRef(
 
 export const Icon = React.forwardRef(
   ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<OrNull<HTMLSpanElement>>) => (
-    <span
-      {...props}
-      ref={ref}
-      className={cx(
-        'material-icons',
-        className,
-        css`
-          font-size: 18px;
-          vertical-align: text-bottom;
-        `
-      )}
-    />
+    <span {...props} ref={ref} className={classNames('material-icons', className)} />
   )
 )
 
@@ -116,39 +91,14 @@ export const Instruction = React.forwardRef(
     <div
       {...props}
       ref={ref}
-      className={cx(
-        className,
-        css`
-          white-space: pre-wrap;
-          margin: 0 -20px 10px;
-          padding: 10px 20px;
-          font-size: 14px;
-          background: #f8f8e8;
-        `
-      )}
+      className={classNames(className, 'whitespace-pre-wrap m-[0 -20px 10px] p-[10px 20px] bg-gray-300')}
     />
   )
 )
 
 export const Menu = React.forwardRef(
   ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<OrNull<HTMLDivElement>>) => (
-    <div
-      {...props}
-      data-test-id="menu"
-      ref={ref}
-      className={cx(
-        className,
-        css`
-          & > * {
-            display: inline-block;
-          }
-
-          & > * + * {
-            margin-left: 15px;
-          }
-        `
-      )}
-    />
+    <div {...props} data-test-id="menu" ref={ref} className={classNames(className)} />
   )
 )
 
@@ -161,16 +111,7 @@ export const Toolbar = React.forwardRef(
     <Menu
       {...props}
       ref={ref}
-      className={cx(
-        className,
-        css`
-          position: relative;
-          padding: 1px 18px 17px;
-          margin: 0 -20px;
-          border-bottom: 2px solid #eee;
-          margin-bottom: 20px;
-        `
-      )}
+      className={classNames(className, 'relative, p-[1px 18px 17px] m-[0 -20px] border mb-[20px]')}
     />
   )
 )

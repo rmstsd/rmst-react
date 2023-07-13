@@ -13,6 +13,7 @@ import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
 import SlateDemo from './views/SlateDemo'
 import Dm from './views/Dm/Dm'
+import Spring from './views/Spring'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -34,7 +35,8 @@ export const routes: IRouteObject[] = [
       { path: 'sector', element: <Sector /> },
       { path: 'CanvaskitWasmDe', element: <CanvaskitWasmDe /> },
       { path: 'Misc', element: <Misc /> },
-      { path: 'dm', element: <Dm /> }
+      { path: 'dm', element: <Dm /> },
+      { path: 'spring', element: <Spring /> }
     ]
   },
   {

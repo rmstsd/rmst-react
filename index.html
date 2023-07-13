@@ -2,50 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/logo.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite react</title>
-    <script>
-      const noop = cb => {
-        cb()
-      }
-
-      window.setTimeout = noop
-      window.setInterval = noop
-      window.requestIdleCallback = noop
-      window.requestAnimationFrame = noop
-
-      class SyncMessageChannel {
-        constructor() {
-          this.port1 = {
-            postMessage: this.postMessage.bind(this),
-            onmessage: null
-          }
-          this.port2 = {
-            postMessage: this.postMessage.bind(this),
-            onmessage: null
-          }
-        }
-
-        postMessage(message) {
-          if (typeof this.port1.onmessage === 'function') {
-            this.port1.onmessage({ data: message })
-          } else if (typeof this.port2.onmessage === 'function') {
-            this.port2.onmessage({ data: message })
-          }
-        }
-      }
-
-      // MessageChannel = SyncMessageChannel
-
-      // const channel = new MessageChannel()
-      // const port = channel.port2
-      // channel.port1.onmessage = a => {
-      //   console.log(1, a)
-      // }
-
-      // port.postMessage(456)
-    </script>
+    <title>rmst-react</title>
   </head>
   <body>
     <div id="root"></div>
