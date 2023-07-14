@@ -7,26 +7,32 @@ export default function Spring() {
 
   const ref = useRef(top)
 
-  const props = useSpring({
-    transform: `translateY(${-top}px)`,
-    config: {
-      easing: easings.steps(30)
-    }
-  })
+  const [springStyles, api] = useSpring(() => ({
+    transform: `translateY(${-top}px)`
+  }))
 
   useEffect(() => {
+    let timer
+
     const dom = document.querySelector('#c')
-    dom.addEventListener('wheel', evt => {
+
+    dom.addEventListener('wheel', (evt: WheelEvent) => {
       evt.preventDefault()
 
-      setTop((ref.current += evt.deltaY / 2))
+      ref.current += evt.deltaY / 2
+      api.start({ transform: `translateY(${-ref.current}px)` })
+
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        api.stop()
+      }, 200)
     })
   }, [])
 
   return (
     <div>
       <div id="c" className="border" style={{ height: 400, overflow: 'hidden' }}>
-        <animated.div style={{ ...props }}>
+        <animated.div style={{ ...springStyles }}>
           {Array(100)
             .fill(0)
             .map((_, i) => (
