@@ -3,8 +3,9 @@ import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
 import { sleep } from '@/utils/utils'
 import Scrollbar from '@/components/Scrollbar'
+import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
 
-const TOTAL_COUNT = 1000
+const TOTAL_COUNT = 100
 
 const dataSources = []
 let count = TOTAL_COUNT
@@ -27,6 +28,10 @@ const Misc = () => {
       {/* {data.map((item, index) => (
         <h2 key={item}>{item}</h2>
       ))} */}
+
+      <CustomScrollbarDemo></CustomScrollbarDemo>
+
+      <hr />
 
       <VirtualList
         className="list"
@@ -101,3 +106,13 @@ const NameComponent = ({ index, name }) => {
 }
 
 export default Misc
+
+const CustomScrollbarDemo = () => {
+  return (
+    <Scrollbar style={{ height: 400 }} className="border">
+      {dataSources.map(item => (
+        <div key={item.name}>{item.name}</div>
+      ))}
+    </Scrollbar>
+  )
+}

@@ -1,5 +1,6 @@
 import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import cs from 'classnames'
+import { useSpring, animated, config, easings } from '@react-spring/web'
 
 import { useResizeObserver, useMergeProps } from '@/utils/hooks'
 
@@ -53,6 +54,10 @@ function Scrollbar(baseProps: ScrollbarProps, ref) {
   const [ratioY, setRatioY] = useState<number>(1)
 
   const TagView = tag as 'div'
+
+  const [springStyles, api] = useSpring(() => ({
+    transform: `translateY(0px)`
+  }))
 
   const handleScroll = () => {
     return
@@ -146,8 +151,26 @@ function Scrollbar(baseProps: ScrollbarProps, ref) {
   }, [maxHeight, height, wrapRef.current])
 
   useEffect(() => {
-    wrapRef.current.addEventListener('wheel', evt => {
+    let timer
+
+    let ref = { current: 0 }
+
+    wrapRef.current.addEventListener('wheel', (evt: WheelEvent) => {
       evt.preventDefault()
+
+      ref.current += evt.deltaY / 2
+
+      if (ref.current < 0) ref.current = 0
+
+      const max = resizeRef.current.offsetHeight - wrapRef.current.clientHeight
+      if (ref.current > max) ref.current = max
+
+      api.start({ transform: `translateY(${-ref.current}px)` })
+
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        api.stop()
+      }, 100)
     })
   }, [])
 
@@ -160,18 +183,19 @@ function Scrollbar(baseProps: ScrollbarProps, ref) {
           className={cs(bem('wrap', { hidden: !native }), wrapClass)}
           onScroll={handleScroll}
         >
-          <TagView ref={resizeRef} style={viewStyle} className={cs(bem('view'), viewClass)}>
+          <animated.div ref={resizeRef} className={cs('scrollbar-view', viewClass)} style={springStyles}>
             {children}
-          </TagView>
+          </animated.div>
         </div>
         {!native && (
           <Bar
             ref={barRef}
-            always={always}
+            always
             height={sizeHeight}
             width={sizeWidth}
             ratioX={ratioX}
             ratioY={ratioY}
+            wrapRef={wrapRef}
           />
         )}
       </div>

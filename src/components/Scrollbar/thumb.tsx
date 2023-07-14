@@ -17,7 +17,7 @@ function Thumb(baseProps: ThumbProps, ref) {
   const scrollbar = useContext(ScrollbarContext)
 
   const [prefixCls, bem] = getPrefixCls('scrollbar-bar')
-  const { vertical, size, move, ratio, always } = props
+  const { vertical, size, move, ratio, always, handleScroll } = props
 
   const [visible, setVisible] = useState<boolean>(false)
   const barRef = useRef<HTMLDivElement>(null)
@@ -43,37 +43,32 @@ function Thumb(baseProps: ThumbProps, ref) {
     }
   }
 
-  const mouseMoveDocumentHandler = useMemo(() => {
-    return throttle(1000 / 60, e => {
-      scrollbar.onSyncScroll?.({
-        [bar.scroll]: e.clientY
-      })
-    })
-  }, [])
-  // const mouseMoveDocumentHandler = (e: MouseEvent) => {
-  //   if (!barRef.current || !thumbRef.current) return
-  //   if (cursorDown.current === false) return
+  const mouseMoveDocumentHandler = (e: MouseEvent) => {
+    if (!barRef.current || !thumbRef.current) return
+    if (cursorDown.current === false) return
 
-  //   const prevPage = thumbState.current[bar.axis]
-  //   if (!prevPage) return
+    const prevPage = thumbState.current[bar.axis]
+    if (!prevPage) return
 
-  //   const offset = (barRef.current.getBoundingClientRect()[bar.direction] - e[bar.client]) * -1
-  //   const thumbClickPosition = thumbRef.current[bar.offset] - prevPage
-  //   const thumbPositionPercentage =
-  //     ((offset - thumbClickPosition) * 100 * offsetRatio.current) / barRef.current[bar.offset]
+    const offset = (barRef.current.getBoundingClientRect()[bar.direction] - e[bar.client]) * -1
+    const thumbClickPosition = thumbRef.current[bar.offset] - prevPage
+    const thumbPositionPercentage =
+      ((offset - thumbClickPosition) * 100 * offsetRatio.current) / barRef.current[bar.offset]
 
-  //   let target = (thumbPositionPercentage * scrollbar.wrapElement.current[bar.scrollSize]) / 100
+    let target = (thumbPositionPercentage * scrollbar.wrapElement.current[bar.scrollSize]) / 100
 
-  //   if (target < 0) target = 0
-  //   if (target > scrollbar.wrapElement.current.scrollHeight)
-  //     target = scrollbar.wrapElement.current.scrollHeight
+    if (target < 0) target = 0
 
-  //   scrollbar.wrapElement.current[bar.scroll] = target
+    let maxY = scrollbar.wrapElement.current.scrollHeight - scrollbar.wrapElement.current.clientHeight
+    if (target > maxY) target = maxY
 
-  //   scrollbar.onSyncScroll?.({
-  //     [bar.scroll]: e.clientY
-  //   })
-  // }
+    scrollbar.wrapElement.current[bar.scroll] = target
+    handleScroll(target)
+
+    // scrollbar.onSyncScroll?.({
+    //   [bar.scroll]: e.clientY
+    // })
+  }
 
   const mouseUpDocumentHandler = (e: MouseEvent) => {
     document.body.style.setProperty('pointer-events', '')
