@@ -18,31 +18,25 @@ while (count--) {
   })
 }
 
+console.log(dataSources.length)
+
 const Misc = () => {
   const ref = useRef<HTMLDivElement>()
 
-  const list = [...new Array(100)]
-
   return (
-    <div ref={ref} className="">
-      {/* {data.map((item, index) => (
-        <h2 key={item}>{item}</h2>
-      ))} */}
-
-      <CustomScrollbarDemo></CustomScrollbarDemo>
+    <div ref={ref}>
+      <CustomScrollbarDemo />
 
       <hr />
 
       <VirtualList
         className="list"
-        style={{
-          // height: 600, overflow: 'auto',
-          border: '2px solid #333'
-        }}
+        style={{ border: '2px solid #333' }}
         dataKey="id"
         dataSources={dataSources}
         dataComponent={ItemComponent}
-        keeps={22}
+        keeps={14}
+        buffer={0}
         estimateSize={30}
         // header={<div style={{ height: 100 }}>header</div>}
         // footer={<div style={{ height: 80 }}>footer</div>}
@@ -52,8 +46,6 @@ const Misc = () => {
 }
 
 const ItemComponent = item => {
-  // sleep(20)
-
   return (
     <div
       className="item-inner"
@@ -66,9 +58,8 @@ const ItemComponent = item => {
       }}
     >
       <Tag># {item.index}</Tag>
-      <NameComponent index={item.index} name={item.source.name}></NameComponent>
 
-      <Form autoComplete="off">
+      <Form autoComplete="off" style={{ width: '50%' }}>
         <Form.Item label="Layout">
           <Radio.Group type="button" name="layout">
             <Radio value="horizontal">horizontal</Radio>
@@ -95,24 +86,14 @@ const ItemComponent = item => {
   )
 }
 
-const NameComponent = ({ index, name }) => {
-  if (index % 3 === 0) return null
-
-  return (
-    <>
-      <Button>{name}</Button>
-    </>
-  )
-}
-
 export default Misc
 
 const CustomScrollbarDemo = () => {
   return (
-    <Scrollbar style={{ height: 400 }} className="border">
+    <CustomScrollbar style={{ height: 300 }} className="border" onSyncScroll={scrollTop => {}}>
       {dataSources.map(item => (
         <div key={item.name}>{item.name}</div>
       ))}
-    </Scrollbar>
+    </CustomScrollbar>
   )
 }

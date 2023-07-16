@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useSpring, animated, config, easings } from '@react-spring/web'
+import { useSpring, animated } from '@react-spring/web'
 
 export default function Spring() {
   const [top, setTop] = useState(0)
