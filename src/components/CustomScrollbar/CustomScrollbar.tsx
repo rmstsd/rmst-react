@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React, { forwardRef, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
+import { ani } from './ani'
 
 type CustomScrollbarProps = React.HtmlHTMLAttributes<HTMLDivElement> & {
   onSyncScroll?: (scrollTop: number) => void
@@ -29,71 +30,37 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     thumbDomRef.current.style.setProperty('transform', `translateY(${thumbY}px)`)
   }
 
-  const contentYRef = useRef(0)
-
   const getContentHeight = () => contentDomRef.current?.offsetHeight || 0
 
   useLayoutEffect(() => {
     const rootDom = rootDomRef.current
+    const aniIns = ani(0)
 
     const contentHeight = getContentHeight()
     setThumbHeight(contentHeight === 0 ? 0 : rootDom.clientHeight ** 2 / contentHeight)
 
-    const perFrameScroll = 10
-    let curr = 0
-
     let timer
-    let stop = false
 
     rootDomRef.current.addEventListener('wheel', (evt: WheelEvent) => {
-      stop = false
-      console.log(evt.deltaY)
       evt.preventDefault()
 
       const contentHeight = getContentHeight()
 
-      curr = contentYRef.current
-
-      let nvContentY = contentYRef.current + evt.deltaY
+      let nvContentY = aniIns.getCurr() + evt.deltaY
       const max = contentHeight - rootDomRef.current.clientHeight
       if (nvContentY <= 0) nvContentY = 0
       if (nvContentY >= max) nvContentY = max
 
-      contentYRef.current = nvContentY
-
-      // scrollTo(nvContentY)
-
-      requestAnimationFrame(function ani() {
-        if (stop) {
-          return
-        }
-        if (curr === nvContentY) {
-          return
-        }
-
-        if (evt.deltaY > 0) {
-          curr += perFrameScroll
-          if (curr > nvContentY) {
-            curr = nvContentY
-          }
-        } else {
-          curr -= perFrameScroll
-          if (curr < nvContentY) {
-            curr = nvContentY
-          }
-        }
-
+      aniIns.start(nvContentY, curr => {
         scrollTo(curr)
 
-        requestAnimationFrame(ani)
+        // onSyncScroll(curr)
       })
 
       clearTimeout(timer)
       timer = setTimeout(() => {
-        stop = true
+        aniIns.stop()
       }, 200)
-
-      // onSyncScroll(nvContentY)
     })
 
     const ob = new ResizeObserver(() => {
