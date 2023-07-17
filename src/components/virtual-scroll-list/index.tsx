@@ -121,7 +121,6 @@ const VirtualList = (props: VirtualListProps) => {
         uniqueIds: getUniqueIdFromDataSources()
       },
       range => {
-        console.log(range)
         setRange(range)
       }
     )

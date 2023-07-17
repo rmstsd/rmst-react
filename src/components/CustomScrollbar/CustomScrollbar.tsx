@@ -39,10 +39,20 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     const contentHeight = getContentHeight()
     setThumbHeight(contentHeight === 0 ? 0 : rootDom.clientHeight ** 2 / contentHeight)
 
+    const perFrameScroll = 10
+    let curr = 0
+
+    let timer
+    let stop = false
+
     rootDomRef.current.addEventListener('wheel', (evt: WheelEvent) => {
+      stop = false
+      console.log(evt.deltaY)
       evt.preventDefault()
 
       const contentHeight = getContentHeight()
+
+      curr = contentYRef.current
 
       let nvContentY = contentYRef.current + evt.deltaY
       const max = contentHeight - rootDomRef.current.clientHeight
@@ -53,7 +63,37 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
 
       // scrollTo(nvContentY)
 
-      onSyncScroll(nvContentY)
+      requestAnimationFrame(function ani() {
+        if (stop) {
+          return
+        }
+        if (curr === nvContentY) {
+          return
+        }
+
+        if (evt.deltaY > 0) {
+          curr += perFrameScroll
+          if (curr > nvContentY) {
+            curr = nvContentY
+          }
+        } else {
+          curr -= perFrameScroll
+          if (curr < nvContentY) {
+            curr = nvContentY
+          }
+        }
+
+        scrollTo(curr)
+
+        requestAnimationFrame(ani)
+      })
+
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        stop = true
+      }, 200)
+
+      // onSyncScroll(nvContentY)
     })
 
     const ob = new ResizeObserver(() => {
