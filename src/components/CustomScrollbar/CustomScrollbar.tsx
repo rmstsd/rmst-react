@@ -139,10 +139,13 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
           <div
             ref={contentDomRef}
             className="content"
-            style={{
-              overflow: 'hidden'
-              // contain: 'strict'
-            }}
+            style={
+              {
+                // overflow: 'hidden',
+                // pointerEvents: 'none'
+                // contain: 'strict'
+              }
+            }
           >
             {children}
           </div>
