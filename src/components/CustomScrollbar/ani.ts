@@ -1,44 +1,45 @@
-export const ani = (initialValue: number) => {
-  let currValue = initialValue
-
-  const per = 20
-  let timer: number
-
-  const getCurr = () => {
-    return currValue
+export class Ani {
+  constructor({ initialValue }) {
+    this.currValue = initialValue
   }
 
-  const start = (endValue: number, cb: (curr: number) => void) => {
-    cancelAnimationFrame(timer)
+  currValue = 0
+  private per = 20
+  private timer: number
 
-    function animate() {
-      if (endValue === currValue) {
+  public getCurr() {
+    return this.currValue
+  }
+
+  public start(endValue: number, cb: (curr: number) => void) {
+    cancelAnimationFrame(this.timer)
+
+    const animate = () => {
+      if (endValue === this.currValue) {
         return
       }
 
-      if (endValue > currValue) {
-        currValue += per
-        if (currValue > endValue) {
-          currValue = endValue
+      if (endValue > this.currValue) {
+        this.currValue += this.per
+        if (this.currValue > endValue) {
+          this.currValue = endValue
         }
       } else {
-        currValue -= per
-        if (currValue < endValue) {
-          currValue = endValue
+        this.currValue -= this.per
+        if (this.currValue < endValue) {
+          this.currValue = endValue
         }
       }
 
-      cb(currValue)
+      cb(this.currValue)
 
-      timer = requestAnimationFrame(animate)
+      this.timer = requestAnimationFrame(animate)
     }
 
-    timer = requestAnimationFrame(animate)
+    this.timer = requestAnimationFrame(animate)
   }
 
-  const stop = () => {
-    cancelAnimationFrame(timer)
+  public stop() {
+    cancelAnimationFrame(this.timer)
   }
-
-  return { getCurr, start, stop }
 }

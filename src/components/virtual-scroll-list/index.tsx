@@ -191,13 +191,11 @@ const VirtualList = (props: VirtualListProps) => {
   }
   const wrapperStyle = wrapStyle ? Object.assign({}, wrapStyle, paddingStyle) : paddingStyle
 
-  const onSyncScroll = useMemo(() => {
-    return scrollTop => {
-      setSyncScrollTop(scrollTop)
+  const onSyncScroll = (scrollTop: number) => {
+    setSyncScrollTop(scrollTop)
 
-      virtualRef.current.handleScroll(scrollTop)
-    }
-  }, [])
+    virtualRef.current.handleScroll(scrollTop)
+  }
 
   return (
     <CustomScrollbar

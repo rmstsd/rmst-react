@@ -1,9 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useCallback, useState } from 'react'
 import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
 import { sleep } from '@/utils/utils'
 import Scrollbar from '@/components/Scrollbar'
 import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
+import { useIsomorphicLayoutEffect } from '@dnd-kit/utilities'
 
 const TOTAL_COUNT = 100
 
@@ -59,38 +60,44 @@ const ItemComponent = item => {
     >
       <Tag># {item.index}</Tag>
 
-      <Form autoComplete="off" style={{ width: '50%' }}>
-        <Form.Item label="Layout">
-          <Radio.Group type="button" name="layout">
-            <Radio value="horizontal">horizontal</Radio>
-            <Radio value="vertical">vertical</Radio>
-            <Radio value="inline">inline</Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item label="Username" field="username" rules={[{ required: true }]}>
-          <Input style={{ width: 270 }} placeholder="please enter your name" />
-        </Form.Item>
-        <Form.Item label="Post">
-          <Input style={{ width: 270 }} placeholder="please enter your post" />
-        </Form.Item>
-        <Form.Item>
-          <Checkbox>I have read the manual</Checkbox>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      <FormView></FormView>
     </div>
   )
 }
+
+const FormView = React.memo(() => {
+  return (
+    <Form autoComplete="off" style={{ width: '50%' }}>
+      <Form.Item label="Layout">
+        <Radio.Group type="button" name="layout">
+          <Radio value="horizontal">horizontal</Radio>
+          <Radio value="vertical">vertical</Radio>
+          <Radio value="inline">inline</Radio>
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item label="Username" field="username" rules={[{ required: true }]}>
+        <Input style={{ width: 270 }} placeholder="please enter your name" />
+      </Form.Item>
+      <Form.Item label="Post">
+        <Input style={{ width: 270 }} placeholder="please enter your post" />
+      </Form.Item>
+      <Form.Item>
+        <Checkbox>I have read the manual</Checkbox>
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  )
+})
 
 export default Misc
 
 const CustomScrollbarDemo = () => {
   return (
-    <CustomScrollbar style={{ height: 300 }} className="border" onSyncScroll={scrollTop => {}}>
+    <CustomScrollbar style={{ height: 300 }} className="border">
       {dataSources.map(item => (
         <div key={item.name}>{item.name}</div>
       ))}
