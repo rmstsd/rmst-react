@@ -17,7 +17,6 @@
     "@react-spring/web": "^9.7.3",
     "axios": "^0.26.1",
     "b-validate": "^1.4.4",
-    "canvaskit-wasm": "^0.38.0",
     "classnames": "^2.3.2",
     "is-hotkey": "^0.2.0",
     "jsonpath": "^1.1.1",

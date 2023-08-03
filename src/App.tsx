@@ -8,7 +8,6 @@ import Drag from './views/Drag'
 import DndKit from './views/DndKit/IndexDndKit'
 import Sector from './views/Sector'
 
-import CanvaskitWasmDe from './views/CanvaskitWasmDe'
 import FormDe from './views/Form/FormDe'
 import Misc from './views/Misc'
 import SlateDemo from './views/SlateDemo'
@@ -33,7 +32,6 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'sector', element: <Sector /> },
-      { path: 'CanvaskitWasmDe', element: <CanvaskitWasmDe /> },
       { path: 'Misc', element: <Misc /> },
       { path: 'dm', element: <Dm /> },
       { path: 'spring', element: <Spring /> }

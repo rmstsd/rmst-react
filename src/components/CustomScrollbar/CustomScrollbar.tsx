@@ -36,7 +36,7 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     rootDomRef.current.addEventListener('wheel', (evt: WheelEvent) => {
       evt.preventDefault()
 
-      let nvContentY = aniIns.getCurr() + evt.deltaY
+      let nvContentY = aniIns.getCurr() + (evt.deltaY > 0 ? 90 : -90)
       nvContentY = getRangeContentY(nvContentY)
 
       aniIns.start(nvContentY, curr => {
@@ -129,42 +129,36 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
   }
 
   return (
-    <div className="flex">
-      <main
-        {...htmlAttr}
-        className={classNames('scroll-container grow shrink-0', htmlAttr.className)}
-        style={{ position: 'relative', ...htmlAttr.style }}
-      >
-        <section className="scrollbar-view h-full overflow-hidden" ref={rootDomRef}>
-          <div
-            ref={contentDomRef}
-            className="content"
-            style={
-              {
-                // overflow: 'hidden',
-                // pointerEvents: 'none'
-                // contain: 'strict'
-              }
+    <main
+      {...htmlAttr}
+      className={classNames('scroll-container grow shrink-0', htmlAttr.className)}
+      style={{ position: 'relative', ...htmlAttr.style }}
+    >
+      <section className="scrollbar-view h-full overflow-hidden" ref={rootDomRef}>
+        <div
+          ref={contentDomRef}
+          className="content"
+          style={
+            {
+              // overflow: 'hidden',
+              // pointerEvents: 'none'
+              // contain: 'strict'
             }
-          >
-            {children}
-          </div>
-        </section>
-
-        <div className="absolute right-0 top-0 bottom-0 bg-gray-100 w-[30px] ">
-          <div
-            ref={thumbDomRef}
-            className="w-full bg-purple-400 h-[20px]"
-            style={{ height: thumbHeight }}
-            onMouseDown={onThumbMouseDown}
-          ></div>
+          }
+        >
+          {children}
         </div>
-      </main>
+      </section>
 
-      {/* <div className="overflow-auto grow" style={{ ...htmlAttr.style }}>
-        <div>{children}</div>
-      </div> */}
-    </div>
+      <div className="absolute right-0 top-0 bottom-0 bg-gray-100 w-[30px] ">
+        <div
+          ref={thumbDomRef}
+          className="w-full bg-purple-400 h-[20px]"
+          style={{ height: thumbHeight }}
+          onMouseDown={onThumbMouseDown}
+        ></div>
+      </div>
+    </main>
   )
 })
 

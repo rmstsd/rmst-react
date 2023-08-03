@@ -1,23 +1,10 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useCallback, useState } from 'react'
 import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
-import { sleep } from '@/utils/utils'
-import Scrollbar from '@/components/Scrollbar'
+
 import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
-import { useIsomorphicLayoutEffect } from '@dnd-kit/utilities'
 
-const TOTAL_COUNT = 100
-
-const dataSources = []
-let count = TOTAL_COUNT
-while (count--) {
-  const index = TOTAL_COUNT - count
-  dataSources.push({
-    index,
-    name: index + '-name',
-    id: index
-  })
-}
+const dataSources = Array.from({ length: 100 }, (_, index) => ({ index, name: index + '-name', id: index }))
 
 console.log(dataSources.length)
 
