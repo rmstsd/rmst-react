@@ -1,25 +1,24 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useCallback, useState } from 'react'
-import VirtualList from '@/components/virtual-scroll-list'
+// import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
+
+import { VirtualList } from '@rmstds/common'
 
 import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
 
 const dataSources = Array.from({ length: 100 }, (_, index) => ({ index, name: index + '-name', id: index }))
-
-console.log(dataSources.length)
 
 const Misc = () => {
   const ref = useRef<HTMLDivElement>()
 
   return (
     <div ref={ref}>
-      <CustomScrollbarDemo />
+      {/* <CustomScrollbarDemo /> */}
 
       <hr />
 
       <VirtualList
-        className="list"
-        style={{ border: '2px solid #333' }}
+        style={{ border: '2px solid #333', height: 400 }}
         dataKey="id"
         dataSources={dataSources}
         dataComponent={ItemComponent}
