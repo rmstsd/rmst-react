@@ -1,56 +1,38 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useUpdate } from '@/utils/hooks'
-import { lossFrame, sleep } from '@/utils/utils'
+import { getCommandTreeData } from '@/request/command'
+import { useState } from 'react'
 
-const data = Array.from({ length: 20 }, () => 1)
+const Cc = () => {
+  console.log('Cc render')
 
-const Sector = () => {
+  return <>cc</>
+}
+
+const Parent = props => {
+  const [, u] = useState(0)
+
+  console.log('Parent render')
+
   return (
-    <>
-      <button onClick={() => {}}>g</button>
-    </>
+    <div>
+      <button onClick={() => u(Math.random())}>Pp</button>
+
+      {props.cc}
+    </div>
   )
 }
 
-export default Sector
+const Sec = () => {
+  // return <Parent cc={<Cc></Cc>}></Parent>
 
-const Sector2 = () => {
-  const up = useUpdate()
-
-  useEffect(() => {
-    setInterval(() => {
-      up()
-    }, 30)
-
-    const container = document.querySelector('.cc') as HTMLDivElement
-
-    let testTop = 0
-    document.querySelector('button').onclick = () => {
-      testSc()
-    }
-
-    function testSc() {
-      testTop = testTop + 100
-      container.scrollTo({ top: testTop })
-    }
-
-    const fo = lossFrame(container, () => {
-      console.log(23)
-    })
-
-    container.onscroll = fo
-  }, [])
   return (
-    <>
-      <button>ss</button>
-
-      <div className="cc h-[600px] border overflow-auto">
-        {Array.from({ length: 100 }).map((_, idx) => (
-          <div key={idx}>{idx}</div>
-        ))}
-      </div>
-    </>
+    <button
+      onClick={() => {
+        getCommandTreeData()
+      }}
+    >
+      111
+    </button>
   )
 }
 
-// export default Sector2
+export default Sec
