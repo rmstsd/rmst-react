@@ -1,38 +1,17 @@
-import { getCommandTreeData } from '@/request/command'
-import { useState } from 'react'
+import Portal from '@/components/Portal/Portal'
 
-const Cc = () => {
-  console.log('Cc render')
-
-  return <>cc</>
-}
-
-const Parent = props => {
-  const [, u] = useState(0)
-
-  console.log('Parent render')
-
+const Sector = () => {
   return (
-    <div>
-      <button onClick={() => u(Math.random())}>Pp</button>
+    <div className="sec-root">
+      <Portal.Host>
+        <main>content</main>
 
-      {props.cc}
+        <Portal>
+          <>modal</>
+        </Portal>
+      </Portal.Host>
     </div>
   )
 }
 
-const Sec = () => {
-  // return <Parent cc={<Cc></Cc>}></Parent>
-
-  return (
-    <button
-      onClick={() => {
-        getCommandTreeData()
-      }}
-    >
-      111
-    </button>
-  )
-}
-
-export default Sec
+export default Sector
