@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useLayoutEffect, useRef } from 'react'
 
 import PortalConsumer from './PortalConsumer'
 import PortalHost, { PortalContext, PortalMethods } from './PortalHost'
@@ -27,25 +27,25 @@ export type Props = {
  * export default MyComponent;
  * ```
  */
-// class Portal extends React.Component<Props> {
-//   static Host = PortalHost
+class Portal extends React.Component<Props> {
+  static Host = PortalHost
 
-//   render() {
-//     const { children } = this.props
+  render() {
+    const { children } = this.props
 
-//     return (
-//       <PortalContext.Consumer>
-//         {manager => <PortalConsumer manager={manager as PortalMethods}>{children}</PortalConsumer>}
-//       </PortalContext.Consumer>
-//     )
-//   }
-// }
-
-const Portal = (props: Props) => {
-  const manager = useContext(PortalContext)
-
-  return <PortalConsumer manager={manager}>{props.children}</PortalConsumer>
+    return (
+      <PortalContext.Consumer>
+        {manager => <PortalConsumer manager={manager as PortalMethods}>{children}</PortalConsumer>}
+      </PortalContext.Consumer>
+    )
+  }
 }
+
+// const Portal = (props: Props) => {
+//   const manager = useContext(PortalContext)
+
+//   return <PortalConsumer manager={manager}>{props.children}</PortalConsumer>
+// }
 
 Portal.Host = PortalHost
 

@@ -112,7 +112,7 @@ export default class PortalHost extends React.Component<Props> {
   render() {
     return (
       <PortalContext.Provider value={{ mount: this.mount, update: this.update, unmount: this.unmount }}>
-        <div>{this.props.children}</div>
+        <div className="or-children">{this.props.children}</div>
 
         <PortalManager ref={this.setManager} />
       </PortalContext.Provider>

@@ -16,7 +16,7 @@ export default class PortalConsumer extends React.Component<Props> {
 
   componentDidUpdate() {
     this.checkManager()
-
+    console.log('up')
     this.props.manager.update(this.key, this.props.children)
   }
 

@@ -37,6 +37,10 @@ export default class PortalManager extends React.PureComponent<{}, State> {
     }))
 
   render() {
-    return this.state.portals.map(({ key, children }) => <div key={key}>{children}</div>)
+    return this.state.portals.map(({ key, children }) => (
+      <div key={key} className="portal-container">
+        {children}
+      </div>
+    ))
   }
 }
