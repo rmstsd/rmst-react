@@ -1,6 +1,6 @@
 import React, { useContext, useLayoutEffect, useRef } from 'react'
 
-import PortalConsumer from './PortalConsumer'
+import PortalConsumer from './z_PortalConsumer'
 import PortalHost, { PortalContext, PortalMethods } from './PortalHost'
 
 export type Props = {
@@ -27,25 +27,47 @@ export type Props = {
  * export default MyComponent;
  * ```
  */
-class Portal extends React.Component<Props> {
-  static Host = PortalHost
+// class Portal extends React.Component<Props> {
+//   static Host = PortalHost
 
-  render() {
-    const { children } = this.props
+//   render() {
+//     const { children } = this.props
 
-    return (
-      <PortalContext.Consumer>
-        {manager => <PortalConsumer manager={manager as PortalMethods}>{children}</PortalConsumer>}
-      </PortalContext.Consumer>
-    )
-  }
-}
-
-// const Portal = (props: Props) => {
-//   const manager = useContext(PortalContext)
-
-//   return <PortalConsumer manager={manager}>{props.children}</PortalConsumer>
+//     return (
+//       <PortalContext.Consumer>
+//         {manager => <PortalConsumer manager={manager as PortalMethods}>{children}</PortalConsumer>}
+//       </PortalContext.Consumer>
+//     )
+//   }
 // }
+
+const Portal = (props: Props) => {
+  const { children } = props
+  const manager = useContext(PortalContext)
+
+  const firstRenderRef = useRef(true)
+  const keyRef = useRef<number>()
+
+  useLayoutEffect(() => {
+    console.log('portal manager', manager)
+    if (firstRenderRef.current) {
+      keyRef.current = manager.mount(children)
+      firstRenderRef.current = false
+
+      return
+    }
+
+    manager.update(keyRef.current, children)
+  }, [props.children])
+
+  useLayoutEffect(() => {
+    return () => {
+      manager.unmount(keyRef.current)
+    }
+  }, [])
+
+  return null
+}
 
 Portal.Host = PortalHost
 

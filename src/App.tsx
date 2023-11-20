@@ -8,11 +8,10 @@ import Drag from './views/Drag'
 import DndKit from './views/DndKit/IndexDndKit'
 import Sector from './views/Sector'
 
-import FormDe from './views/Form/FormDe'
-import Misc from './views/Misc'
+import VirtualListTest from './views/VirtualListTest'
 import SlateDemo from './views/SlateDemo'
 import Dm from './views/Dm/Dm'
-import Spring from './views/Spring'
+import PortalTest from './views/PortalTest/PortalTest'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -24,7 +23,8 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'drag', element: <Drag /> },
-      { path: 'dndKit', element: <DndKit /> }
+      { path: 'dndKit', element: <DndKit /> },
+      { path: 'portalTest', element: <PortalTest /> }
     ]
   },
   {
@@ -32,16 +32,11 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'sector', element: <Sector /> },
-      { path: 'Misc', element: <Misc /> },
-      { path: 'dm', element: <Dm /> },
-      { path: 'spring', element: <Spring /> }
+      { path: 'Misc', element: <VirtualListTest /> },
+      { path: 'dm', element: <Dm /> }
     ]
   },
-  {
-    path: '/form',
-    element: <LayoutView />,
-    children: [{ path: 'formDe', element: <FormDe /> }]
-  },
+
   {
     path: '/slate',
     element: <LayoutView />,

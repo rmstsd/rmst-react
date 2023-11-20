@@ -8,7 +8,7 @@ import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
 
 const dataSources = Array.from({ length: 100 }, (_, index) => ({ index, name: index + '-name', id: index }))
 
-const Misc = () => {
+const VirtualListTest = () => {
   const ref = useRef<HTMLDivElement>()
 
   return (
@@ -31,6 +31,8 @@ const Misc = () => {
     </div>
   )
 }
+
+export default VirtualListTest
 
 const ItemComponent = item => {
   return (
@@ -78,8 +80,6 @@ const FormView = React.memo(() => {
     </Form>
   )
 })
-
-export default Misc
 
 const CustomScrollbarDemo = () => {
   return (

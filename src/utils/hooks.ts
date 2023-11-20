@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import ResizeObserver from 'resize-observer-polyfill'
 import { useMemo } from 'react'
 
@@ -19,11 +19,13 @@ export const useDebounce = (cb: any, delay: number = 500) => {
 }
 
 export const useUpdate = () => {
-  const [, sb] = useState(true)
+  const [, sb] = useState({})
 
-  return () => {
-    sb(v => !v)
-  }
+  const up = useCallback(() => {
+    sb({})
+  }, [])
+
+  return up
 }
 
 export function useMergeProps<PropsType>(

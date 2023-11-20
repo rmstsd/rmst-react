@@ -501,10 +501,10 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.7.1.tgz#fea7ac35ae4014637c130011f59428f618730498"
   integrity sha512-bgVQM4ZJ2u2CM8k1ey70o1ePFXsEzYVZoWghh6WjM8p59jQ7HxzbHW4SbnWFG7V9ig9chLawQxDTZ3xzOF8MkQ==
 
-"@rmstds/common@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@rmstds/common/-/common-0.0.4.tgz#8392a16c3e2400f7976ce59c382982372fee0db4"
-  integrity sha512-P/nA+P9mDEJM5Vsa9ji27yYk6Bm47KHTBEGyYmw+xTRQM82UwiAu50iEY1KlXusvSn3cPrB6npuWxyS3Bl2sHA==
+"@rmstds/common@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.npmmirror.com/@rmstds/common/-/common-0.0.8.tgz#1f5ba1e5a16590c49d46b97e974ccd97663f544c"
+  integrity sha512-JKRffIgy8YcH6Pa0lCYut7dupijTurocDsxHvK8Vyx9A69fhCpqqgiG9b+QcqU1RjLauDnyQ8OU/Hgz/KVIlCw==
 
 "@types/is-hotkey@^0.1.1":
   version "0.1.7"
