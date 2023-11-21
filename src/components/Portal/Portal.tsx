@@ -53,12 +53,9 @@ const Portal = (props: Props) => {
       keyRef.current = manager.mount(children)
       firstRenderRef.current = false
 
-      console.log('portal mount')
-
       return
     }
 
-    console.log('portal up')
     manager.update(keyRef.current, children)
   })
 

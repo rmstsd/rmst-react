@@ -1,4 +1,3 @@
-import { useEvent } from '@/utils/hooks'
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 interface PortalItem {
@@ -36,12 +35,7 @@ const Host = (props: HostProps) => {
 
     const item = { key: nextKeyRef.current, jsx }
 
-    if (!ref.current) {
-      queueRef.current.push(item)
-    } else {
-      setList(state => state.concat(item))
-    }
-
+    setList(state => state.concat(item))
     return nextKeyRef.current
   }
 
@@ -55,13 +49,11 @@ const Host = (props: HostProps) => {
 
   const value = useMemo(() => ({ mount, update, unmount }), [])
 
-  const ref = useRef()
-
   return (
     <PortalContext.Provider value={value}>
       {props.children}
 
-      <div className="portal-host-loc" ref={ref}>
+      <div className="portal-host-loc">
         {list.map(item => (
           <React.Fragment key={item.key}>{item.jsx}</React.Fragment>
         ))}

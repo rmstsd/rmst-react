@@ -45,7 +45,6 @@ export default class PortalHost extends React.Component<Props> {
   static displayName = 'Portal.Host'
 
   componentDidMount() {
-    console.log('did mount')
     const manager = this.manager
     const queue = this.queue
 
@@ -65,10 +64,6 @@ export default class PortalHost extends React.Component<Props> {
         }
       }
     }
-  }
-
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
-    console.log('host didup')
   }
 
   private setManager = (manager: PortalManager | undefined | null) => {

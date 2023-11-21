@@ -15,10 +15,6 @@ export default class PortalManager extends React.PureComponent<{}, State> {
     portals: []
   }
 
-  componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<State>, snapshot?: any): void {
-    console.log('PortalManager didup')
-  }
-
   mount = (key: number, children: React.ReactNode) => {
     this.setState(state => ({
       portals: [...state.portals, { key, children }]
