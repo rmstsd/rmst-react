@@ -1,14 +1,24 @@
 import { useEvent } from '@/utils/hooks'
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
-export const PortalContext = React.createContext(null)
-
 interface PortalItem {
   key: number
   jsx: React.ReactNode
 }
 
-const Host = props => {
+interface PortalContextValue {
+  mount: (jsx: React.ReactNode) => number
+  update: (key: number, jsx: React.ReactNode) => void
+  unmount: (key: number) => void
+}
+
+export const PortalContext = React.createContext<PortalContextValue>(null)
+
+interface HostProps {
+  children?: React.ReactNode
+}
+
+const Host = (props: HostProps) => {
   const [list, setList] = useState<PortalItem[]>([])
   const queueRef = useRef<PortalItem[]>([])
   const nextKeyRef = useRef(10000)
@@ -21,31 +31,31 @@ const Host = props => {
     }
   }, [])
 
-  const mount = useEvent((jsx, onlyKey?) => {
+  const mount = (jsx: React.ReactNode) => {
     nextKeyRef.current += 1
 
-    const item = { key: onlyKey || nextKeyRef.current, jsx }
+    const item = { key: nextKeyRef.current, jsx }
 
     if (!ref.current) {
       queueRef.current.push(item)
     } else {
-      setList(list.concat(item))
+      setList(state => state.concat(item))
     }
 
     return nextKeyRef.current
-  })
+  }
 
-  const update = useEvent((key, jsx) => {
+  const update = (key: number, jsx: React.ReactNode) => {
     setList(state => state.map(item => (item.key === key ? { ...item, jsx } : item)))
-  })
+  }
 
-  const unmount = useEvent(key => {
+  const unmount = (key: number) => {
     setList(state => state.filter(item => item.key !== key))
-  })
-
-  const ref = useRef()
+  }
 
   const value = useMemo(() => ({ mount, update, unmount }), [])
+
+  const ref = useRef()
 
   return (
     <PortalContext.Provider value={value}>

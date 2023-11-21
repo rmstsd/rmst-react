@@ -1,29 +1,23 @@
-import { useContext, useEffect, useLayoutEffect, useRef, memo } from 'react'
+import { useContext, useLayoutEffect, useRef } from 'react'
 import { PortalContext } from './Host'
 
 interface PortalProps {
-  children: React.ReactNode
-  onlyKey?: number | string
+  children?: React.ReactNode
 }
 
 const Portal = (props: PortalProps) => {
-  const { children, onlyKey } = props
+  const { children } = props
   const { mount, update, unmount } = useContext(PortalContext)
 
-  const onlyKeyRef = useRef<PortalProps['onlyKey']>(onlyKey)
-  if (onlyKey !== undefined) {
-    onlyKeyRef.current = onlyKey
-  }
+  const onlyKeyRef = useRef<number>()
 
   const firstRenderRef = useRef(true)
 
   useLayoutEffect(() => {
     if (firstRenderRef.current) {
-      const hostedOnlyKey = mount(children, onlyKey)
-      if (onlyKey === undefined) {
-        onlyKeyRef.current = hostedOnlyKey
-      }
       firstRenderRef.current = false
+
+      onlyKeyRef.current = mount(children)
 
       return
     }

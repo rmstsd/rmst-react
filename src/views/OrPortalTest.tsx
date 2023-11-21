@@ -10,6 +10,8 @@ const OrPortalTest = () => {
   const [hbool, sehtBool] = useState(true)
   const [bool, setBool] = useState(true)
 
+  const [multi, setMulti] = useState(true)
+
   return (
     <div className="sec-root">
       <h1>or</h1>
@@ -24,6 +26,10 @@ const OrPortalTest = () => {
 
       <Button onClick={() => setBool(!bool)}>Portal {String(bool)}</Button>
 
+      <Button onClick={() => setMulti(!multi)} className="ml-3">
+        multi
+      </Button>
+
       <hr />
 
       {hbool && (
@@ -31,6 +37,22 @@ const OrPortalTest = () => {
           {bool && <Portal>1</Portal>}
 
           <Portal>2</Portal>
+
+          {multi && (
+            <>
+              <Portal>
+                <div className="border p-2 my-2">201 portal内容</div>
+              </Portal>
+
+              <Portal>
+                <div className="border p-2 my-2">202 portal内容</div>
+              </Portal>
+
+              <Portal>
+                <div className="border p-2 my-2">203 portal内容</div>
+              </Portal>
+            </>
+          )}
         </Portal.Host>
       )}
     </div>

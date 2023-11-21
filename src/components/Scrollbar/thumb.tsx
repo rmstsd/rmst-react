@@ -5,7 +5,6 @@ import { useMergeProps } from '@/utils/hooks'
 import { ScrollbarContext } from './context'
 import { ThumbProps } from './interface'
 import { BAR_MAP, getPrefixCls, renderThumbStyle } from './utils'
-import { throttle } from 'throttle-debounce'
 
 const defaultProps: ThumbProps = {
   ratio: 10

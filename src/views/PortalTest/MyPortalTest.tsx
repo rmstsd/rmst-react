@@ -1,45 +1,93 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Host from './components/Host'
 import Portal from './components/Portal'
-import { Button } from '@arco-design/web-react'
+import { Button, Input } from '@arco-design/web-react'
 import { useUpdate } from '@/utils/hooks'
 
 const MyPortalTest = () => {
   console.log('MyPortalTest render')
   const up = useUpdate()
 
-  const [b1, setB1] = useState(true)
-  const [b2, setB2] = useState(true)
+  const [ppList, setPplist] = useState([
+    { idx: 1, bool: true },
+    { idx: 2, bool: true },
+    { idx: 3, bool: true }
+  ])
 
-  const [count, setCount] = useState(1)
+  const [multi, setMulti] = useState(true)
+
+  const h1Ref = useRef()
 
   return (
     <>
-      <h1>my</h1>
+      <h1 ref={h1Ref}>my</h1>
       <hr />
 
-      <Button onClick={() => up()}>up</Button>
-      <br />
+      <div onMouseDown={evt => evt.preventDefault()} className="border border-orange-400 p-3">
+        <Button onClick={() => up()}>up</Button>
+        <hr />
 
-      <Button onClick={() => setB1(!b1)}>setB1 {String(b1)}</Button>
-      <Button onClick={() => setB2(!b2)}>setB2 {String(b2)}</Button>
+        <>
+          {ppList.map(item => (
+            <Button
+              key={item.idx}
+              onClick={() => {
+                item.bool = !item.bool
+                setPplist([...ppList])
+              }}
+            >
+              {item.idx} {String(item.bool)}
+            </Button>
+          ))}
+        </>
+
+        <Button onClick={() => setMulti(!multi)} className="ml-3">
+          multi
+        </Button>
+      </div>
 
       <hr />
 
       <Host>
-        <>PortalTest page</>
+        <>PortalTest page in Host</>
 
         <hr />
 
-        {b1 && <Child idx="1" />}
-        {b2 && <Child idx="2" />}
+        {ppList.map(item =>
+          item.bool ? (
+            <Portal key={item.idx}>
+              <div className="border p-2 my-2">
+                {item.idx} portal内容 <Input />
+              </div>
+            </Portal>
+          ) : null
+        )}
+
+        {multi && (
+          <>
+            <Portal>
+              <div className="border p-2 my-2">
+                201 portal内容 <Input />{' '}
+              </div>
+            </Portal>
+
+            <Portal>
+              <div className="border p-2 my-2">
+                202 portal内容 <Input />
+              </div>
+            </Portal>
+
+            <Portal>
+              <div className="border p-2 my-2">
+                203 portal内容
+                <Input />
+              </div>
+            </Portal>
+          </>
+        )}
       </Host>
     </>
   )
 }
 
 export default MyPortalTest
-
-function Child({ idx }) {
-  return <Portal onlyKey={idx}>Child portal-{idx}</Portal>
-}
