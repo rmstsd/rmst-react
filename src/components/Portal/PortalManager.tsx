@@ -15,13 +15,17 @@ export default class PortalManager extends React.PureComponent<{}, State> {
     portals: []
   }
 
+  componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<State>, snapshot?: any): void {
+    console.log('PortalManager didup')
+  }
+
   mount = (key: number, children: React.ReactNode) => {
     this.setState(state => ({
       portals: [...state.portals, { key, children }]
     }))
   }
 
-  update = (key: number, children: React.ReactNode) =>
+  update = (key: number, children: React.ReactNode) => {
     this.setState(state => ({
       portals: state.portals.map(item => {
         if (item.key === key) {
@@ -30,11 +34,13 @@ export default class PortalManager extends React.PureComponent<{}, State> {
         return item
       })
     }))
+  }
 
-  unmount = (key: number) =>
+  unmount = (key: number) => {
     this.setState(state => ({
       portals: state.portals.filter(item => item.key !== key)
     }))
+  }
 
   render() {
     return this.state.portals.map(({ key, children }) => (

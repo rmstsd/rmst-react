@@ -49,16 +49,18 @@ const Portal = (props: Props) => {
   const keyRef = useRef<number>()
 
   useLayoutEffect(() => {
-    console.log('portal manager', manager)
     if (firstRenderRef.current) {
       keyRef.current = manager.mount(children)
       firstRenderRef.current = false
 
+      console.log('portal mount')
+
       return
     }
 
+    console.log('portal up')
     manager.update(keyRef.current, children)
-  }, [props.children])
+  })
 
   useLayoutEffect(() => {
     return () => {

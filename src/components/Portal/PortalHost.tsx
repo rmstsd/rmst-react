@@ -67,12 +67,16 @@ export default class PortalHost extends React.Component<Props> {
     }
   }
 
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<{}>, snapshot?: any): void {
+    console.log('host didup')
+  }
+
   private setManager = (manager: PortalManager | undefined | null) => {
     this.manager = manager
   }
 
   private mount = (children: React.ReactNode) => {
-    console.log('ho mount', this.manager, this.ref)
+    console.log('ho mount', this.manager)
     const key = this.nextKey++
 
     if (this.manager) {
@@ -85,7 +89,6 @@ export default class PortalHost extends React.Component<Props> {
   }
 
   private update = (key: number, children: React.ReactNode) => {
-    console.log('ho up')
     if (this.manager) {
       this.manager.update(key, children)
     } else {
@@ -112,14 +115,11 @@ export default class PortalHost extends React.Component<Props> {
   private queue: Operation[] = []
   private manager: PortalManager | null | undefined
 
-  ref
-
   render() {
     return (
       <PortalContext.Provider value={{ mount: this.mount, update: this.update, unmount: this.unmount }}>
         <div className="or-children">{this.props.children}</div>
 
-        <div className="pm" ref={this.ref}></div>
         <PortalManager ref={this.setManager} />
       </PortalContext.Provider>
     )

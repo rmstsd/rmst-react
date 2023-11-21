@@ -28,6 +28,15 @@ export const useUpdate = () => {
   return up
 }
 
+export const useEvent = func => {
+  const ref = useRef(func)
+  ref.current = func
+
+  return useCallback((...args) => {
+    return ref.current(...args)
+  }, [])
+}
+
 export function useMergeProps<PropsType>(
   componentProps: PropsType,
   defaultProps: Partial<PropsType>,

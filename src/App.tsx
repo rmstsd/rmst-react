@@ -6,12 +6,12 @@ import LayoutView from './layout/Layout'
 
 import Drag from './views/Drag'
 import DndKit from './views/DndKit/IndexDndKit'
-import Sector from './views/Sector'
+import OrPortalTest from './views/OrPortalTest'
 
 import VirtualListTest from './views/VirtualListTest'
 import SlateDemo from './views/SlateDemo'
 import Dm from './views/Dm/Dm'
-import PortalTest from './views/PortalTest/PortalTest'
+import MyPortalTest from './views/PortalTest/MyPortalTest'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -24,14 +24,14 @@ export const routes: IRouteObject[] = [
     children: [
       { path: 'drag', element: <Drag /> },
       { path: 'dndKit', element: <DndKit /> },
-      { path: 'portalTest', element: <PortalTest /> }
+      { path: 'orPortalTest', element: <OrPortalTest /> },
+      { path: 'myPortalTest', element: <MyPortalTest /> }
     ]
   },
   {
     path: '/sector',
     element: <LayoutView />,
     children: [
-      { path: 'sector', element: <Sector /> },
       { path: 'Misc', element: <VirtualListTest /> },
       { path: 'dm', element: <Dm /> }
     ]

@@ -3,7 +3,7 @@ import { useUpdate } from '@/utils/hooks'
 import { Button } from '@arco-design/web-react'
 import { useState } from 'react'
 
-const Sector = () => {
+const OrPortalTest = () => {
   console.log('Sector render')
   const up = useUpdate()
 
@@ -12,6 +12,10 @@ const Sector = () => {
 
   return (
     <div className="sec-root">
+      <h1>or</h1>
+
+      <hr />
+
       <Button onClick={() => up()}>up</Button>
 
       <hr />
@@ -33,7 +37,7 @@ const Sector = () => {
   )
 }
 
-export default Sector
+export default OrPortalTest
 
 function Other() {
   const [count, setCount] = useState(1)

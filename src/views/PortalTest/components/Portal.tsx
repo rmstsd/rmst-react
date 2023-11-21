@@ -1,27 +1,40 @@
-import { useContext, useEffect, useLayoutEffect, useRef } from 'react'
+import { useContext, useEffect, useLayoutEffect, useRef, memo } from 'react'
 import { PortalContext } from './Host'
 
-const Portal = props => {
-  const { children } = props
+interface PortalProps {
+  children: React.ReactNode
+  onlyKey?: number | string
+}
+
+const Portal = (props: PortalProps) => {
+  const { children, onlyKey } = props
   const { mount, update, unmount } = useContext(PortalContext)
 
-  const onlyKeyRef = useRef(0)
+  const onlyKeyRef = useRef<PortalProps['onlyKey']>(onlyKey)
+  if (onlyKey !== undefined) {
+    onlyKeyRef.current = onlyKey
+  }
 
   const firstRenderRef = useRef(true)
 
   useLayoutEffect(() => {
     if (firstRenderRef.current) {
-      onlyKeyRef.current = mount(children)
+      const hostedOnlyKey = mount(children, onlyKey)
+      if (onlyKey === undefined) {
+        onlyKeyRef.current = hostedOnlyKey
+      }
       firstRenderRef.current = false
 
       return
     }
 
     update(onlyKeyRef.current, children)
-  }, [children])
+  })
 
   useLayoutEffect(() => {
-    return unmount(onlyKeyRef.current)
+    return () => {
+      unmount(onlyKeyRef.current)
+    }
   }, [])
 
   return null
