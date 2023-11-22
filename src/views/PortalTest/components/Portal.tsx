@@ -7,29 +7,48 @@ interface PortalProps {
 
 const Portal = (props: PortalProps) => {
   const { children } = props
-  const { mount, update, unmount } = useContext(PortalContext)
+  const manager = useContext(PortalContext)
 
   const onlyKeyRef = useRef<number>()
 
   const firstRenderRef = useRef(true)
 
   useLayoutEffect(() => {
+    if (!checkManager()) {
+      return
+    }
+
     if (firstRenderRef.current) {
       firstRenderRef.current = false
 
-      onlyKeyRef.current = mount(children)
+      checkManager()
+      onlyKeyRef.current = manager.mount(children)
 
       return
     }
 
-    update(onlyKeyRef.current, children)
+    manager.update(onlyKeyRef.current, children)
   })
 
   useLayoutEffect(() => {
     return () => {
-      unmount(onlyKeyRef.current)
+      if (!checkManager()) {
+        return
+      }
+
+      manager.unmount(onlyKeyRef.current)
     }
   }, [])
+
+  const checkManager = () => {
+    if (!manager) {
+      console.error('Host 没有使用')
+
+      return false
+    }
+
+    return true
+  }
 
   return null
 }

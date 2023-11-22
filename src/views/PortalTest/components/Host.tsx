@@ -53,11 +53,9 @@ const Host = (props: HostProps) => {
     <PortalContext.Provider value={value}>
       {props.children}
 
-      <div className="portal-host-loc">
-        {list.map(item => (
-          <React.Fragment key={item.key}>{item.jsx}</React.Fragment>
-        ))}
-      </div>
+      {list.map(item => (
+        <React.Fragment key={item.key}>{item.jsx}</React.Fragment>
+      ))}
     </PortalContext.Provider>
   )
 }

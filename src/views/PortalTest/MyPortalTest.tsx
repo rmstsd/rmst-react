@@ -32,7 +32,6 @@ const MyPortalTest = () => {
         <Button
           className="ml-3"
           onClick={() => {
-            setMulti(false)
             act.toggle()
           }}
         >
@@ -55,7 +54,7 @@ const MyPortalTest = () => {
         </>
 
         <Button onClick={() => setMulti(!multi)} className="ml-3">
-          multi
+          multi {String(multi)}
         </Button>
       </div>
 
@@ -81,19 +80,21 @@ const MyPortalTest = () => {
             <>
               <Portal>
                 <div className="border p-2 my-2">
-                  201 portal内容 <Input />{' '}
+                  201 portal内容 multi
+                  <Input />
                 </div>
               </Portal>
 
               <Portal>
                 <div className="border p-2 my-2">
-                  202 portal内容 <Input />
+                  202 portal内容 multi
+                  <Input />
                 </div>
               </Portal>
 
               <Portal>
                 <div className="border p-2 my-2">
-                  203 portal内容
+                  203 portal内容 multi
                   <Input />
                 </div>
               </Portal>
