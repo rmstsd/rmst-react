@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React, { useState } from 'react'
+import i18next from 'i18next'
 
 import './dm.less'
 
@@ -28,12 +29,14 @@ const Dm = () => {
       // containerRef.current.style.setProperty('--container-width', containerRect.width + 'px')
     })
 
-    ob.observe(containerRef.current)
+    // ob.observe(containerRef.current)
 
     setTimeout(() => {
-      setDmValue('你好')
+      // setDmValue('你好')
     }, 1000)
   }, [])
+
+  return <>{i18next.t('key')}</>
 
   return (
     <div>
