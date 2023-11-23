@@ -12,6 +12,8 @@ import VirtualListTest from './views/VirtualListTest'
 import SlateDemo from './views/SlateDemo'
 import Dm from './views/Dm/Dm'
 import MyPortalTest from './views/PortalTest/MyPortalTest'
+import NestedContext from './views/NestedContext'
+import Hooks18 from './views/Hooks18'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -25,7 +27,9 @@ export const routes: IRouteObject[] = [
       { path: 'drag', element: <Drag /> },
       { path: 'dndKit', element: <DndKit /> },
       { path: 'orPortalTest', element: <OrPortalTest /> },
-      { path: 'myPortalTest', element: <MyPortalTest /> }
+      { path: 'myPortalTest', element: <MyPortalTest /> },
+      { path: 'NestedContext', element: <NestedContext /> },
+      { path: 'Hooks18', element: <Hooks18 /> }
     ]
   },
   {
