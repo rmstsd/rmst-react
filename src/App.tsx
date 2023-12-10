@@ -14,6 +14,7 @@ import Dm from './views/Dm/Dm'
 import MyPortalTest from './views/PortalTest/MyPortalTest'
 import NestedContext from './views/NestedContext'
 import Hooks18 from './views/Hooks18'
+import VSelect from './views/VSelect'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -29,7 +30,8 @@ export const routes: IRouteObject[] = [
       { path: 'orPortalTest', element: <OrPortalTest /> },
       { path: 'myPortalTest', element: <MyPortalTest /> },
       { path: 'NestedContext', element: <NestedContext /> },
-      { path: 'Hooks18', element: <Hooks18 /> }
+      { path: 'Hooks18', element: <Hooks18 /> },
+      { path: 'VSelect', element: <VSelect /> }
     ]
   },
   {
