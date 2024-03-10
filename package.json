@@ -1,0 +1,41 @@
+{
+  "name": "rmst-react-rs",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "@arco-design/web-react": "^2.60.3",
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/modifiers": "^7.0.0",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@react-spring/web": "^9.7.3",
+    "@rmstds/common": "^0.0.8",
+    "@timohausmann/quadtree-js": "^1.2.6",
+    "ahooks": "^3.7.10",
+    "axios": "^1.6.7",
+    "classnames": "^2.5.1",
+    "i18next": "^23.10.1",
+    "is-hotkey": "^0.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-virtuoso": "^4.7.2",
+    "resize-observer-polyfill": "^1.5.1",
+    "slate": "^0.102.0",
+    "slate-history": "^0.100.0",
+    "slate-react": "^0.102.0"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^0.4.13",
+    "@rsbuild/plugin-react": "^0.4.13",
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.4.2"
+  }
+}
