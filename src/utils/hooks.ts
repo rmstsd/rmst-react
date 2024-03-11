@@ -3,7 +3,7 @@ import ResizeObserver from 'resize-observer-polyfill'
 import { useMemo } from 'react'
 
 export const useDebounce = (cb: any, delay: number = 500) => {
-  const debounceRef = useRef<{ timer: NodeJS.Timeout; cb: () => void }>({
+  const debounceRef = useRef<{ timer: number; cb: () => void }>({
     timer: null,
     cb
   })
