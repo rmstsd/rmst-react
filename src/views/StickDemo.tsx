@@ -1,9 +1,44 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
+import { useImmer } from 'use-immer'
+
+const tt = [
+  {
+    id: 'React',
+    title: 'Learn React',
+    done: true
+  },
+  {
+    id: 'Immer',
+    title: 'Try Immer',
+    done: false
+  }
+]
 
 const StickDemo = () => {
+  const [todos, setTodos] = useImmer(tt)
+
+  const handleAdd = () => {
+    setTodos(draft => {
+      draft.push({
+        id: 'todo_' + Math.random(),
+        title: 'A new todo',
+        done: false
+      })
+    })
+  }
+
+  // return (
+  //   <>
+  //     <button onClick={handleAdd}>handleAdd</button>
+
+  //     <pre>{JSON.stringify(todos, null, 2)}</pre>
+  //   </>
+  // )
+
   return (
     <div>
-      <h1>阿萨是的</h1>
+      <h1>阿萨是的11</h1>
       <h1>阿萨是的</h1>
       <h1>阿萨是的</h1>
       <h1>阿萨是的</h1>
@@ -60,9 +95,9 @@ function StickTop(props) {
   const { offsetTop = 10 } = props
 
   const [state, setState] = useState({
-    affix: false, // 吸顶状态
-    fixedStyle: {}, // 吸顶元素的样式
-    placeholderStyle: {} // 占位容器
+    affix: false,
+    fixedStyle: {} as React.CSSProperties,
+    placeholderStyle: {} as React.CSSProperties
   })
 
   const stateRef = useRef(state)
@@ -76,12 +111,8 @@ function StickTop(props) {
       const rect = root.current.getBoundingClientRect()
 
       if (rect.top < 0 + offsetTop) {
-        state.fixedStyle = {
-          position: 'fixed',
-          top: `${offsetTop}px`,
-          width: `${rect.width}px`
-        }
-        state.placeholderStyle = { height: point.current.offsetHeight + 'px' }
+        state.fixedStyle = { position: 'fixed', top: offsetTop, width: rect.width }
+        state.placeholderStyle = { height: point.current.offsetHeight }
         state.affix = true
 
         setState({ ...state })
@@ -100,7 +131,7 @@ function StickTop(props) {
       if (stateRef.current.affix) {
         const rect = root.current.getBoundingClientRect()
 
-        state.fixedStyle.width = `${rect.width}px`
+        state.fixedStyle.width = rect.width
 
         setState({ ...state })
       }

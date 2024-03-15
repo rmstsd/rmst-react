@@ -1,13 +1,23 @@
 import Count from './Count'
+import ReduxTodo from './ReduxTodo'
 import Todo from './Todo'
+import MReduxUndo from './_ReduxTodo'
 
 const index = () => {
   return (
-    <div>
-      {/* <Count /> */}
+    <>
+      <div>
+        {/* <Count /> */}
 
-      <Todo />
-    </div>
+        {/* <Todo /> */}
+
+        {/* <ReduxTodo /> */}
+
+        <hr />
+
+        <MReduxUndo />
+      </div>
+    </>
   )
 }
 

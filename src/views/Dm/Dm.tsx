@@ -35,6 +35,10 @@ const Dm = () => {
     setTimeout(() => {
       setDmValue('你好')
     }, 1000)
+
+    return () => {
+      ob.disconnect()
+    }
   }, [])
 
   return (
