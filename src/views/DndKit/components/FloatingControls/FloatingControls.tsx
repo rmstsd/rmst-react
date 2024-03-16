@@ -1,12 +1,12 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import clsx from 'clsx'
 
-import styles from './FloatingControls.module.css';
+import styles from './FloatingControls.module.css'
 
 export interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
-export function FloatingControls({children}: Props) {
-  return <div className={classNames(styles.FloatingControls)}>{children}</div>;
+export function FloatingControls({ children }: Props) {
+  return <div className={clsx(styles.FloatingControls)}>{children}</div>
 }

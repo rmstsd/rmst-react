@@ -108,8 +108,10 @@ export default function undoable(reducer, rawConfig = {}) {
 
         return history
       } else if (isHistory(state)) {
+        console.log(2)
         history = initialState = config.ignoreInitialState ? state : newHistory(state.past, state.present, state.future)
       } else {
+        console.log(3)
         history = initialState = createHistory(state, config.ignoreInitialState)
       }
     }
@@ -128,8 +130,6 @@ export default function undoable(reducer, rawConfig = {}) {
         return res
 
       default:
-        console.log('default')
-
         res = reducer(history.present, action, ...slices)
 
         history = insert(history, res, config.limit, null)

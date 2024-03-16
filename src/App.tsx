@@ -18,6 +18,7 @@ import VSelect from './views/VSelect'
 import StickDemo from './views/StickDemo'
 import QuadTree from './views/QuadTree'
 import UndoRedo from './views/UndoRedo'
+import ScrollDemo from './views/ScrollDemo'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -37,7 +38,8 @@ export const routes: IRouteObject[] = [
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'VSelect', element: <VSelect /> },
       { path: 'QuadTree', element: <QuadTree /> },
-      { path: 'UndoRedo', element: <UndoRedo /> }
+      { path: 'UndoRedo', element: <UndoRedo /> },
+      { path: 'ScrollDemo', element: <ScrollDemo /> }
     ]
   },
   {

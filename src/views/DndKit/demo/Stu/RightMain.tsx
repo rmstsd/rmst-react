@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import {
   DndContext,
@@ -29,10 +29,7 @@ const RightMain = ({ activeId, activeItem, flattenedItems, sortedIds, projected 
 
   return (
     <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-      <main
-        ref={setNodeRef}
-        className={classNames('flex-grow border-2 overflow-auto', finalIsOver && 'border-orange-400')}
-      >
+      <main ref={setNodeRef} className={clsx('flex-grow border-2 overflow-auto', finalIsOver && 'border-orange-400')}>
         {flattenedItems.map(item => (
           <MainSortableItem
             key={item.id}

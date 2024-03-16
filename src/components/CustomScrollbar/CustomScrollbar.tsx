@@ -1,6 +1,5 @@
-import classNames from 'classnames'
-import React, { forwardRef, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
-import { Ani } from './ani'
+import clsx from 'clsx'
+import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react'
 
 type CustomScrollbarProps = React.HtmlHTMLAttributes<HTMLDivElement> & {
   onSyncScroll?: (scrollTop: number) => void
@@ -15,63 +14,25 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
 
   const [thumbHeight, setThumbHeight] = useState(0)
 
-  const rootDomRef = useRef<HTMLDivElement>(null)
+  const viewportDomRef = useRef<HTMLDivElement>(null)
   const contentDomRef = useRef<HTMLDivElement>(null)
+
   const thumbDomRef = useRef<HTMLDivElement>(null)
-
-  const aniInsRef = useRef<Ani>(null)
-
-  useImperativeHandle(ref, () => ({ scrollTo }))
+  const trackDomRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
-    const rootDom = rootDomRef.current
-    const aniIns = new Ani({ initialValue: 0 })
-    aniInsRef.current = aniIns
-
-    const contentHeight = getContentHeight()
-    setThumbHeight(contentHeight === 0 ? 0 : rootDom.clientHeight ** 2 / contentHeight)
-
-    let timer: NodeJS.Timeout
-
-    rootDomRef.current.addEventListener('wheel', (evt: WheelEvent) => {
-      evt.preventDefault()
-
-      let nvContentY = aniIns.getCurr() + (evt.deltaY > 0 ? 90 : -90)
-      nvContentY = getRangeContentY(nvContentY)
-
-      aniIns.start(nvContentY, curr => {
-        unknownScrollTo(curr)
-      })
-
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        aniIns.stop()
-      }, 200)
-    })
+    const viewportDom = viewportDomRef.current
 
     const ob = new ResizeObserver(() => {
-      const contentHeight = getContentHeight()
-      if (contentHeight === 0) {
-        return
-      }
-
-      setThumbHeight(rootDom.clientHeight ** 2 / contentHeight)
+      const h = (viewportDom.offsetHeight / contentDomRef.current.offsetHeight) * trackDomRef.current.offsetHeight
+      setThumbHeight(h)
     })
     ob.observe(contentDomRef.current)
+
+    return () => {
+      ob.disconnect()
+    }
   }, [])
-
-  const scrollTo = (scrollTop: number) => {
-    setDomScrollTop(scrollTop)
-    setDomThumbY(scrollTop2ThumbY(scrollTop))
-  }
-
-  function scrollTop2ThumbY(scrollTop: number) {
-    return (scrollTop / getContentHeight()) * rootDomRef.current.clientHeight
-  }
-
-  function thumbY2scrollTop(thumbY: number) {
-    return (thumbY / rootDomRef.current.clientHeight) * getContentHeight()
-  }
 
   const setDomScrollTop = (scrollTop: number) => {
     contentDomRef.current.style.setProperty('transform', `translate3d(0px, ${-scrollTop}px, 0px)`)
@@ -81,42 +42,25 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     thumbDomRef.current.style.setProperty('transform', `translateY(${thumbY}px)`)
   }
 
-  const getContentHeight = () => contentDomRef.current?.offsetHeight || 0
-
-  const unknownScrollTo = (scrollTop: number) => {
-    if (onSyncScroll) {
-      onSyncScroll(scrollTop)
-    } else {
-      scrollTo(scrollTop)
-    }
-  }
-
-  const getRangeContentY = (nvContentY: number) => {
-    const contentHeight = getContentHeight()
-    const max = contentHeight - rootDomRef.current.clientHeight
-    if (nvContentY <= 0) nvContentY = 0
-    if (nvContentY >= max) nvContentY = max
-
-    return nvContentY
-  }
-
   const onThumbMouseDown = (evt: React.MouseEvent) => {
     const thumbDomDownOffsetY = evt.clientY - thumbDomRef.current.getBoundingClientRect().top
-    const rootDomRect = rootDomRef.current.getBoundingClientRect()
+    const viewportDomRect = viewportDomRef.current.getBoundingClientRect()
+    const contentDomRect = contentDomRef.current.getBoundingClientRect()
+    const trackDomRect = trackDomRef.current.getBoundingClientRect()
+    const thumbDomRect = thumbDomRef.current.getBoundingClientRect()
 
     const onDocumentMousemove = (evt: MouseEvent) => {
       evt.preventDefault()
-      let thumbY = evt.clientY - rootDomRect.top - thumbDomDownOffsetY
 
-      let scrollTop = thumbY2scrollTop(thumbY)
-      scrollTop = getRangeContentY(scrollTop)
+      let thumbY = evt.clientY - trackDomRect.top - thumbDomDownOffsetY
+      thumbY = getNumberInRange(thumbY, 0, trackDomRect.height - thumbDomRect.height)
 
-      // setDomThumbY(thumbY)
-      // setDomScrollTop(scrollTop)
+      setDomThumbY(thumbY)
 
-      unknownScrollTo(scrollTop)
+      const scrollTop =
+        (thumbY / (trackDomRect.height - thumbDomRect.height)) * (contentDomRect.height - viewportDomRect.height)
 
-      aniInsRef.current.currValue = scrollTop
+      setDomScrollTop(scrollTop)
     }
 
     const onDocumentMouseup = () => {
@@ -131,10 +75,10 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
   return (
     <main
       {...htmlAttr}
-      className={classNames('scroll-container grow shrink-0', htmlAttr.className)}
+      className={clsx('scroll-container grow shrink-0', htmlAttr.className)}
       style={{ position: 'relative', ...htmlAttr.style }}
     >
-      <section className="scrollbar-view h-full overflow-hidden" ref={rootDomRef}>
+      <section className="scrollbar-view h-full overflow-hidden" ref={viewportDomRef}>
         <div
           ref={contentDomRef}
           className="content"
@@ -150,7 +94,7 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
         </div>
       </section>
 
-      <div className="absolute right-0 top-0 bottom-0 bg-gray-100 w-[30px] ">
+      <div className="absolute right-0 top-[100px] h-[100px] bg-gray-200 w-[30px]" ref={trackDomRef}>
         <div
           ref={thumbDomRef}
           className="w-full bg-purple-400 h-[20px]"
@@ -163,3 +107,10 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
 })
 
 export default CustomScrollbar
+
+const getNumberInRange = (nv: number, min: number, max: number) => {
+  nv = Math.min(nv, max)
+  nv = Math.max(nv, min)
+
+  return nv
+}

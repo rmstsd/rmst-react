@@ -1,4 +1,4 @@
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { Virtuoso } from 'react-virtuoso'
 
@@ -163,7 +163,7 @@ const VSelect = () => {
               <div
                 data-node={item.id}
                 data-index={item.idx}
-                className={classNames('border-2 box-border bg-white p-2', {
+                className={clsx('border-2 box-border bg-white p-2', {
                   'border-red-400': selectedIds.includes(item.id)
                 })}
               >

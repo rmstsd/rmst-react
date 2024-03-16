@@ -2,9 +2,8 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useCallback,
 // import VirtualList from '@/components/virtual-scroll-list'
 import { Form, Button, Input, Tag, Checkbox, TimePicker, Radio } from '@arco-design/web-react'
 
-import { VirtualList } from '@rmstds/common'
-
 import CustomScrollbar from '@/components/CustomScrollbar/CustomScrollbar'
+import VirtualList from '@/components/virtual-scroll-list'
 
 const dataSources = Array.from({ length: 100 }, (_, index) => ({ index, name: index + '-name', id: index }))
 

@@ -1,13 +1,6 @@
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  useDroppable
-} from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, useDroppable } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { useState, useRef, useEffect } from 'react'
 import SortableItem, { CommandItem, MainItemOverlap } from './SortableItem'
 import { useUpdate } from '@/utils/hooks'
@@ -93,11 +86,7 @@ const Zero = () => {
         const modifier = isBelowOverItem ? 1 : 0
         const newIndex = overIndex >= 0 ? overIndex + modifier : mainList.length + 1
 
-        const nvMainList = [
-          ...mainList.slice(0, newIndex),
-          nvItem,
-          ...mainList.slice(newIndex, mainList.length)
-        ]
+        const nvMainList = [...mainList.slice(0, newIndex), nvItem, ...mainList.slice(newIndex, mainList.length)]
 
         setMainList(nvMainList)
       } else {
@@ -130,9 +119,7 @@ const Zero = () => {
         }
 
         function getNewMainList() {
-          const _mainList = mainList.map(item =>
-            item.nid === item.id ? { ...item, nid: genUniqueId() } : item
-          )
+          const _mainList = mainList.map(item => (item.nid === item.id ? { ...item, nid: genUniqueId() } : item))
 
           return _mainList
         }
@@ -176,9 +163,7 @@ const Zero = () => {
           </SortableContext>
 
           <DragOverlay dropAnimation={null} modifiers={activeMainItem ? [snapCenterToCursor] : undefined}>
-            {activeCommandItem ? (
-              <CommandItem id={activeCommandItem.id} item={activeCommandItem} isOver />
-            ) : null}
+            {activeCommandItem ? <CommandItem id={activeCommandItem.id} item={activeCommandItem} isOver /> : null}
 
             {activeMainItem ? <MainItemOverlap item={activeMainItem} isOver /> : null}
           </DragOverlay>
@@ -197,7 +182,7 @@ const RightMain = props => {
   })
 
   return (
-    <main className={classNames('border-2 flex-grow p-3', isOver && 'border-orange-400')} ref={setNodeRef}>
+    <main className={clsx('border-2 flex-grow p-3', isOver && 'border-orange-400')} ref={setNodeRef}>
       {mainList.map(item => (
         <SortableItem key={item.nid} item={item} />
       ))}

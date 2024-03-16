@@ -1,7 +1,7 @@
 import { useDraggable } from '@dnd-kit/core'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 export const CommandItem = props => {
   const { id, item, isOver } = props
@@ -12,7 +12,7 @@ export const CommandItem = props => {
     <div
       ref={setNodeRef}
       {...listeners}
-      className={classNames('p-2 border-b', isOver && 'bg-white shadow-xl rounded-lg border')}
+      className={clsx('p-2 border-b', isOver && 'bg-white shadow-xl rounded-lg border')}
     >
       {item.name}
     </div>
@@ -33,7 +33,7 @@ const SortableItem = props => {
     <div
       ref={setNodeRef}
       {...listeners}
-      className={classNames('p-2 bg-pink-300 my-2', isDragging && 'opacity-60')}
+      className={clsx('p-2 bg-pink-300 my-2', isDragging && 'opacity-60')}
       style={style}
     >
       {item.name}: id: {item.id} - nid: {item.nid}

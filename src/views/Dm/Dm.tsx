@@ -1,4 +1,4 @@
-import classNames from 'classnames'
+import clsx from 'clsx'
 import React, { useState } from 'react'
 
 import './dm.less'
@@ -52,7 +52,7 @@ const Dm = () => {
           onAnimationEnd={() => {
             console.log('end 移除dom')
           }}
-          className={classNames(
+          className={clsx(
             'absolute top-0 left-0',
             //
             'dm',

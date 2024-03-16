@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 
@@ -94,7 +94,7 @@ export const Item = React.memo(
         })
       ) : (
         <li
-          className={classNames(
+          className={clsx(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
@@ -115,7 +115,7 @@ export const Item = React.memo(
           ref={ref}
         >
           <div
-            className={classNames(
+            className={clsx(
               styles.Item,
               dragging && styles.dragging,
               handle && styles.withHandle,

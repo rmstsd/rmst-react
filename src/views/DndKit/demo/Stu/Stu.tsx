@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import {
   DndContext,
@@ -223,7 +223,7 @@ const CommandItem = props => {
     <div
       ref={setNodeRef}
       {...listeners}
-      className={classNames(
+      className={clsx(
         'py-2 px-3 select-none hover:bg-slate-200',
 
         overlay && 'shadow-2xl border-2 border-purple-500'

@@ -1,4 +1,4 @@
-import classNames from 'classnames'
+import clsx from 'clsx'
 import React, { Ref, PropsWithChildren } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -58,7 +58,7 @@ export const EditorValue = React.forwardRef(
       .toArray()
       .join('\n')
     return (
-      <div ref={ref} {...props} style={{ margin: '30px -20px 0' }} className={classNames(className)}>
+      <div ref={ref} {...props} style={{ margin: '30px -20px 0' }} className={clsx(className)}>
         <div
           style={{
             fontSize: 14,
@@ -70,9 +70,7 @@ export const EditorValue = React.forwardRef(
         >
           Slate's value as text
         </div>
-        <div
-          style={{ color: '#404040', font: '12px monospace', whiteSpace: 'pre-wrap', padding: '10px 20px' }}
-        >
+        <div style={{ color: '#404040', font: '12px monospace', whiteSpace: 'pre-wrap', padding: '10px 20px' }}>
           {textLines}
         </div>
       </div>
@@ -82,7 +80,7 @@ export const EditorValue = React.forwardRef(
 
 export const Icon = React.forwardRef(
   ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<OrNull<HTMLSpanElement>>) => (
-    <span {...props} ref={ref} className={classNames('material-icons', className)} />
+    <span {...props} ref={ref} className={clsx('material-icons', className)} />
   )
 )
 
@@ -91,14 +89,14 @@ export const Instruction = React.forwardRef(
     <div
       {...props}
       ref={ref}
-      className={classNames(className, 'whitespace-pre-wrap m-[0 -20px 10px] p-[10px 20px] bg-gray-300')}
+      className={clsx(className, 'whitespace-pre-wrap m-[0 -20px 10px] p-[10px 20px] bg-gray-300')}
     />
   )
 )
 
 export const Menu = React.forwardRef(
   ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<OrNull<HTMLDivElement>>) => (
-    <div {...props} data-test-id="menu" ref={ref} className={classNames(className)} />
+    <div {...props} data-test-id="menu" ref={ref} className={clsx(className)} />
   )
 )
 
@@ -111,7 +109,7 @@ export const Toolbar = React.forwardRef(
     <Menu
       {...props}
       ref={ref}
-      className={classNames(className, 'relative, p-[1px 18px 17px] m-[0 -20px] border mb-[20px]')}
+      className={clsx(className, 'relative, p-[1px 18px 17px] m-[0 -20px] border mb-[20px]')}
     />
   )
 )

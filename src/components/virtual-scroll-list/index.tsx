@@ -1,9 +1,8 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import Item, { Slot } from './Item'
 import Virtual from './virtual'
-import Scrollbar from '../Scrollbar'
 import CustomScrollbar, { CustomScrollbarRef } from '../CustomScrollbar/CustomScrollbar'
 
 export function getMouseCoordInContainer(clientX: number, clientY: number, outerContainer: HTMLElement) {
@@ -200,7 +199,7 @@ const VirtualList = (props: VirtualListProps) => {
   return (
     <CustomScrollbar
       ref={customScrollbarRef}
-      className={classNames('v-n-list', className)}
+      className={clsx('v-n-list', className)}
       style={{ ...style, height: 400 }}
       onSyncScroll={onSyncScroll}
     >
@@ -223,7 +222,7 @@ const VirtualList = (props: VirtualListProps) => {
   )
 
   return (
-    <div ref={rootRef} className={classNames('v-n-list', className)} style={{ ...style }}>
+    <div ref={rootRef} className={clsx('v-n-list', className)} style={{ ...style }}>
       {header && (
         <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
           {header}

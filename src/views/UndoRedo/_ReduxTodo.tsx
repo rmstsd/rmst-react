@@ -1,55 +1,81 @@
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 
-import { ActionCreators } from './redux-undo'
-import undoable from 'redux-undo'
+import reduxUndo, { ActionCreators } from './redux-undo'
+// import undoable from 'redux-undo'
 import { useRef } from 'react'
+import undoable from './redux-undo/reducer'
 
 interface Todo {
   value: string
   key: number
 }
 
-const initialState: { value: number; list: Todo[] } = {
-  value: 0,
-  list: []
-}
+const initialState: Todo[] = []
 
 let key = 100
 const counterSlice = createSlice({
-  name: 'counter',
+  name: 'todo',
   initialState,
   reducers: {
-    increment: state => {
-      state.value += 1
-    },
     add: (state, { payload }) => {
-      state.list.push({ key: ++key, value: payload })
+      state.push({ key: ++key, value: payload })
     },
     del: (state, { payload }) => {
-      state.list.splice(
-        state.list.findIndex(o => o.key == payload),
+      state.splice(
+        state.findIndex(o => o.key == payload),
         1
       )
     },
     up: (state, { payload }) => {
-      state.list.find(o => o.key == payload.key).value = payload.nv
+      state.find(o => o.key == payload.key).value = payload.nv
     }
   }
 })
 
 const ac = counterSlice.actions
-const { increment, add } = counterSlice.actions
-const undoReducer = counterSlice.reducer
 
 const store = configureStore({
-  reducer: { counter: undoable(undoReducer) }
+  reducer: { todo: undoable(counterSlice.reducer) }
 })
+
+function newUndoHistory(past, present, future) {
+  return { past, present, future }
+}
+
+function isUndoHistory(o) {
+  return typeof o === 'object' && Reflect.has(o, 'past') && Reflect.has(o, 'present') && Reflect.has(o, 'future')
+}
+
+function undoable_2(reducer) {
+  let iniState = undefined
+
+  return (state, action) => {
+    console.log(state)
+    let his = state
+
+    if (!iniState) {
+      if (state === undefined) {
+        const res = reducer(state, action)
+        his = newUndoHistory([], res, [])
+        iniState = his
+
+        return his
+      } else {
+        his = newUndoHistory([], state.present, [])
+      }
+    }
+
+    const res = reducer(his.present, action)
+
+    return newUndoHistory([], res, [])
+  }
+}
 
 type State = ReturnType<typeof store.getState>
 
 const TodoList = () => {
-  const counter = useSelector((state: State) => state.counter)
+  const counter = useSelector((state: State) => state.todo)
   const dispatch = useDispatch()
 
   const cur = counter.present
@@ -62,7 +88,7 @@ const TodoList = () => {
         <input ref={ref} type="text" />
         <button
           onClick={() => {
-            dispatch(add(ref.current.value))
+            dispatch(ac.add(ref.current.value))
             ref.current.value = ''
           }}
         >
@@ -79,7 +105,7 @@ const TodoList = () => {
         <hr />
 
         <ul>
-          {cur.list.map(todo => (
+          {cur.map(todo => (
             <li className="flex" key={todo.key}>
               <span
                 className="w-[200px]"
@@ -101,8 +127,6 @@ const TodoList = () => {
             </li>
           ))}
         </ul>
-
-        <button onClick={() => dispatch(increment())}>{counter.present.value}</button>
       </div>
     </>
   )

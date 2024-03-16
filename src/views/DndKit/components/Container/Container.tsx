@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import { Handle, Remove } from '../Item'
 
@@ -53,7 +53,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
             '--columns': columns
           } as React.CSSProperties
         }
-        className={classNames(
+        className={clsx(
           styles.Container,
           unstyled && styles.unstyled,
           horizontal && styles.horizontal,
