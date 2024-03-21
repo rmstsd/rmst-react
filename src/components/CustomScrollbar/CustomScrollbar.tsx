@@ -60,7 +60,8 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
       const scrollTop =
         (thumbY / (trackDomRect.height - thumbDomRect.height)) * (contentDomRect.height - viewportDomRect.height)
 
-      setDomScrollTop(scrollTop)
+      viewportDomRef.current.scrollTo(0, scrollTop)
+      // setDomScrollTop(scrollTop)
     }
 
     const onDocumentMouseup = () => {

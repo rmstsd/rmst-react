@@ -1,6 +1,18 @@
+import { animated, useSpring } from '@react-spring/web'
+import { useEventListener } from 'ahooks'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useImmer } from 'use-immer'
+
+const detectNear = (tickCount: number, offsetVal: number) => {
+  const offsetRatio = tickCount - Math.floor(tickCount)
+
+  if (offsetRatio < offsetVal || offsetRatio > 1 - offsetVal) {
+    return { isNear: true, nearValue: Math.round(tickCount) }
+  }
+
+  return { isNear: false }
+}
 
 const tt = [
   {
@@ -27,6 +39,42 @@ const StickDemo = () => {
       })
     })
   }
+
+  const [props, api] = useSpring(
+    () => ({
+      from: { left: 0 },
+      to: { left: 1 },
+      onChange(v) {
+        console.log(v.value.left)
+      }
+    }),
+    []
+  )
+
+  useEventListener('mousemove', evt => {
+    const intval = 200
+    const neared = detectNear(evt.clientX / intval, 0.5)
+
+    if (neared.isNear) {
+      api.start({ left: intval * neared.nearValue })
+    } else {
+    }
+  })
+
+  return (
+    <>
+      <button
+        onClick={() => {
+          // api.start({ opacity: 0 })
+        }}
+      >
+        click
+      </button>
+      <animated.div style={props} className="absolute">
+        Hello World
+      </animated.div>
+    </>
+  )
 
   // return (
   //   <>

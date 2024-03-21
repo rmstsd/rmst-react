@@ -19,6 +19,8 @@ import StickDemo from './views/StickDemo'
 import QuadTree from './views/QuadTree'
 import UndoRedo from './views/UndoRedo'
 import ScrollDemo from './views/ScrollDemo'
+import MobxDemo from './views/MobxDemo'
+import Sku from './views/Sku'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -39,7 +41,8 @@ export const routes: IRouteObject[] = [
       { path: 'VSelect', element: <VSelect /> },
       { path: 'QuadTree', element: <QuadTree /> },
       { path: 'UndoRedo', element: <UndoRedo /> },
-      { path: 'ScrollDemo', element: <ScrollDemo /> }
+      { path: 'ScrollDemo', element: <ScrollDemo /> },
+      { path: 'MobxDemo', element: <MobxDemo /> }
     ]
   },
   {
@@ -55,6 +58,11 @@ export const routes: IRouteObject[] = [
     path: '/slate',
     element: <LayoutView />,
     children: [{ path: 'slate', element: <SlateDemo /> }]
+  },
+  {
+    path: '/sku',
+    element: <LayoutView />,
+    children: [{ path: 'sku', element: <Sku /> }]
   },
   {
     path: '*',
