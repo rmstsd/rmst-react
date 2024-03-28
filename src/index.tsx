@@ -2,6 +2,8 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { ConfigProvider } from '@arco-design/web-react'
 
+import {} from 'asdfgh'
+
 import App from './App'
 
 import '@arco-design/web-react/dist/css/arco.css'

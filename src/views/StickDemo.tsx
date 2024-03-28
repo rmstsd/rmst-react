@@ -45,13 +45,14 @@ const StickDemo = () => {
       from: { left: 0 },
       to: { left: 1 },
       onChange(v) {
-        console.log(v.value.left)
+        // console.log(v.value.left)
       }
     }),
     []
   )
 
   useEventListener('mousemove', evt => {
+    return
     const intval = 200
     const neared = detectNear(evt.clientX / intval, 0.5)
 
@@ -137,8 +138,6 @@ const StickDemo = () => {
   )
 }
 
-export default StickDemo
-
 function StickTop(props) {
   const { offsetTop = 10 } = props
 
@@ -201,5 +200,66 @@ function StickTop(props) {
 
       {state.affix && <div style={state.placeholderStyle}></div>}
     </div>
+  )
+}
+
+function Diff() {
+  const [bool, setBool] = useState(true)
+
+  const Tag = bool ? 'div' : 'main'
+
+  return (
+    <>
+      <button onClick={() => setBool(!bool)}>set</button>
+
+      {bool ? (
+        <div>
+          <KaSo />
+        </div>
+      ) : (
+        <div>
+          <SoKa />
+        </div>
+      )}
+
+      <Tag>
+        <span>1</span>
+      </Tag>
+
+      <div>
+        <span>2</span>
+      </div>
+    </>
+  )
+}
+
+export default Diff
+
+function KaSo() {
+  useEffect(() => {
+    console.log(2)
+  }, [])
+  return (
+    <>
+      <p key="ka">
+        <span>ka</span>
+      </p>
+      <h3 key="song">
+        <span>song</span>
+      </h3>
+    </>
+  )
+}
+
+function SoKa() {
+  return (
+    <>
+      <h3 key="song">
+        <span>song</span>
+      </h3>
+      <p key="ka">
+        <span>ka</span>
+      </p>
+    </>
   )
 }
