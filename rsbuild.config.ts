@@ -10,6 +10,7 @@ export default defineConfig({
     template: './index.html'
   },
   output: {
+    assetPrefix: './',
     copy: [{ from: './public', to: '' }]
   }
 })
