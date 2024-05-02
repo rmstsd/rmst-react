@@ -1,5 +1,5 @@
 import Portal from '@/components/Portal/Portal'
-import { useUpdate } from '@/utils/hooks'
+import { useUpdate } from '@/utils/hooks/hooks'
 import { Button } from '@arco-design/web-react'
 import { useState } from 'react'
 

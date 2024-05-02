@@ -1,4 +1,4 @@
-import { useUpdate } from '@/utils/hooks'
+import { useUpdate } from '@/utils/hooks/hooks'
 import Manager from './class'
 
 const manager = new Manager(1)

@@ -3,7 +3,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import clsx from 'clsx'
 import { useState, useRef, useEffect } from 'react'
 import SortableItem, { CommandItem, MainItemOverlap } from './SortableItem'
-import { useUpdate } from '@/utils/hooks'
+import { useUpdate } from '@/utils/hooks/hooks'
 import { arrayMove } from '../demo/utils'
 import { snapCenterToCursor } from '@dnd-kit/modifiers'
 

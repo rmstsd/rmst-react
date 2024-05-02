@@ -8,8 +8,6 @@ import MReduxUndo from './_ReduxTodo'
 import { useEffect, useState } from 'react'
 
 export function countReducer(state = 1, action) {
-  console.log('countReducer')
-
   switch (action.type) {
     case 'add':
       return state + action.amount

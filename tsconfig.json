@@ -12,8 +12,7 @@
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "asdfgh": ["src"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"]
