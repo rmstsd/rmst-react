@@ -2,8 +2,8 @@
 name: 部署 dist 目录
 
 on:
-  push:
-    branches: master
+  # push:
+  #   branches: master
 
   workflow_dispatch: # 从 action 页面手动点击
 

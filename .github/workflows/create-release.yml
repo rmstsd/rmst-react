@@ -1,4 +1,4 @@
-name: Create Release
+name: 创建 release
 
 on:
   push:
@@ -19,7 +19,10 @@ jobs:
       - name: 测试 git refs
         run: echo '人美声甜'
 
-      - run: ${{ github }}
+      - run: |
+          echo "\$\{\{ github.ref \}\}"
+          echo "Hello \$\{\{ github.event.inputs.name \}\}!"
+          echo "- in \$\{\{ github.event.inputs.home \}\}!"
 
       # - name: Checkout code
       #   uses: actions/checkout@v2
