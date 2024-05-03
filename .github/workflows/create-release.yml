@@ -20,7 +20,7 @@ jobs:
         run: echo '人美声甜'
 
       - run: |
-          echo "\$\{\{ github.ref \}\}"
+          echo ${{ github.ref }}
           echo "Hello \$\{\{ github.event.inputs.name \}\}!"
           echo "- in \$\{\{ github.event.inputs.home \}\}!"
 
