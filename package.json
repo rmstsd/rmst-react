@@ -1,7 +1,7 @@
 {
   "name": "rmst-react-rs",
   "private": true,
-  "version": "1.0.9",
+  "version": "1.0.10",
   "packageManager": "pnpm@9.0.6",
   "scripts": {
     "dev": "rsbuild dev --port 3600",
