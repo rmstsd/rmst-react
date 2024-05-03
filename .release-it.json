@@ -2,8 +2,5 @@
   "git": {
     "requireBranch": "master",
     "commitMessage": "chore(release): release v${version}"
-  },
-  "github": {
-    "release": true
   }
 }
