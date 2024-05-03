@@ -1,4 +1,4 @@
-name: 创建 release
+# https://github.com/imbatony/electorn-chinese-chess
 
 on:
   push:
@@ -8,43 +8,54 @@ on:
 
   workflow_dispatch:
 
-permissions:
-  contents: write
+name: 发布 Release
 
 jobs:
   build:
-    name: Create Release
+    name: Build Release & Upload Assets
     runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
     steps:
-      - name: 测试 git refs
-        run: echo '人美声甜'
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
+      - name: Use tag
+        run: echo ${{ steps.tag.outputs.tag }}
 
-      - name: 测试 github
-        run: echo ${{ github }}
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: 测试 github.ref
-        run: echo ${{ github.ref }}
+      - name: Build project Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-      - name: 测试 github.event.inputs.name
-        run: echo ${{ github.event.inputs.name }}
+      - run: npm install
+      - run: npm run build
 
-      - name: 测试 github.event.inputs.home
-        run: echo ${{ github.event.inputs.home }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: false
 
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     body: |
-      #       Changes in this Release
-      #       - First Change
-      #       - Second Change
-      #     draft: false
-      #     prerelease: false
+      - name: Upload Windows SetUp Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./dist/index.html
+          asset_name: index-${{ steps.tag.outputs.tag }}.html
+          asset_content_type: application/octet-stream
