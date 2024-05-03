@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "rsbuild dev --port 3600",
     "build": "rsbuild build",
-    "preview": "rsbuild preview"
+    "preview": "rsbuild preview",
+    "release": "release-it"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
@@ -47,6 +48,7 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "its-fine": "^1.2.5",
+    "release-it": "^17.2.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2"
   }
