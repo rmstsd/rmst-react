@@ -10,6 +10,10 @@ on:
 
 name: 发布 Release
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     name: Build Release & Upload Assets
