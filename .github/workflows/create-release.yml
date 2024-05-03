@@ -19,11 +19,17 @@ jobs:
       - name: 测试 git refs
         run: echo '人美声甜'
 
-      - run: |
-          echo ${{ github.ref }}
-          echo ${{ github.ref }}
-          echo ${{ github.event.inputs.name }}
-          echo ${{ github.event.inputs.home }}
+      - name: 测试 github
+        run: echo ${{ github }}
+
+      - name: 测试 github.ref
+        run: echo ${{ github.ref }}
+
+      - name: 测试 github.event.inputs.name
+        run: echo ${{ github.event.inputs.name }}
+
+      - name: 测试 github.event.inputs.home
+        run: echo ${{ github.event.inputs.home }}
 
       # - name: Checkout code
       #   uses: actions/checkout@v2
