@@ -30,7 +30,7 @@ jobs:
         with:
           draft: false
           files: |
-            dist
+            dist/*.html
             dist/*.exe
             dist/*.zip
             dist/*.dmg
