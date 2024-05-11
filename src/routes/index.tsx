@@ -21,6 +21,7 @@ import ScrollDemo from '../views/ScrollDemo'
 import MobxDemo from '../views/MobxDemo'
 import Sku from '../views/Sku'
 import ContextSelector from '@/views/ContextSelector'
+import Litegraph from '@/views/LiteGraph/Litegraph'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -37,7 +38,8 @@ export const routes: IRouteObject[] = [
       { path: 'dndKit', element: <DndKit /> },
       { path: 'NestedContext', element: <NestedContext /> },
       { path: 'Hooks18', element: <Hooks18 /> },
-      { path: 'QuadTree', element: <QuadTree /> }
+      { path: 'QuadTree', element: <QuadTree /> },
+      { path: 'Litegraph', element: <Litegraph /> }
     ]
   },
   {

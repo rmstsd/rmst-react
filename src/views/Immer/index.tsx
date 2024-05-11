@@ -43,7 +43,7 @@ const nextState = immer(state, draft => {
   draft.company.uuu.ss.tt.ww.f = 'rtrtrtrt'
 })
 
-console.log('stringify ', JSON.stringify(nextState) === JSON.stringify(state))
+// console.log('stringify ', JSON.stringify(nextState) === JSON.stringify(state))
 // console.log(state)
 // console.log(nextState)
 // console.log(nextState === state)
@@ -55,12 +55,12 @@ console.log('stringify ', JSON.stringify(nextState) === JSON.stringify(state))
 // console.log(nextState.objArray === state.objArray)
 // console.log(nextState.objArray[0] === state.objArray[0])\
 
-console.log(nextState.company.uuu.ss.tt.ww.f === state.company.uuu.ss.tt.ww.f)
-console.log(nextState.company.uuu.ss.tt.ww === state.company.uuu.ss.tt.ww)
-console.log(nextState.company.uuu.ss.tt === state.company.uuu.ss.tt)
-console.log(nextState.company.uuu.ss === state.company.uuu.ss)
-console.log(nextState.company.uuu === state.company.uuu)
-console.log(nextState.company === state.company)
+// console.log(nextState.company.uuu.ss.tt.ww.f === state.company.uuu.ss.tt.ww.f)
+// console.log(nextState.company.uuu.ss.tt.ww === state.company.uuu.ss.tt.ww)
+// console.log(nextState.company.uuu.ss.tt === state.company.uuu.ss.tt)
+// console.log(nextState.company.uuu.ss === state.company.uuu.ss)
+// console.log(nextState.company.uuu === state.company.uuu)
+// console.log(nextState.company === state.company)
 
 const Immer = () => {
   return <div>Immer</div>
