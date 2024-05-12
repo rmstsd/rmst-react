@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { refreshToken } from './user'
 
-const Base_Url = 'http://8.142.164.165:8181'
+const Base_Url = 'https://enterprise.naturobot.com'
 
 const axiosRequest = axios.create({
   baseURL: Base_Url
 })
 
-let token: string = '9760a92e8fae41e094bada22e1e52f72'
+let token: string = 'f277681eec834c509fcf002960ab4ff1'
 
 axiosRequest.interceptors.request.use(
   config => {
