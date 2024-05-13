@@ -21,6 +21,7 @@ export default function YogaLayout() {
     value.setFlexDirection(FlexDirection.Row)
     value.setWidth(200)
     value.setHeight(200)
+    value.setPadding(Edge.Left, 10)
 
     const valueInner = Yoga.Node.create()
     valueInner.setWidth(50)
@@ -32,13 +33,13 @@ export default function YogaLayout() {
 
     console.log('valueInner', valueInner)
 
-    root.calculateLayout(500, 500, Direction.LTR)
+    root.calculateLayout(undefined, undefined)
 
     const labelLayout = label.getComputedLayout()
     console.log(labelLayout)
 
     const valueLayout = value.getComputedLayout()
-    console.log(valueLayout)
+    console.log('valueLayout', valueLayout)
 
     const valueInnerLayout = valueInner.getComputedLayout()
     console.log('valueInnerLayout', valueInner.getComputedLeft())
@@ -60,9 +61,14 @@ export default function YogaLayout() {
       ctx.fillStyle = 'orange'
       ctx.fillRect(valueLayout.left, valueLayout.top, valueLayout.width, valueLayout.height)
 
+      ctx.save()
+      ctx.translate(valueLayout.left, 0)
+
       ctx.beginPath()
       ctx.fillStyle = 'blue'
       ctx.fillRect(valueInnerLayout.left, valueInnerLayout.top, valueInnerLayout.width, valueInnerLayout.height)
+
+      ctx.restore()
     }
   }, [])
 
