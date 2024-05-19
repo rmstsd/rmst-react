@@ -1,4 +1,4 @@
-import Yoga, { Node } from 'yoga-layout'
+import Yoga, { Edge, Node } from 'yoga-layout'
 import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
 
 import React from 'react'
@@ -32,7 +32,12 @@ export class TextNode {
   setText(ctx) {
     const { textWidth, textHeight } = measureText(ctx, this.content)
 
-    const { paddingLeft = 0, paddingTop = 0, paddingRight = 0, paddingBottom = 0 } = this.style
+    const paddingAll = this.yogaNode.getPadding(Edge.All).value || 0
+
+    const paddingLeft = this.yogaNode.getPadding(Edge.Left).value || 0 || paddingAll
+    const paddingTop = this.yogaNode.getPadding(Edge.Top).value || 0 || paddingAll
+    const paddingRight = this.yogaNode.getPadding(Edge.Right).value || 0 || paddingAll
+    const paddingBottom = this.yogaNode.getPadding(Edge.Bottom).value || 0 || paddingAll
 
     setYogaNodeLayoutStyle(this.yogaNode, {
       width: textWidth + paddingLeft + paddingRight,

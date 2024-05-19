@@ -1,6 +1,6 @@
-import React from 'react'
 import { Edge, FlexDirection, Gutter, Node } from 'yoga-layout'
 import camelCase from 'camelcase'
+import { applyStyle } from './FlexStyle'
 
 export enum NodeType {
   TextNode,
@@ -16,7 +16,11 @@ export type Layout = {
   height: number
 }
 
-export function setYogaNodeLayoutStyle(yogaNode: Node, style: React.CSSProperties) {
+export function setYogaNodeLayoutStyle(yogaNode: Node, style) {
+  applyStyle(yogaNode, style)
+
+  return
+
   if (style.paddingTop) {
     yogaNode.setPadding(Edge.Top, style.paddingTop as number)
   }

@@ -3,6 +3,7 @@ import Yoga, { Edge, Node } from 'yoga-layout'
 import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
 import { ViewNode } from './ViewNode'
 import { TextNode } from './TextNode'
+import { isTextNode } from './is'
 
 export * from './TextNode'
 export * from './ViewNode'
@@ -87,16 +88,17 @@ export class Stage {
       ctx.rect(layout.left, layout.top, layout.width, layout.height)
       ctx.fill()
 
-      if (node.nodeType === NodeType.TextNode) {
+      if (isTextNode(node)) {
         ctx.beginPath()
         ctx.save()
 
-        const tx = node.yogaNode.getPadding(Edge.Left).value || 0
-        const ty = node.yogaNode.getPadding(Edge.Top).value || 0
         ctx.translate(node.layout.left, node.layout.top)
-
         ctx.fillStyle = node.style?.color ?? '#333'
-        ctx.fillText(node.content, tx, ty)
+
+        const x = node.yogaNode.getComputedPadding(Edge.Left)
+        const y = node.yogaNode.getComputedPadding(Edge.Top)
+
+        ctx.fillText(node.content, x, y)
 
         ctx.restore()
       }
