@@ -2,6 +2,8 @@ import Yoga, { Edge, Node } from 'yoga-layout'
 import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
 
 import React from 'react'
+import { TextService } from './TextService'
+import { ParsedTextStyleProps } from './TextService/inteface'
 
 function measureText(ctx, text) {
   const metrics = ctx.measureText(text)
@@ -29,7 +31,22 @@ export class TextNode {
 
   layout: Layout
 
-  setText(ctx) {
+  setText(ctx: CanvasRenderingContext2D) {
+    const tes = new TextService(document.createElement('canvas'))
+
+    const op: ParsedTextStyleProps = {}
+
+    if (this.style.width) {
+      op.wordWrap = true
+      op.wordWrapWidth = this.style.width as number
+    }
+    const ans = tes.measureText(this.content, {
+      fontSize: parseInt(ctx.font),
+      fontFamily: '微软雅黑',
+      ...op
+    })
+    console.log(ans)
+
     const { textWidth, textHeight } = measureText(ctx, this.content)
 
     const paddingAll = this.yogaNode.getPadding(Edge.All).value || 0
@@ -40,8 +57,8 @@ export class TextNode {
     const paddingBottom = this.yogaNode.getPadding(Edge.Bottom).value || 0 || paddingAll
 
     setYogaNodeLayoutStyle(this.yogaNode, {
-      width: textWidth + paddingLeft + paddingRight,
-      height: textHeight + paddingTop + paddingBottom
+      width: ans.width + paddingLeft + paddingRight,
+      height: ans.height + paddingTop + paddingBottom
     })
   }
 
