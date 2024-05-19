@@ -32,6 +32,7 @@ export class TextNode {
   layout: Layout
 
   setText(ctx: CanvasRenderingContext2D) {
+    // https://g.antv.antgroup.com/zh/examples/shape/text/#text-overflow
     const tes = new TextService(document.createElement('canvas'))
 
     const op: ParsedTextStyleProps = {}
