@@ -41,6 +41,9 @@ importers:
       camelcase:
         specifier: ^8.0.0
         version: 8.0.0
+      canvas-hypertxt:
+        specifier: ^1.0.3
+        version: 1.0.3
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -665,6 +668,9 @@ packages:
 
   caniuse-lite@1.0.30001615:
     resolution: {integrity: sha512-1IpazM5G3r38meiae0bHRnPhz+CBQ3ZLqbQMtrg+AsTPKAXgW38JNsXkyZ+v8waCsDmPq87lmfun5Q2AGysNEQ==}
+
+  canvas-hypertxt@1.0.3:
+    resolution: {integrity: sha512-+VsMpRr64jYgKq2IeFUNel3vCZH/IzS+iXSHxmUV3IUH5dXlC9xHz4AwtPZisDxZ5MWcuK0V+TXgPKFPiZnxzg==}
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3062,6 +3068,8 @@ snapshots:
   camelcase@8.0.0: {}
 
   caniuse-lite@1.0.30001615: {}
+
+  canvas-hypertxt@1.0.3: {}
 
   chalk@2.4.2:
     dependencies:

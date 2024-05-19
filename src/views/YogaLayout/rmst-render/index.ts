@@ -16,7 +16,7 @@ export class Stage {
 
     setYogaNodeLayoutStyle(this.yogaNode, style)
 
-    this.ctx.font = '48px 微软雅黑'
+    this.ctx.font = '20px 微软雅黑'
 
     this.style = style
   }

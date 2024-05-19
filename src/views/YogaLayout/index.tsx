@@ -3,6 +3,7 @@ import { Stage, TextNode, ViewNode } from './rmst-render'
 import RmstStage, { RmstText, RmstView } from './HostConfig'
 
 import { TextService } from './rmst-render/TextService'
+import { split } from 'canvas-hypertxt'
 
 export default function YogaLayout() {
   useEffect(() => {
@@ -95,7 +96,7 @@ export default function YogaLayout() {
         </RmstView>
 
         <RmstView style={{ backgroundColor: 'antiquewhite' }}>
-          <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, padding: 20, width: 234 }}>
+          <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>
             Abcjliyu人美声甜Abcjliyu人美声甜Abcjliyu人美声甜
           </RmstText>
         </RmstView>
