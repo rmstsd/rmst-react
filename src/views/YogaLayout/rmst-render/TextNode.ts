@@ -58,8 +58,8 @@ export class TextNode {
     const paddingBottom = this.yogaNode.getPadding(Edge.Bottom).value || 0 || paddingAll
 
     setYogaNodeLayoutStyle(this.yogaNode, {
-      width: ans.width + paddingLeft + paddingRight,
-      height: ans.height + paddingTop + paddingBottom
+      width: textWidth + paddingLeft + paddingRight,
+      height: textHeight + paddingTop + paddingBottom
     })
   }
 

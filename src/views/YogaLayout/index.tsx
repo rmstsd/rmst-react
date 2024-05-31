@@ -68,18 +68,15 @@ export default function YogaLayout() {
       <hr />
 
       <h1>OOP</h1>
-      <canvas className="canvas border" width={800} height={400}></canvas>
+      {/* <canvas className="canvas border" width={800} height={400}></canvas> */}
 
       <hr />
 
       <h1>jsx ✔</h1>
-      <RmstStage style={{ backgroundColor: 'orange', padding: 10, marginTop: 10, gap: 10 }}>
+      <RmstStage style={{ backgroundColor: 'orange', width: 400, padding: 10, marginTop: 10, gap: 10 }}>
         <RmstView style={{ backgroundColor: 'pink', flexDirection: 'row', gap: 20, padding: 10 }}>
-          <RmstText style={{ backgroundColor: '#eee', color: 'red', padding: 5, marginLeft: 10 }}>
-            Abcjliyu人美声甜
-          </RmstText>
-
-          <RmstView style={{ backgroundColor: 'purple', height: 100 }}>
+          <RmstText style={{ backgroundColor: '#eee', color: 'red', padding: 5, marginLeft: 10 }}>美声甜</RmstText>
+          <RmstView style={{ backgroundColor: 'purple', marginLeft: 'auto', height: 100 }}>
             <RmstText
               style={{
                 backgroundColor: '#eee',
@@ -93,12 +90,12 @@ export default function YogaLayout() {
               干了兄弟们
             </RmstText>
           </RmstView>
+
+          <RmstText style={{}}>哈哈</RmstText>
         </RmstView>
 
         <RmstView style={{ backgroundColor: 'antiquewhite' }}>
-          <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>
-            Abcjliyu人美声甜Abcjliyu人美声甜Abcjliyu人美声甜
-          </RmstText>
+          <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>Abcjliyu人美</RmstText>
         </RmstView>
       </RmstStage>
     </div>
