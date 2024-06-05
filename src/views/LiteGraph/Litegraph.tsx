@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { LGraph, LGraphCanvas, LiteGraph } from 'litegraph.js'
 
 import './litegraph.css'
+import { LiteGraph, LGraph, LGraphCanvas } from './ltg-esm'
 
 export default function Litegraph() {
   useEffect(() => {
@@ -11,18 +11,11 @@ export default function Litegraph() {
 
     const canvas = new LGraphCanvas('#mycanvas', graph)
 
-    const node_const = LiteGraph.createNode('basic/const')
-    node_const.pos = [200, 200]
-    graph.add(node_const)
-    node_const.setValue(4)
+    class MyNode {}
+    LiteGraph.registerNodeType('mmy', MyNode)
 
-    const node_watch = LiteGraph.createNode('basic/watch')
-    node_watch.pos = [700, 200]
-    graph.add(node_watch)
-
-    // node_const.connect(0, node_watch, 0)
-
-    graph.start()
+    const node = LiteGraph.createNode('mmy')
+    graph.add(node)
   }, [])
 
   return (
