@@ -23,6 +23,8 @@ import Sku from '../views/Sku'
 import ContextSelector from '@/views/ContextSelector'
 import Litegraph from '@/views/LiteGraph/Litegraph'
 import YogaLayout from '@/views/YogaLayout'
+import ReactflowDemo from '@/views/ReactflowDemo'
+import G6 from '@/views/G6'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -41,7 +43,9 @@ export const routes: IRouteObject[] = [
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
       { path: 'Litegraph', element: <Litegraph /> },
-      { path: 'YogaLayout', element: <YogaLayout /> }
+      { path: 'YogaLayout', element: <YogaLayout /> },
+      { path: 'ReactflowDemo', element: <ReactflowDemo /> },
+      { path: 'G6', element: <G6 /> }
     ]
   },
   {
