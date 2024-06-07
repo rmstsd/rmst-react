@@ -24,7 +24,7 @@ import { isInsideRectangle, overlapBounding } from './utils/utils'
  * @param {Object} options [optional] { skip_rendering, autoresize, viewport }
  */
 class LGraphCanvas {
-  constructor(canvas, graph, options) {
+  constructor(canvas, graph, options?) {
     this.options = options = options || {}
 
     //if(graph === undefined)

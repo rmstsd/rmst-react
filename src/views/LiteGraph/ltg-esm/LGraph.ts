@@ -22,7 +22,7 @@ import getTime from './utils/getTime'
    */
 
 class LGraph {
-  constructor(o) {
+  constructor(o?) {
     if (LiteGraph.debug) {
       console.log('Graph created')
     }
@@ -620,7 +620,7 @@ class LGraph {
    * @param {LGraphNode} node the instance of the node
    */
 
-  add(node, skip_compute_order) {
+  add(node, skip_compute_order?) {
     if (!node) {
       return
     }

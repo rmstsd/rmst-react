@@ -9,10 +9,10 @@ export default function Litegraph() {
 
     const graph = new LGraph()
 
-    const canvas = new LGraphCanvas('#mycanvas', graph)
+    const canvas = new LGraphCanvas('.canvas', graph)
 
-    class MyNode {
-      constructor() {}
+    // @ts-ignore
+    class MyNode implements LGraphNode {
       onDrawForeground(ctx: CanvasRenderingContext2D, visible_rect) {
         // console.log(visible_rect)
         ctx.fillRect(0, 0, 10, 10)
@@ -30,7 +30,7 @@ export default function Litegraph() {
 
   return (
     <div>
-      <canvas id="mycanvas" width={1000} height={500}></canvas>
+      <canvas className="canvas" width={1000} height={500}></canvas>
     </div>
   )
 }

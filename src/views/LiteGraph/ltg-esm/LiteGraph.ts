@@ -163,14 +163,18 @@ const LiteGraph = {
       base_class.title = classname
     }
 
-    //extend class
-    for (var i in LGraphNode.prototype) {
-      console.log(i)
-
-      if (!base_class.prototype[i]) {
-        base_class.prototype[i] = LGraphNode.prototype[i]
+    // extend class
+    Reflect.ownKeys(LGraphNode.prototype).forEach(key => {
+      if (!base_class.prototype[key]) {
+        base_class.prototype[key] = LGraphNode.prototype[key]
       }
-    }
+    })
+    // for (var i in LGraphNode.prototype) {
+    //   console.log(i, LGraphNode.prototype[i])
+    //   if (!base_class.prototype[i]) {
+    //     base_class.prototype[i] = LGraphNode.prototype[i]
+    //   }
+    // }
 
     const prev = this.registered_node_types[type]
     if (prev) {
@@ -243,7 +247,6 @@ const LiteGraph = {
     if (this.auto_load_slot_types) {
       new base_class(base_class.title || 'tmpnode')
     }
-    debugger
   },
 
   /**
@@ -450,7 +453,7 @@ const LiteGraph = {
    * @param {Object} options to set options
    */
 
-  createNode(type, title, options) {
+  createNode(type, title, options?) {
     const base_class = this.registered_node_types[type]
     if (!base_class) {
       if (LiteGraph.debug) {
