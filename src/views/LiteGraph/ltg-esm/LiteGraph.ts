@@ -144,14 +144,14 @@ const LiteGraph = {
    * @param {Class} base_class class containing the structure of a node
    */
 
-  registerNodeType: function (type, base_class) {
+  registerNodeType(type, base_class) {
     if (!base_class.prototype) {
       throw 'Cannot register a simple object, it must be a class with a prototype'
     }
     base_class.type = type
 
     if (LiteGraph.debug) {
-      console.log('Node registered: ' + type)
+      console.log(`Node registered: ${type}`)
     }
 
     const classname = base_class.name
@@ -165,6 +165,8 @@ const LiteGraph = {
 
     //extend class
     for (var i in LGraphNode.prototype) {
+      console.log(i)
+
       if (!base_class.prototype[i]) {
         base_class.prototype[i] = LGraphNode.prototype[i]
       }
@@ -172,11 +174,11 @@ const LiteGraph = {
 
     const prev = this.registered_node_types[type]
     if (prev) {
-      console.log('replacing node type: ' + type)
+      console.log(`replacing node type: ${type}`)
     }
     if (!Object.prototype.hasOwnProperty.call(base_class.prototype, 'shape')) {
       Object.defineProperty(base_class.prototype, 'shape', {
-        set: function (v) {
+        set(v) {
           switch (v) {
             case 'default':
               delete this._shape
@@ -197,7 +199,7 @@ const LiteGraph = {
               this._shape = v
           }
         },
-        get: function () {
+        get() {
           return this._shape
         },
         enumerable: true,
@@ -233,9 +235,7 @@ const LiteGraph = {
     //warnings
     if (base_class.prototype.onPropertyChange) {
       console.warn(
-        'LiteGraph node class ' +
-          type +
-          ' has onPropertyChange method, it must be called onPropertyChanged with d at the end'
+        `LiteGraph node class ${type} has onPropertyChange method, it must be called onPropertyChanged with d at the end`
       )
     }
 
@@ -243,6 +243,7 @@ const LiteGraph = {
     if (this.auto_load_slot_types) {
       new base_class(base_class.title || 'tmpnode')
     }
+    debugger
   },
 
   /**
@@ -250,11 +251,11 @@ const LiteGraph = {
    * @method unregisterNodeType
    * @param {String|Object} type name of the node or the node constructor itself
    */
-  unregisterNodeType: function (type) {
+  unregisterNodeType(type) {
     // @ts-ignore
     const base_class = type.constructor === String ? this.registered_node_types[type] : type
     if (!base_class) {
-      throw 'node type not found: ' + type
+      throw `node type not found: ${type}`
     }
     delete this.registered_node_types[base_class.type]
     if (base_class.constructor.name) {
@@ -268,8 +269,7 @@ const LiteGraph = {
    * @param {String|Object} type name of the node or the node constructor itself
    * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
    */
-  registerNodeAndSlotType: function (type, slot_type, out?) {
-    out = out || false
+  registerNodeAndSlotType(type, slot_type, out = false) {
     const base_class =
       // @ts-ignore
       type.constructor === String && this.registered_node_types[type] !== 'anonymous'
@@ -288,8 +288,7 @@ const LiteGraph = {
       allTypes = ['*']
     }
 
-    for (let i = 0; i < allTypes.length; ++i) {
-      let slotType = allTypes[i]
+    for (let slotType of allTypes) {
       if (slotType === '') {
         slotType = '*'
       }
@@ -323,32 +322,32 @@ const LiteGraph = {
    * @param {String} name node name with namespace (p.e.: 'math/sum')
    * @param {Object} object methods expected onCreate, inputs, outputs, properties, onExecute
    */
-  buildNodeClassFromObject: function (name, object) {
-    var ctor_code = ''
+  buildNodeClassFromObject(name, object) {
+    let ctor_code = ''
     if (object.inputs)
       for (var i = 0; i < object.inputs.length; ++i) {
         var _name = object.inputs[i][0]
         var _type = object.inputs[i][1]
-        if (_type && _type.constructor === String) _type = '"' + _type + '"'
-        ctor_code += "this.addInput('" + _name + "'," + _type + ');\n'
+        if (_type && _type.constructor === String) _type = `"${_type}"`
+        ctor_code += `this.addInput('${_name}',${_type});\n`
       }
     if (object.outputs)
       for (var i = 0; i < object.outputs.length; ++i) {
         var _name = object.outputs[i][0]
         var _type = object.outputs[i][1]
-        if (_type && _type.constructor === String) _type = '"' + _type + '"'
-        ctor_code += "this.addOutput('" + _name + "'," + _type + ');\n'
+        if (_type && _type.constructor === String) _type = `"${_type}"`
+        ctor_code += `this.addOutput('${_name}',${_type});\n`
       }
     if (object.properties)
       for (let i in object.properties) {
-        var prop = object.properties[i]
+        let prop = object.properties[i]
         if (prop && prop.constructor === String) {
-          prop = '"' + prop + '"'
+          prop = `"${prop}"`
         }
-        ctor_code += "this.addProperty('" + i + "'," + prop + ');\n'
+        ctor_code += `this.addProperty('${i}',${prop});\n`
       }
     ctor_code += 'if(this.onCreate)this.onCreate()'
-    var classobj = Function(ctor_code)
+    const classobj = Function(ctor_code)
     for (let i in object) {
       if (i != 'inputs' && i != 'outputs' && i != 'properties') {
         classobj.prototype[i] = object[i]
@@ -372,45 +371,44 @@ const LiteGraph = {
    * @param {String} return_type [optional] string with the return type, otherwise it will be generic
    * @param {Object} properties [optional] properties to be configurable
    */
-  wrapFunctionAsNode: function (name, func, param_types, return_type, properties) {
-    var params = Array(func.length)
-    var code = ''
+  wrapFunctionAsNode(name, func, param_types, return_type, properties) {
+    const params = Array(func.length)
+    let code = ''
     if (param_types !== null) {
       //null means no inputs
-      var names = getParameterNames(func)
-      for (var i = 0; i < names.length; ++i) {
-        var type = 0
+      const names = getParameterNames(func)
+      for (let i = 0; i < names.length; ++i) {
+        let type = 0
         if (param_types) {
           //type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
           if (param_types[i] != null && param_types[i].constructor === String) {
             // @ts-ignore
-            type = "'" + param_types[i] + "'"
+            type = `'${param_types[i]}'`
           } else if (param_types[i] != null) {
             type = param_types[i]
           }
         }
-        code += "this.addInput('" + names[i] + "'," + type + ');\n'
+        code += `this.addInput('${names[i]}',${type});\n`
       }
     }
     if (return_type !== null)
       //null means no output
-      code +=
-        "this.addOutput('out'," +
-        (return_type != null ? (return_type.constructor === String ? "'" + return_type + "'" : return_type) : 0) +
-        ');\n'
+      code += `this.addOutput('out',${
+        return_type != null ? (return_type.constructor === String ? `'${return_type}'` : return_type) : 0
+      });\n`
     if (properties) {
-      code += 'this.properties = ' + JSON.stringify(properties) + ';\n'
+      code += `this.properties = ${JSON.stringify(properties)};\n`
     }
-    var classobj = Function(code)
+    const classobj = Function(code)
     // @ts-ignore
     classobj.title = name.split('/').pop()
     // @ts-ignore
-    classobj.desc = 'Generated from ' + func.name
+    classobj.desc = `Generated from ${func.name}`
     classobj.prototype.onExecute = function onExecute() {
-      for (var i = 0; i < params.length; ++i) {
+      for (let i = 0; i < params.length; ++i) {
         params[i] = this.getInputData(i)
       }
-      var r = func.apply(this, params)
+      const r = func.apply(this, params)
       this.setOutputData(0, r)
     }
     this.registerNodeType(name, classobj)
@@ -420,7 +418,7 @@ const LiteGraph = {
   /**
    * Removes all previously registered node's types
    */
-  clearRegisteredTypes: function () {
+  clearRegisteredTypes() {
     this.registered_node_types = {}
     this.node_types_by_file_extension = {}
     this.Nodes = {}
@@ -433,12 +431,12 @@ const LiteGraph = {
    * @method addNodeMethod
    * @param {Function} func
    */
-  addNodeMethod: function (name, func) {
+  addNodeMethod(name, func) {
     LGraphNode.prototype[name] = func
-    for (var i in this.registered_node_types) {
-      var type = this.registered_node_types[i]
+    for (const i in this.registered_node_types) {
+      const type = this.registered_node_types[i]
       if (type.prototype[name]) {
-        type.prototype['_' + name] = type.prototype[name]
+        type.prototype[`_${name}`] = type.prototype[name]
       } //keep old in case of replacing
       type.prototype[name] = func
     }
@@ -452,20 +450,20 @@ const LiteGraph = {
    * @param {Object} options to set options
    */
 
-  createNode: function (type, title?, options?) {
-    var base_class = this.registered_node_types[type]
+  createNode(type, title, options) {
+    const base_class = this.registered_node_types[type]
     if (!base_class) {
       if (LiteGraph.debug) {
-        console.log('GraphNode type "' + type + '" not registered.')
+        console.log(`GraphNode type "${type}" not registered.`)
       }
       return null
     }
 
-    var prototype = base_class.prototype || base_class
+    const prototype = base_class.prototype || base_class
 
     title = title || base_class.title || type
 
-    var node = null
+    let node = null
 
     if (LiteGraph.catch_exceptions) {
       try {
@@ -505,7 +503,7 @@ const LiteGraph = {
 
     //extra options
     if (options) {
-      for (var i in options) {
+      for (const i in options) {
         node[i] = options[i]
       }
     }
@@ -524,7 +522,7 @@ const LiteGraph = {
    * @param {String} type full name of the node class. p.e. "math/sin"
    * @return {Class} the node class
    */
-  getNodeType: function (type) {
+  getNodeType(type) {
     return this.registered_node_types[type]
   },
 
@@ -535,10 +533,10 @@ const LiteGraph = {
    * @return {Array} array with all the node classes
    */
 
-  getNodeTypesInCategory: function (category, filter) {
-    var r = []
-    for (var i in this.registered_node_types) {
-      var type = this.registered_node_types[i]
+  getNodeTypesInCategory(category, filter) {
+    const r = []
+    for (const i in this.registered_node_types) {
+      const type = this.registered_node_types[i]
       if (type.filter != filter) {
         continue
       }
@@ -553,9 +551,7 @@ const LiteGraph = {
     }
 
     if (this.auto_sort_node_types) {
-      r.sort(function (a, b) {
-        return a.title.localeCompare(b.title)
-      })
+      r.sort((a, b) => a.title.localeCompare(b.title))
     }
 
     return r
@@ -567,16 +563,16 @@ const LiteGraph = {
    * @param {String} filter only nodes with ctor.filter equal can be shown
    * @return {Array} array with all the names of the categories
    */
-  getNodeTypesCategories: function (filter) {
-    var categories = { '': 1 }
+  getNodeTypesCategories(filter) {
+    const categories = { '': 1 }
     for (var i in this.registered_node_types) {
-      var type = this.registered_node_types[i]
+      const type = this.registered_node_types[i]
       if (type.category && !type.skip_list) {
         if (type.filter != filter) continue
         categories[type.category] = 1
       }
     }
-    var result = []
+    const result = []
     for (var i in categories) {
       result.push(i)
     }
@@ -584,28 +580,28 @@ const LiteGraph = {
   },
 
   //debug purposes: reloads all the js scripts that matches a wildcard
-  reloadNodes: function (folder_wildcard) {
-    var tmp = document.getElementsByTagName('script')
+  reloadNodes(folder_wildcard) {
+    const tmp = document.getElementsByTagName('script')
     //weird, this array changes by its own, so we use a copy
-    var script_files = []
+    const script_files = []
     for (var i = 0; i < tmp.length; i++) {
       script_files.push(tmp[i])
     }
 
-    var docHeadObj = document.getElementsByTagName('head')[0]
+    const docHeadObj = document.getElementsByTagName('head')[0]
     folder_wildcard = document.location.href + folder_wildcard
 
     for (var i = 0; i < script_files.length; i++) {
-      var src = script_files[i].src
+      const src = script_files[i].src
       if (!src || src.substr(0, folder_wildcard.length) != folder_wildcard) {
         continue
       }
 
       try {
         if (LiteGraph.debug) {
-          console.log('Reloading: ' + src)
+          console.log(`Reloading: ${src}`)
         }
-        var dynamicScript = document.createElement('script')
+        const dynamicScript = document.createElement('script')
         dynamicScript.type = 'text/javascript'
         dynamicScript.src = src
         docHeadObj.appendChild(dynamicScript)
@@ -615,7 +611,7 @@ const LiteGraph = {
           throw err
         }
         if (LiteGraph.debug) {
-          console.log('Error while reloading ' + src)
+          console.log(`Error while reloading ${src}`)
         }
       }
     }
@@ -626,16 +622,16 @@ const LiteGraph = {
   },
 
   //separated just to improve if it doesn't work
-  cloneObject: function (obj, target?) {
+  cloneObject(obj, target) {
     if (obj == null) {
       return null
     }
-    var r = JSON.parse(JSON.stringify(obj))
+    const r = JSON.parse(JSON.stringify(obj))
     if (!target) {
       return r
     }
 
-    for (var i in r) {
+    for (const i in r) {
       target[i] = r[i]
     }
     return target
@@ -644,7 +640,7 @@ const LiteGraph = {
   /*
    * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
    */
-  uuidv4: function () {
+  uuidv4() {
     return crypto.randomUUID()
   },
 
@@ -655,7 +651,7 @@ const LiteGraph = {
    * @param {String} type_b
    * @return {Boolean} true if they can be connected
    */
-  isValidConnection: function (type_a, type_b) {
+  isValidConnection(type_a, type_b) {
     if (type_a == '' || type_a === '*') type_a = 0
     if (type_b == '' || type_b === '*') type_b = 0
     if (
@@ -674,15 +670,15 @@ const LiteGraph = {
     type_b = type_b.toLowerCase()
 
     // For nodes supporting multiple connection types
-    if (type_a.indexOf(',') == -1 && type_b.indexOf(',') == -1) {
+    if (!type_a.includes(',') && !type_b.includes(',')) {
       return type_a == type_b
     }
 
     // Check all permutations to see if one is valid
-    var supported_types_a = type_a.split(',')
-    var supported_types_b = type_b.split(',')
-    for (var i = 0; i < supported_types_a.length; ++i) {
-      for (var j = 0; j < supported_types_b.length; ++j) {
+    const supported_types_a = type_a.split(',')
+    const supported_types_b = type_b.split(',')
+    for (let i = 0; i < supported_types_a.length; ++i) {
+      for (let j = 0; j < supported_types_b.length; ++j) {
         if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
           //if (supported_types_a[i] == supported_types_b[j]) {
           return true
@@ -701,11 +697,11 @@ const LiteGraph = {
    * @param {Object} data it could contain info of how the node should be configured
    * @return {Boolean} true if they can be connected
    */
-  registerSearchboxExtra: function (node_type, description, data) {
+  registerSearchboxExtra(node_type, description, data) {
     this.searchbox_extras[description.toLowerCase()] = {
       type: node_type,
       desc: description,
-      data: data
+      data
     }
   },
 
@@ -718,8 +714,8 @@ const LiteGraph = {
    * @param {Function} on_error in case of an error
    * @return {FileReader|Promise} returns the object used to
    */
-  fetchFile: function (url, type, on_complete, on_error) {
-    var that = this
+  fetchFile(url, type, on_complete, on_error) {
+    const that = this
     if (!url) return null
 
     type = type || 'text'
@@ -728,25 +724,25 @@ const LiteGraph = {
         url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3)
       }
       return fetch(url)
-        .then(function (response) {
+        .then(response => {
           if (!response.ok) throw new Error('File not found') //it will be catch below
           if (type == 'arraybuffer') return response.arrayBuffer()
           else if (type == 'text' || type == 'string') return response.text()
           else if (type == 'json') return response.json()
           else if (type == 'blob') return response.blob()
         })
-        .then(function (data) {
+        .then(data => {
           if (on_complete) on_complete(data)
         })
-        .catch(function (error) {
+        .catch(error => {
           console.error('error fetching file:', url)
           if (on_error) on_error(error)
         })
     } else if (url.constructor === File || url.constructor === Blob) {
-      var reader = new FileReader()
-      reader.onload = function (e) {
-        var v = e.target.result
-        if (type == 'json') v = JSON.parse(v as string)
+      const reader = new FileReader()
+      reader.onload = ({ target }) => {
+        let v = target.result
+        if (type == 'json') v = JSON.parse(v)
         if (on_complete) on_complete(v)
       }
       if (type == 'arraybuffer') {

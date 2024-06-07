@@ -64,7 +64,7 @@ supported callbacks:
  * @param {String} name a name for the node
  */
 
-function LGraphNode(title?) {
+function LGraphNode(title) {
   this._ctor(title)
 }
 
