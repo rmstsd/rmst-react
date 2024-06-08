@@ -63,6 +63,9 @@ class LGraphNode {
     this._ctor(title)
   }
 
+  title
+  size: [number, number]
+
   _ctor(title) {
     this.title = title || 'Unnamed'
     this.size = [LiteGraph.NODE_WIDTH, 60]
@@ -450,11 +453,11 @@ class LGraphNode {
 
   /**
 
- * Retrieves the input data type (in case this supports multiple input types)
- * @method getInputDataType
- * @param {number} slot
- * @return {String} datatype in string format
- */
+  * Retrieves the input data type (in case this supports multiple input types)
+  * @method getInputDataType
+  * @param {number} slot
+  * @return {String} datatype in string format
+  */
   getInputDataType(slot) {
     if (!this.inputs) {
       return null

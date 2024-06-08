@@ -609,7 +609,7 @@ class LGraph {
 
     for (const c of this.list_of_graphcanvas) {
       if (c[action]) {
-        c[action](...params)
+        c[action].apply(c, params)
       }
     }
   }

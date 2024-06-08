@@ -728,25 +728,40 @@ const LiteGraph = {
       }
       return fetch(url)
         .then(response => {
-          if (!response.ok) throw new Error('File not found') //it will be catch below
-          if (type == 'arraybuffer') return response.arrayBuffer()
-          else if (type == 'text' || type == 'string') return response.text()
-          else if (type == 'json') return response.json()
-          else if (type == 'blob') return response.blob()
+          if (!response.ok) {
+            throw new Error('File not found')
+          } //it will be catch below
+          if (type == 'arraybuffer') {
+            return response.arrayBuffer()
+          } else if (type == 'text' || type == 'string') {
+            return response.text()
+          } else if (type == 'json') {
+            return response.json()
+          } else if (type == 'blob') {
+            return response.blob()
+          }
         })
         .then(data => {
-          if (on_complete) on_complete(data)
+          if (on_complete) {
+            on_complete(data)
+          }
         })
         .catch(error => {
           console.error('error fetching file:', url)
-          if (on_error) on_error(error)
+          if (on_error) {
+            on_error(error)
+          }
         })
     } else if (url.constructor === File || url.constructor === Blob) {
       const reader = new FileReader()
       reader.onload = ({ target }) => {
         let v = target.result
-        if (type == 'json') v = JSON.parse(v)
-        if (on_complete) on_complete(v)
+        if (type == 'json') {
+          v = JSON.parse(v)
+        }
+        if (on_complete) {
+          on_complete(v)
+        }
       }
       if (type == 'arraybuffer') {
         return reader.readAsArrayBuffer(url)
