@@ -499,7 +499,7 @@ class LGraph {
    * Positions every node in a more readable manner
    * @method arrange
    */
-  arrange(margin = 100, layout) {
+  arrange(margin = 100, layout?) {
     const nodes = this.computeExecutionOrder(false, true)
     const columns = []
 
