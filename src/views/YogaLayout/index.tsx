@@ -3,7 +3,6 @@ import { Stage, TextNode, ViewNode } from './rmst-render'
 import RmstStage, { RmstText, RmstView } from './HostConfig'
 
 import { TextService } from './rmst-render/TextService'
-import { split } from 'canvas-hypertxt'
 
 export default function YogaLayout() {
   useEffect(() => {
