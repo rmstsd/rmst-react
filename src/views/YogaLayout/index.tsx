@@ -94,9 +94,34 @@ export default function YogaLayout() {
         </RmstView>
 
         <RmstView style={{ backgroundColor: 'antiquewhite' }}>
+          <RmstView style={{ backgroundColor: 'red', margin: 10, padding: 5, gap: 10, flexDirection: 'row' }}>
+            <>
+              <RmstText style={{ backgroundColor: 'khaki' }}>Abcjliyu人美</RmstText>
+            </>
+            <>
+              <RmstText style={{ backgroundColor: 'khaki' }}>Abcjliyu人美</RmstText>
+            </>
+          </RmstView>
+
           <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>Abcjliyu人美</RmstText>
+          <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>Abcjliyu人美</RmstText>
+
+          <Child />
         </RmstView>
       </RmstStage>
     </div>
+  )
+}
+
+function Child() {
+  useEffect(() => {
+    console.log(123)
+  }, [])
+
+  return (
+    <>
+      <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>Abcjliyu人美</RmstText>
+      <RmstText style={{ backgroundColor: 'khaki', color: 'black', margin: 5, width: 234 }}>Abcjliyu人美</RmstText>
+    </>
   )
 }

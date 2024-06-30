@@ -3,8 +3,6 @@ import type { RouteObject } from 'react-router-dom'
 
 import LayoutView from '../layout/Layout'
 
-import Drag from '../views/Drag'
-import DndKit from '../views/DndKit/IndexDndKit'
 import OrPortalTest from '../views/OrPortalTest'
 
 import Dm from '../views/Dm/Dm'
@@ -31,8 +29,7 @@ export const routes: IRouteObject[] = [
     children: [
       { path: 'immer', element: <Immer /> },
       { path: 'contextSelector', element: <ContextSelector /> },
-      { path: 'drag', element: <Drag /> },
-      { path: 'dndKit', element: <DndKit /> },
+
       { path: 'NestedContext', element: <NestedContext /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },

@@ -43,6 +43,8 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
   }
 
   const onThumbMouseDown = (evt: React.MouseEvent) => {
+    evt.preventDefault()
+
     const thumbDomDownOffsetY = evt.clientY - thumbDomRef.current.getBoundingClientRect().top
     const viewportDomRect = viewportDomRef.current.getBoundingClientRect()
     const contentDomRect = contentDomRef.current.getBoundingClientRect()
@@ -50,8 +52,6 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     const thumbDomRect = thumbDomRef.current.getBoundingClientRect()
 
     const onDocumentMousemove = (evt: MouseEvent) => {
-      evt.preventDefault()
-
       let thumbY = evt.clientY - trackDomRect.top - thumbDomDownOffsetY
       thumbY = getNumberInRange(thumbY, 0, trackDomRect.height - thumbDomRect.height)
 

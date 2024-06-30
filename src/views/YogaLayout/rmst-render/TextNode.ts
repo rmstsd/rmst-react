@@ -46,7 +46,6 @@ export class TextNode {
       fontFamily: '微软雅黑',
       ...op
     })
-    console.log(ans)
 
     const { textWidth, textHeight } = measureText(ctx, this.content)
 
