@@ -17,6 +17,7 @@ import Sku from '../views/Sku'
 import ContextSelector from '@/views/ContextSelector'
 import LgDemo from '@/views/LiteGraph/LgDemo'
 import YogaLayout from '@/views/YogaLayout'
+import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -28,8 +29,8 @@ export const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'immer', element: <Immer /> },
+      { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'contextSelector', element: <ContextSelector /> },
-
       { path: 'NestedContext', element: <NestedContext /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
