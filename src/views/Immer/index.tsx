@@ -1,100 +1,64 @@
-import { produce } from 'immer'
-import immer from './immer'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import clsx from 'clsx'
+import { twMerge } from 'tailwind-merge'
+import { clsx } from 'clsx'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { useState } from 'react'
+import cn from '@/utils/cn'
 
-const state = {
-  phone: '123',
-  website: 'rmst.com',
-  company: {
-    name: 'rmst',
-    bs: 'bs',
-    uuu: {
-      oo: 1,
-      pp: 2,
-      ss: {
-        v: 3,
-        tt: {
-          g: '',
-          ww: {
-            f: 'd'
-          }
-        }
-      }
+const button = cva('button', {
+  variants: {
+    type: {
+      primary: ['bg-blue-500', 'text-white', 'hover:bg-blue-600'],
+      danger: ['bg-red-500', 'text-white', 'hover:bg-red-600']
+    },
+    size: {
+      small: ['text-sm', 'py-1', 'px-2'],
+      medium: ['text-base', 'py-2', 'px-4']
     }
   },
-  addr: {
-    one: 'aa',
-    two: 'bb'
-  },
-  list: [1, 2, 3],
-  objArray: [{ name: 1 }, { name: 2 }]
-}
-
-const nextState = immer(state, draft => {
-  // draft.phone = '456'
-  // draft.company.name = 'leiLei'
-  // draft.company.uuu.pp = 77
-
-  // draft.list.push(4)
-
-  // draft.objArray[0].name = 3
-
-  draft.company.uuu.ss.tt.ww.f = 'rtrtrtrt'
+  compoundVariants: [{ type: 'primary', size: 'medium', class: 'uppercase' }],
+  defaultVariants: {
+    type: 'primary',
+    size: 'medium'
+  }
 })
 
-// console.log('stringify ', JSON.stringify(nextState) === JSON.stringify(state))
-// console.log(state)
-// console.log(nextState)
-// console.log(nextState === state)
-// console.log(nextState.company === state.company)
-// console.log(nextState.company.uuu === state.company.uuu)
-// console.log(nextState.addr === state.addr)
-
-// // console.log(nextState.list === state.list)
-// console.log(nextState.objArray === state.objArray)
-// console.log(nextState.objArray[0] === state.objArray[0])\
-
-// console.log(nextState.company.uuu.ss.tt.ww.f === state.company.uuu.ss.tt.ww.f)
-// console.log(nextState.company.uuu.ss.tt.ww === state.company.uuu.ss.tt.ww)
-// console.log(nextState.company.uuu.ss.tt === state.company.uuu.ss.tt)
-// console.log(nextState.company.uuu.ss === state.company.uuu.ss)
-// console.log(nextState.company.uuu === state.company.uuu)
-// console.log(nextState.company === state.company)
-
-const Immer = () => {
-  return <div>Immer</div>
+type ButtonProps = VariantProps<typeof button> & {
+  onClick?: () => void
+  className?: string
 }
 
-// export default Immer
+function Button(props: ButtonProps) {
+  props = { type: 'primary', size: 'medium', ...props }
 
-const useStableCallback = fn => {
-  const fnRef = useRef(fn)
-  fnRef.current = fn
-
-  return useCallback((...args) => {
-    fnRef.current(...args)
-  }, [])
-}
-
-export default function index() {
-  const [list, setCount] = useState(Array.from({ length: 100 }, (_, index) => index))
-  const [activeId, setActiveId] = useState(0)
+  const { type, size, onClick, className } = props
 
   return (
-    <div>
-      <>index</>
-
-      <button onClick={() => setActiveId(activeId + 1)}>up</button>
-      {list.map(item => (
-        <Child key={item} item={item} active={activeId === item} />
-      ))}
-    </div>
+    <button className={button({ type, size, className })} onClick={onClick}>
+      Default Button
+    </button>
   )
 }
 
-const Child = memo(({ item, active }) => {
-  console.log('child render ', item)
+export default function Home() {
+  const [type, setType] = useState<ButtonProps['type']>('primary')
+  const [size, setSize] = useState<ButtonProps['size']>('medium')
 
-  return <div className={clsx(active && 'bg-pink-200')}>{item}</div>
-})
+  return (
+    <div className="p-4">
+      <button className={cn('border p-2')} onClick={() => setType(type === 'primary' ? 'danger' : 'primary')}>
+        {type}
+      </button>
+      <button className={cn('border p-2')} onClick={() => setSize(size === 'medium' ? 'small' : 'medium')}>
+        {size}
+      </button>
+
+      <Button type={type} size={size} />
+
+      <br />
+      <br />
+
+      {/* <Button />
+      <Button type="danger" /> */}
+    </div>
+  )
+}

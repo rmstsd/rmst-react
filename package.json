@@ -14,6 +14,7 @@
     "ahooks": "^3.7.10",
     "axios": "^1.6.7",
     "camelcase": "^8.0.0",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "immer": "^10.0.4",
     "litegraph.js": "^0.7.18",
@@ -26,6 +27,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "scheduler": "^0.23.0",
     "shallowequal": "^1.1.0",
+    "tailwind-merge": "^2.4.0",
     "use-context-selector": "^1.4.4",
     "use-immer": "^0.9.0",
     "yoga-layout": "^3.0.4"
