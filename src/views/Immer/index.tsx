@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <button className={cn('border p-2')} onClick={() => setType(type === 'primary' ? 'danger' : 'primary')}>
+      <button className={cn('border p-2 p-3')} onClick={() => setType(type === 'primary' ? 'danger' : 'primary')}>
         {type}
       </button>
       <button className={cn('border p-2')} onClick={() => setSize(size === 'medium' ? 'small' : 'medium')}>

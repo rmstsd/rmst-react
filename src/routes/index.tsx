@@ -18,6 +18,7 @@ import ContextSelector from '@/views/ContextSelector'
 import LgDemo from '@/views/LiteGraph/LgDemo'
 import YogaLayout from '@/views/YogaLayout'
 import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
+import Cart from '@/views/Sku/Cart'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 
@@ -52,7 +53,10 @@ export const routes: IRouteObject[] = [
   {
     path: '/sku',
     element: <LayoutView />,
-    children: [{ path: 'sku', element: <Sku /> }]
+    children: [
+      { path: 'sku', element: <Sku /> },
+      { path: 'cart', element: <Cart /> }
+    ]
   },
   {
     path: '*',
