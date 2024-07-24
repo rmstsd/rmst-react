@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import { clsx } from 'clsx'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import cn from '@/utils/cn'
 
 const button = cva('button', {

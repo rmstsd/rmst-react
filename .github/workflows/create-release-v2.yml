@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - v*.*.*
+  # push:
+  # branches: master
 
 jobs:
   release:
@@ -16,28 +18,9 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
-      - name: 安装 pnpm
-        uses: pnpm/action-setup@v3.0.0
-
-      - name: Install Dependencies
-        run: pnpm install
-
-      - name: build
-        run: pnpm run build
-
       - name: release
         uses: softprops/action-gh-release@v2
         with:
           draft: false
           files: |
-            dist/*.html
-            dist/*.exe
-            dist/*.zip
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.snap
-            dist/*.deb
-            dist/*.rpm
-            dist/*.tar.gz
-            dist/*.yml
-            dist/*.blockmap
+            tailwind.config.ts
