@@ -6,7 +6,7 @@
     "dev": "rsbuild dev --port 3600",
     "build": "rsbuild build",
     "preview": "rsbuild preview",
-    "release": "release-it patch"
+    "release": "release-it patch --ci"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
