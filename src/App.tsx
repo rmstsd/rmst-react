@@ -1,8 +1,8 @@
 import { useRoutes } from 'react-router-dom'
-import { routes } from './routes'
+import { siteRoutes } from './routes/siteRoutes'
 
 const App: React.FC = () => {
-  const element = useRoutes(routes)
+  const element = useRoutes(siteRoutes)
 
   return element
 }

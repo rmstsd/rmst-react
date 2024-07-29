@@ -21,8 +21,7 @@ import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 import Cart from '@/views/Sku/Cart'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
-
-export const routes: IRouteObject[] = [
+const routes: IRouteObject[] = [
   { path: '/', element: <Navigate to="/ui-component/immer" />, hidden: true },
   { path: '/ui-component', element: <Navigate to="/ui-component/immer" />, hidden: true },
   {
