@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { SingleWordClass } from './SingleWordClass'
 import cn from '@/utils/cn'
 
@@ -8,11 +8,16 @@ interface SingleWordProps {
   disabledHoverUpdate?: boolean
 }
 
-export function SingleWord({ word, className, disabledHoverUpdate }: SingleWordProps) {
+const SingleWord = forwardRef<SingleWordClass, SingleWordProps>((props, ref) => {
+  const { word, className, disabledHoverUpdate } = props
+
   const [wordList, setWordList] = useState<SingleWordClass['wordList']>([])
   const wordIns = useMemo(() => new SingleWordClass(word), [])
 
+  useImperativeHandle(ref, () => wordIns)
+
   useEffect(() => {
+    setWordList([...wordIns.wordList])
     wordIns.onUpdate = () => {
       setWordList([...wordIns.wordList])
     }
@@ -21,7 +26,7 @@ export function SingleWord({ word, className, disabledHoverUpdate }: SingleWordP
 
   return (
     <div
-      className={cn('w-fit', className)}
+      className={cn('inline-block w-fit', className)}
       onMouseEnter={() => {
         if (disabledHoverUpdate) {
           return
@@ -37,4 +42,6 @@ export function SingleWord({ word, className, disabledHoverUpdate }: SingleWordP
       ))}
     </div>
   )
-}
+})
+
+export default SingleWord

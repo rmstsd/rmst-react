@@ -64,16 +64,20 @@ class Animator {
 export class SingleWordClass {
   constructor(word: string) {
     this.word = word
-    this.wordList = word.split('').map(char => ({ char, visible: false }))
+    this.initWordList()
   }
 
-  word = ''
+  private word = ''
   totalTime = 500
 
-  wordList: { char: string; visible: boolean }[] = []
+  wordList: { isSpace: boolean; char: string; visible: boolean }[] = []
 
   get interval() {
     return this.totalTime / this.word.length
+  }
+
+  initWordList() {
+    this.wordList = this.word.split('').map(char => ({ char, visible: false, isSpace: char === ' ' }))
   }
 
   startRender() {
@@ -82,7 +86,10 @@ export class SingleWordClass {
         return
       }
 
-      this.renderCharItem(index)
+      if (this.word[index] !== ' ') {
+        this.renderCharItem(index)
+      }
+
       setTimeout(() => {
         dispatchItem(index + 1)
       }, this.interval)
@@ -93,7 +100,7 @@ export class SingleWordClass {
 
   onUpdate = () => {}
 
-  renderCharItem(index: number) {
+  private renderCharItem(index: number) {
     this.wordList[index].visible = true
 
     const animator = new Animator(200)

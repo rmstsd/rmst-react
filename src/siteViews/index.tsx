@@ -1,58 +1,40 @@
-import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import frame1 from '@/assets/frame-1.mp4'
+import frame2 from '@/assets/frame-2.mp4'
 import Video from './components/Video'
-import { SingleWord } from './components/SingleWord/SingleWord'
-import { useEventListener } from 'ahooks'
+import cn from '@/utils/cn'
+
+import Frame1 from './frame/Frame1'
+import Frame2 from './frame/Frame2'
 
 export default function Home() {
-  const [style, setStyle] = useState({ x: 0, y: 0, opacity: 0 })
-  const isEnter = useRef(false)
+  const [isEnterTv, setIsEnterTv] = useState(false)
+  const [showFrame2, setShowFrame2] = useState(false)
 
-  const onMouseEnter = (evt: MouseEvent<HTMLDivElement>) => {
-    isEnter.current = true
-  }
-  const onMouseLeave = (evt: MouseEvent<HTMLDivElement>) => {
-    isEnter.current = false
-    setStyle({ ...style, opacity: 0 })
-  }
+  const v2Ref = useRef<HTMLVideoElement>()
 
-  useEventListener('mousemove', evt => {
-    if (isEnter.current) {
-      setStyle({ x: evt.clientX - 60, y: evt.clientY - 60, opacity: 1 })
-    }
-  })
+  const onClick = () => {
+    setIsEnterTv(true)
+    v2Ref.current.play()
+  }
 
   return (
     <div className="flow-root h-full relative">
-      <Video url={frame1} />
+      <Video src={frame1} autoPlay loop className={cn('absolute inset-0', isEnterTv && 'hidden')} />
+      <Video
+        ref={v2Ref}
+        src={frame2}
+        controls
+        className={cn('absolute inset-0', !isEnterTv && 'hidden')}
+        onEnded={() => {
+          setShowFrame2(true)
+        }}
+      />
 
-      <div
-        className="absolute inset-0 flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-      >
-        <div className="w-full">
-          <SingleWord word="Redefining" className="text-6xl" disabledHoverUpdate />
-          <SingleWord word="Entertainment" className="text-6xl ml-auto" disabledHoverUpdate />
-        </div>
+      <Frame1 isEnterTv={isEnterTv} onClick={onClick} />
 
-        <div className="absolute inset-5 cursor-pointer" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}></div>
-
-        <div
-          className="w-[120px] h-[120px] rounded-full border border-white absolute left-0 top-0 content-center pointer-events-none"
-          style={{
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(rgba(255,255,255,.5))',
-            transitionProperty: 'transform opacity',
-            transitionDuration: '200ms',
-            transitionTimingFunction: 'linear',
-            transform: `translate(${style.x}px, ${style.y}px)`,
-            opacity: style.opacity
-          }}
-        >
-          <SingleWord word="Click To Enter" className="mx-auto text-sm" disabledHoverUpdate />
-        </div>
-      </div>
+      {showFrame2 && <Frame2 />}
     </div>
   )
 }

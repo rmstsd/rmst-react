@@ -50,6 +50,9 @@ importers:
       react-router-dom:
         specifier: ^6.22.3
         version: 6.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-transition-group:
+        specifier: ^4.4.5
+        version: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-virtuoso:
         specifier: ^4.7.2
         version: 4.7.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -93,6 +96,9 @@ importers:
       '@types/react-reconciler':
         specifier: ^0.28.8
         version: 0.28.8
+      '@types/react-transition-group':
+        specifier: ^4.4.10
+        version: 4.4.10
       its-fine:
         specifier: ^1.2.5
         version: 1.2.5(react@18.3.1)
@@ -383,6 +389,9 @@ packages:
 
   '@types/react-reconciler@0.28.8':
     resolution: {integrity: sha512-SN9c4kxXZonFhbX4hJrZy37yw9e7EIxcpHCxQv5JUS18wDE5ovkQKlqQEkufdJCCMfuI9BnjUJvhYeJ9x5Ra7g==}
+
+  '@types/react-transition-group@4.4.10':
+    resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
 
   '@types/react@18.3.3':
     resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
@@ -2535,6 +2544,10 @@ snapshots:
       '@types/react': 18.3.3
 
   '@types/react-reconciler@0.28.8':
+    dependencies:
+      '@types/react': 18.3.3
+
+  '@types/react-transition-group@4.4.10':
     dependencies:
       '@types/react': 18.3.3
 
