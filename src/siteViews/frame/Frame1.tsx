@@ -30,7 +30,7 @@ export default function Frame1({ isEnterTv, onClick }) {
   return (
     <div
       className="f1 absolute inset-0 flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
     >
       <div className="w-full">
         <SingleWord
@@ -45,51 +45,53 @@ export default function Frame1({ isEnterTv, onClick }) {
         />
       </div>
 
-      {!isEnterTv && (
-        <div
-          className="absolute inset-5 cursor-pointer"
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onClick={onClick}
-        />
-      )}
+      <MeTransition visible={!isEnterTv}>
+        <div className="absolute left-0 bottom-0 w-full flex justify-between items-end p-4">
+          <SingleWord
+            word={
+              'Join the future of entertainment with STR8FIRE, where IPs, games, and NFTs drive ownership and rewards for all. Play now, collect all, and earn exponentially.'
+            }
+            className="block w-[400px]"
+            disabledHoverUpdate
+          />
 
-      {!isEnterTv && (
-        <div
-          className="w-[140px] h-[140px] p-2 rounded-full border border-white absolute left-0 top-0 pointer-events-none flex items-center justify-center"
-          style={{
-            transitionProperty: 'transform opacity',
-            transitionDuration: '200ms',
-            transitionTimingFunction: 'linear',
-            transform: `translate(${style.x}px, ${style.y}px)`,
-            opacity: style.opacity
-          }}
-        >
-          <div
-            className="w-full h-full rounded-full flex items-center justify-center"
-            style={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(rgba(255,255,255,.7))' }}
-          >
-            <SingleWord
-              ref={singleWordRef}
-              word="Click To Enter"
-              className="block mx-auto text-sm"
-              disabledHoverUpdate
-            />
-          </div>
+          <SingleWord word="Skip intro →" className="block" />
         </div>
+      </MeTransition>
+
+      {!isEnterTv && (
+        <>
+          <div
+            className="absolute inset-5 cursor-pointer"
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onClick={onClick}
+          />
+
+          <div
+            className="w-[140px] h-[140px] p-2 rounded-full border border-white absolute left-0 top-0 pointer-events-none flex items-center justify-center"
+            style={{
+              transitionProperty: 'transform opacity',
+              transitionDuration: '200ms',
+              transitionTimingFunction: 'linear',
+              transform: `translate(${style.x}px, ${style.y}px)`,
+              opacity: style.opacity
+            }}
+          >
+            <div
+              className="w-full h-full rounded-full flex items-center justify-center"
+              style={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(rgba(255,255,255,.7))' }}
+            >
+              <SingleWord
+                ref={singleWordRef}
+                word="Click To Enter"
+                className="block mx-auto text-sm"
+                disabledHoverUpdate
+              />
+            </div>
+          </div>
+        </>
       )}
-
-      <div className="absolute left-0 bottom-0 w-[300px]">
-        {/* <SingleWord
-              word={
-                'Join the future of entertainment with STR8FIRE, where IPs, games, and NFTs drive ownership and rewards for all. Play now, collect all, and earn exponentially.'
-              }
-              className="block"
-              disabledHoverUpdate
-            /> */}
-
-        <MeTransition visible={!isEnterTv} />
-      </div>
     </div>
   )
 }
