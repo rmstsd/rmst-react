@@ -1,14 +1,6 @@
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { TextPlugin } from 'gsap/TextPlugin'
-import { useEffect, useLayoutEffect, useRef } from 'react'
-
+import { useLayoutEffect, useRef } from 'react'
 import { createAnimation } from '../animation'
-import SingleWord from '../components/SingleWord/SingleWord'
-
 import viteSvg from '@/assets/vite.svg'
-
-gsap.registerPlugin(ScrollTrigger, TextPlugin)
 
 export default function Frame2() {
   const container = useRef<HTMLDivElement>()

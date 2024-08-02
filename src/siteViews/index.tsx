@@ -7,22 +7,11 @@ import cn from '@/utils/cn'
 import Frame1 from './frame/Frame1'
 import Frame2 from './frame/Frame2'
 
-import Lenis from 'lenis'
-// import 'lenis/dist/lenis.css'
-
-const lenis = new Lenis({})
-// lenis.on('scroll', e => {})
-
-function raf(time) {
-  lenis.raf(time)
-  requestAnimationFrame(raf)
-}
-
-requestAnimationFrame(raf)
+import './initThirdPkg'
 
 export default function Home() {
-  const [isEnterTv, setIsEnterTv] = useState(true)
-  const [showFrame2, setShowFrame2] = useState(true)
+  const [isEnterTv, setIsEnterTv] = useState(false)
+  const [showFrame2, setShowFrame2] = useState(false)
 
   const v2Ref = useRef<HTMLVideoElement>()
 

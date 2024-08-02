@@ -1,8 +1,5 @@
-import { gsap, ScrollTrigger, Draggable, Flip, Observer, MotionPathPlugin, ScrollToPlugin, TextPlugin } from 'gsap/all'
-import Lenis from 'lenis'
+import { gsap } from 'gsap/all'
 import { useEffect } from 'react'
-
-gsap.registerPlugin(ScrollTrigger, Draggable, Flip, Observer, MotionPathPlugin, ScrollToPlugin, TextPlugin)
 
 // const lenis = new Lenis()
 // lenis.on('scroll', e => {
