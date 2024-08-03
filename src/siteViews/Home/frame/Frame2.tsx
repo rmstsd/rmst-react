@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { createAnimation } from '../../animation'
 import viteSvg from '@/assets/vite.svg'
 import gsap from 'gsap'
+import Features from './Features'
 
 export default function Frame2() {
   const container = useRef<HTMLDivElement>()
@@ -101,6 +102,8 @@ export default function Frame2() {
           <ItemPanel index={4} />
         </section>
       </div>
+
+      <Features />
 
       <div className="next  h-[1000px] bg-purple-500"></div>
     </div>

@@ -23,16 +23,16 @@ export default function Frame1({ isEnterTv, onClick }) {
     >
       <div className="w-full">
         <div ref={leftTextRef} className="w-fit">
-          <SingleWord word="Redefining" className={cn('text-6xl block')} disabledHoverUpdate />
+          <SingleWord word="Redefining" className={cn('block text-6xl')} disabledHoverUpdate />
         </div>
 
-        <div ref={rightTextRef} className="w-fit ml-auto">
-          <SingleWord word="Entertainment" className={cn('text-6xl block')} disabledHoverUpdate />
+        <div ref={rightTextRef} className="ml-auto w-fit">
+          <SingleWord word="Entertainment" className={cn('block text-6xl')} disabledHoverUpdate />
         </div>
       </div>
 
       <MeTransition visible={!isEnterTv}>
-        <div className="absolute left-0 bottom-0 w-full flex justify-between items-end p-4">
+        <div className="absolute bottom-0 left-0 flex w-full items-end justify-between p-4">
           <SingleWord
             word={
               'Join the future of entertainment with STR8FIRE, where IPs, games, and NFTs drive ownership and rewards for all. Play now, collect all, and earn exponentially.'

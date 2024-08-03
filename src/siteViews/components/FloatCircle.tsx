@@ -44,13 +44,13 @@ export default function FloatCircle({ onClick }) {
       />
       <div
         ref={controlRef}
-        className="w-[140px] h-[140px] p-2 rounded-full border border-white absolute left-0 top-0 pointer-events-none flex items-center justify-center"
+        className="pointer-events-none absolute left-0 top-0 flex h-[140px] w-[140px] items-center justify-center rounded-full border border-white p-2"
       >
         <div
-          className="w-full h-full rounded-full flex items-center justify-center"
+          className="flex h-full w-full items-center justify-center rounded-full"
           style={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(rgba(255,255,255,.7))' }}
         >
-          <SingleWord ref={singleWordRef} word="Click To Enter" className="block mx-auto text-sm" disabledHoverUpdate />
+          <SingleWord ref={singleWordRef} word="Click To Enter" className="mx-auto block text-sm" disabledHoverUpdate />
         </div>
       </div>
     </>

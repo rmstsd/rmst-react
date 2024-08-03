@@ -25,7 +25,7 @@ function GsapDemo() {
   return <Apple />
 
   return (
-    <div className="overflow-y-auto overflow-x-hidden h-screen">
+    <div className="h-screen overflow-y-auto overflow-x-hidden">
       {list.map(item => (
         <h1 className="p-6" key={item}>
           {item}
@@ -129,8 +129,8 @@ function Apple() {
   return (
     <div id="scrollContainer" className="">
       <div style={{ height: '300vh' }}>
-        <div className="canvas-container w-fit sticky top-0 border border-red-200 resize overflow-hidden">
-          <canvas className="w-full h-full"></canvas>
+        <div className="canvas-container sticky top-0 w-fit resize overflow-hidden border border-red-200">
+          <canvas className="h-full w-full"></canvas>
         </div>
       </div>
     </div>

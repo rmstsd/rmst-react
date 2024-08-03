@@ -22,8 +22,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flow-root relative">
-      <div className="h-screen sticky top-0">
+    <div className="relative flow-root">
+      <div className="sticky top-0 h-screen">
         <Video src={frame1} autoPlay loop className={cn('', isEnterTv && 'hidden')} />
         <Video
           ref={v2Ref}
@@ -44,7 +44,7 @@ export default function Home() {
 
 function MainBg() {
   return (
-    <div className="h-screen w-screen relative">
+    <div className="relative h-screen w-screen">
       <div
         className="absolute inset-0"
         style={{
