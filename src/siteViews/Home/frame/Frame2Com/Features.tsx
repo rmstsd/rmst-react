@@ -1,10 +1,7 @@
-import cn from '@/utils/cn'
-import st from './style.module.less'
-
 export default function Features() {
   return (
     <div
-      className={cn('grid grid-cols-1 text-3xl sm:grid-cols-2 lg:grid-cols-3', st.container)}
+      className={'grid grid-cols-1 gap-[30px] p-[40px] text-3xl sm:grid-cols-2 lg:grid-cols-3'}
       style={{
         backgroundImage: 'linear-gradient(135deg, #c0e0fe, #ecfcff)',
         gridTemplateAreas: ''

@@ -2,7 +2,8 @@ import { useLayoutEffect, useRef } from 'react'
 import { createAnimation } from '../../animation'
 import viteSvg from '@/assets/vite.svg'
 import gsap from 'gsap'
-import Features from './Features'
+import Features from './Frame2Com/Features'
+import Investors from './Frame2Com/Investors'
 
 export default function Frame2() {
   const container = useRef<HTMLDivElement>()
@@ -73,7 +74,7 @@ export default function Frame2() {
   return (
     <div ref={container} className="f2 relative" style={{ marginTop: '-100vh' }}>
       <div
-        className="sticky top-0 box text-white h-screen flex items-center justify-center text-4xl xl:text-5xl"
+        className="box sticky top-0 flex h-screen items-center justify-center text-4xl text-white xl:text-5xl"
         id="c-text"
         style={{ padding: '0 10%' }}
       >
@@ -81,13 +82,13 @@ export default function Frame2() {
         games and NFT collections that unlock ownership and rewards for the Web3 community.
       </div>
       <div id="pContainer" style={{ marginTop: '-100vh' }}>
-        <div id="a-left" className="flex w-1/2 h-screen sticky top-0 flex-center">
-          <img className="viteSvg" src={viteSvg} width={200} />
+        <div id="a-left" className="flex-center sticky top-0 flex h-screen w-1/2">
+          <img className="viteSvg hidden sm:block" src={viteSvg} width={200} />
         </div>
 
         <div className="first" style={{ marginTop: '-100vh' }}>
-          <div className="pg overflow-hidden sticky top-0">
-            <section id="a-right" className="a-right w-1/2 ml-auto overflow-hidden sticky top-0">
+          <div className="pg sticky top-0 overflow-hidden">
+            <section id="a-right" className="a-right sticky top-0 ml-auto overflow-hidden sm:w-1/2">
               <ItemPanel />
             </section>
           </div>
@@ -95,7 +96,7 @@ export default function Frame2() {
           <div style={{ height: firstSh }}></div>
         </div>
 
-        <section className="w-1/2 ml-auto">
+        <section className="ml-auto sm:w-1/2">
           <ItemPanel index={1} />
           <ItemPanel index={2} />
           <ItemPanel index={3} />
@@ -105,14 +106,16 @@ export default function Frame2() {
 
       <Features />
 
-      <div className="next  h-[1000px] bg-purple-500"></div>
+      <Investors />
+
+      <div className="next h-[1000px] bg-purple-500"></div>
     </div>
   )
 }
 
 function ItemPanel({ item = {}, index = 0 }) {
   return (
-    <section className="h-screen flex flex-col justify-center p-2 bg-orange-500 border-b border-red-500 text-white">
+    <section className="flex h-screen flex-col justify-center border-b border-red-500 bg-[#121422] p-2 text-white">
       <div>/How it works</div>
       <div className="flex border-b border-white">
         <span className="mr-5">{String(index + 1).padStart(2, '0')}</span>

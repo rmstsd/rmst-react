@@ -32,7 +32,7 @@ export default function Frame1({ isEnterTv, onClick }) {
       </div>
 
       <MeTransition visible={!isEnterTv}>
-        <div className="absolute bottom-0 left-0 flex w-full items-end justify-between p-4">
+        <div className="absolute bottom-0 left-0 flex w-full flex-col p-4 sm:flex-row">
           <SingleWord
             word={
               'Join the future of entertainment with STR8FIRE, where IPs, games, and NFTs drive ownership and rewards for all. Play now, collect all, and earn exponentially.'
@@ -41,7 +41,7 @@ export default function Frame1({ isEnterTv, onClick }) {
             disabledHoverUpdate
           />
 
-          <SingleWord word="Skip intro →" className="block" />
+          <SingleWord word="Skip intro →" className="ml-auto mt-auto" />
         </div>
       </MeTransition>
 
