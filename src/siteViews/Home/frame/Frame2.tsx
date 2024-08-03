@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
-import { createAnimation } from '../animation'
+import { createAnimation } from '../../animation'
 import viteSvg from '@/assets/vite.svg'
+import gsap from 'gsap'
 
 export default function Frame2() {
   const container = useRef<HTMLDivElement>()
@@ -16,7 +17,7 @@ export default function Frame2() {
     const aLeft = document.querySelector('#a-left') as HTMLDivElement
     const aRight = document.querySelector('#a-right') as HTMLDivElement
 
-    const viteSvg = document.querySelector('.viteSvg') as HTMLDivElement
+    const viteSvgImage = document.querySelector('.viteSvg') as HTMLDivElement
 
     const pContainer = document.querySelector('#pContainer') as HTMLDivElement
 
@@ -37,12 +38,12 @@ export default function Frame2() {
 
     const tx = createAnimation(0, 500, 1, 1.3)
     document.addEventListener('mousemove', evt => {
-      const rect = viteSvg.getBoundingClientRect()
+      const rect = viteSvgImage.getBoundingClientRect()
       const center = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }
-
       const dis = Math.hypot(evt.clientX - center.x, evt.clientY - center.y)
       const sc = tx(dis)
-      viteSvg.style.scale = sc
+
+      gsap.to(viteSvgImage, { scale: sc })
     })
 
     updateStyle()
@@ -54,16 +55,16 @@ export default function Frame2() {
       const scale = scaleFunc(scrollTop)
       const opacity = opacityFunc(scrollTop)
 
-      cText.style.opacity = opacity
-      cText.style.transform = `scale(${scale})`
+      gsap.to(cText, { opacity, scale })
 
       if (aLeft) {
-        aLeft.style.transform = `translateX(${-txFunc(scrollTop)}%)`
+        gsap.to(aLeft, { xPercent: -txFunc(scrollTop) })
       }
-      if (viteSvg) {
-        viteSvg.style.transform = `rotate(${rotate(scrollTop)}deg)`
+      if (viteSvgImage) {
+        gsap.to(viteSvgImage, { rotation: rotate(scrollTop) })
       }
 
+      // gsap.to(aRight, { xPercent: -txFunc(scrollTop) })
       aRight.style.transform = `translateX(${txFunc(scrollTop)}%)`
     }
   }, [])
@@ -78,7 +79,6 @@ export default function Frame2() {
         STR8FIRE redefines the entertainment industry. Original and renowned Web2 IPs are transformed in play-to-earn
         games and NFT collections that unlock ownership and rewards for the Web3 community.
       </div>
-
       <div id="pContainer" style={{ marginTop: '-100vh' }}>
         <div id="a-left" className="flex w-1/2 h-screen sticky top-0 flex-center">
           <img className="viteSvg" src={viteSvg} width={200} />

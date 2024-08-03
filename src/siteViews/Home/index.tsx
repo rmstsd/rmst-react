@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import frame1 from '@/assets/frame-1.mp4'
 import frame2 from '@/assets/frame-2.mp4'
-import Video from './components/Video'
 import cn from '@/utils/cn'
 
 import Frame1 from './frame/Frame1'
 import Frame2 from './frame/Frame2'
 
-import './initThirdPkg'
+import Video from '../components/Video'
+
+const inFrame2 = true
 
 export default function Home() {
-  const [isEnterTv, setIsEnterTv] = useState(false)
-  const [showFrame2, setShowFrame2] = useState(false)
+  const [isEnterTv, setIsEnterTv] = useState(inFrame2)
+  const [showFrame2, setShowFrame2] = useState(inFrame2)
 
   const v2Ref = useRef<HTMLVideoElement>()
 

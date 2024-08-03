@@ -1,4 +1,4 @@
-import Home from '@/siteViews'
+import Home from '@/siteViews/Home'
 import { Navigate } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 

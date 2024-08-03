@@ -1,7 +1,7 @@
 import cn from '@/utils/cn'
-import SingleWord from '../components/SingleWord/SingleWord'
-import MeTransition from '../components/MeTransition'
-import FloatCircle from '../components/FloatCircle'
+import SingleWord from '../../components/SingleWord/SingleWord'
+import MeTransition from '../../components/MeTransition'
+import FloatCircle from '../../components/FloatCircle'
 import gsap from 'gsap'
 import { useRef } from 'react'
 
