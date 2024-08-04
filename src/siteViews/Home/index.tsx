@@ -8,6 +8,7 @@ import Frame2 from './frame/Frame2'
 
 import Video from '../components/Video'
 import gsap from 'gsap'
+import { TopMenu } from '../components/TopMenu'
 
 const inFrame2 = false
 
@@ -28,6 +29,12 @@ export default function Home() {
 
   return (
     <div className="relative flow-root">
+      <TopMenu
+        onClick={() => {
+          window.location.reload()
+        }}
+      />
+
       <div className="sticky top-0 h-screen">
         <MainBg />
 

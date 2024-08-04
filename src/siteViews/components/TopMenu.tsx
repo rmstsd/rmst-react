@@ -1,7 +1,10 @@
-export function TopMenu() {
+export function TopMenu({ onClick }) {
   return (
-    <div className="absolute left-1/2 top-0 z-10 h-[40px] w-[80px] -translate-x-1/2 rounded-bl-2xl rounded-br-2xl bg-black text-center text-white">
-      MENU
+    <div
+      className="absolute left-1/2 top-0 z-10 h-[30px] -translate-x-1/2 cursor-pointer rounded-bl-2xl rounded-br-2xl bg-gray-700 px-6 text-center text-white"
+      onClick={onClick}
+    >
+      back home
     </div>
   )
 }
