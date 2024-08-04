@@ -7,7 +7,7 @@
     "build": "rsbuild build",
     "preview": "rsbuild preview",
     "release": "release-it patch --ci",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
