@@ -6,7 +6,8 @@
     "dev": "rsbuild dev --port 3600",
     "build": "rsbuild build",
     "preview": "rsbuild preview",
-    "release": "release-it patch --ci"
+    "release": "release-it patch --ci",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
@@ -47,6 +48,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-reconciler": "^0.28.8",
     "@types/react-transition-group": "^4.4.10",
+    "gh-pages": "^6.1.1",
     "its-fine": "^1.2.5",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.5",
