@@ -7,6 +7,7 @@ import Frame1 from './frame/Frame1'
 import Frame2 from './frame/Frame2'
 
 import Video from '../components/Video'
+import gsap from 'gsap'
 
 const inFrame2 = true
 
@@ -14,9 +15,13 @@ export default function Home() {
   const [isEnterTv, setIsEnterTv] = useState(inFrame2)
   const [showFrame2, setShowFrame2] = useState(inFrame2)
 
+  const v1Ref = useRef<HTMLVideoElement>()
   const v2Ref = useRef<HTMLVideoElement>()
 
   const onClick = () => {
+    gsap.to(v1Ref.current, { display: 'none' })
+    gsap.to(v2Ref.current, { display: 'unset' })
+
     setIsEnterTv(true)
     v2Ref.current.play()
   }
@@ -24,14 +29,20 @@ export default function Home() {
   return (
     <div className="relative flow-root">
       <div className="sticky top-0 h-screen">
-        <Video src={frame1} autoPlay loop className={cn('', isEnterTv && 'hidden')} />
+        <MainBg />
+
+        <Video ref={v1Ref} src={frame1} autoPlay loop className={cn('absolute inset-0')} />
         <Video
           ref={v2Ref}
           src={frame2}
-          controls
-          className={cn('', !isEnterTv && 'hidden')}
+          className={cn('absolute inset-0 hidden')}
           onEnded={() => {
-            setShowFrame2(true)
+            gsap.to(v2Ref.current, { display: 'none' })
+          }}
+          onPlay={() => {
+            setTimeout(() => {
+              setShowFrame2(true)
+            }, 4000)
           }}
         />
       </div>
@@ -44,19 +55,16 @@ export default function Home() {
 
 function MainBg() {
   return (
-    <div className="relative h-screen w-screen">
+    <div className="h-full">
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
             'linear-gradient(90deg, black, #06070d 0%, var(--color-dark) 30%, var(--color-dark) 70%, var(--color-black))'
         }}
-      ></div>
+      />
 
-      <div
-        className="absolute inset-0 opacity-50"
-        style={{ mixBlendMode: 'soft-light', backgroundColor: '#0095ff' }}
-      ></div>
+      <div className="absolute inset-0" style={{ mixBlendMode: 'soft-light', backgroundColor: '#0095ff' }}></div>
     </div>
   )
 }

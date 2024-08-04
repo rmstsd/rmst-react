@@ -1,6 +1,6 @@
 export default function Features() {
   return (
-    <div
+    <section
       className={'grid grid-cols-1 gap-[30px] p-[40px] text-3xl sm:grid-cols-2 lg:grid-cols-3'}
       style={{
         backgroundImage: 'linear-gradient(135deg, #c0e0fe, #ecfcff)',
@@ -12,6 +12,6 @@ export default function Features() {
       <div className="flex-center aspect-square bg-white">2</div>
       <div className="flex-center aspect-square bg-white">3</div>
       <div className="flex-center aspect-square bg-white">4</div>
-    </div>
+    </section>
   )
 }
