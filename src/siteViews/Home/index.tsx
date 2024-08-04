@@ -9,7 +9,7 @@ import Frame2 from './frame/Frame2'
 import Video from '../components/Video'
 import gsap from 'gsap'
 
-const inFrame2 = true
+const inFrame2 = false
 
 export default function Home() {
   const [isEnterTv, setIsEnterTv] = useState(inFrame2)
