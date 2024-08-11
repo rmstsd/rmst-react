@@ -31,7 +31,7 @@ const LayoutView: React.FC = props => {
           })}
       </Menu>
 
-      <section className="p-[10px] flex-grow">{<Outlet />}</section>
+      <section className="p-[10px] flex-grow"><Outlet /></section>
     </div>
   )
 }

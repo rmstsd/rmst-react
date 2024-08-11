@@ -70,7 +70,7 @@ export class SingleWordClass {
   private word = ''
   totalTime = 500
 
-  wordList: { isSpace: boolean; char: string; visible: boolean }[] = []
+  wordList: { isSpace: boolean, char: string, visible: boolean }[] = []
 
   get interval() {
     return this.totalTime / this.word.length

@@ -7,7 +7,7 @@ const axiosRequest = axios.create({
   baseURL: Base_Url
 })
 
-let token: string = 'f277681eec834c509fcf002960ab4ff1'
+let token = 'f277681eec834c509fcf002960ab4ff1'
 
 axiosRequest.interceptors.request.use(
   config => {

@@ -3,7 +3,7 @@ import Host from './components/Host'
 import Portal from './components/Portal'
 import { Button, Input } from '@arco-design/web-react'
 import { useUpdate } from '@/utils/hooks/hooks'
-import { useToggle, useBoolean } from 'ahooks'
+import { useBoolean } from 'ahooks'
 
 const MyPortalTest = () => {
   console.log('MyPortalTest render')
@@ -26,7 +26,7 @@ const MyPortalTest = () => {
       <h1 ref={h1Ref}>my</h1>
       <hr />
 
-      <div onMouseDown={evt => evt.preventDefault()} className="border border-orange-400 p-3 ">
+      <div onMouseDown={evt => evt.preventDefault()} className="border border-orange-400 p-3">
         <Button onClick={() => up()}>up</Button>
 
         <Button
@@ -69,7 +69,7 @@ const MyPortalTest = () => {
           {ppList.map(item =>
             item.bool ? (
               <Portal key={item.idx}>
-                <div className="border p-2 my-2">
+                <div className="my-2 border p-2">
                   {item.idx} portal内容 <Input />
                 </div>
               </Portal>
@@ -79,21 +79,21 @@ const MyPortalTest = () => {
           {multi && (
             <>
               <Portal>
-                <div className="border p-2 my-2">
+                <div className="my-2 border p-2">
                   201 portal内容 multi
                   <Input />
                 </div>
               </Portal>
 
               <Portal>
-                <div className="border p-2 my-2">
+                <div className="my-2 border p-2">
                   202 portal内容 multi
                   <Input />
                 </div>
               </Portal>
 
               <Portal>
-                <div className="border p-2 my-2">
+                <div className="my-2 border p-2">
                   203 portal内容 multi
                   <Input />
                 </div>
@@ -119,7 +119,7 @@ function Child() {
   return (
     <>
       <h4 ref={ref}>h4</h4>
-      <ChildSon cg={cg}></ChildSon>
+      <ChildSon cg={cg} />
       child
     </>
   )

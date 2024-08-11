@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 type State = {
-  portals: Array<{
+  portals: {
     key: number
     children: React.ReactNode
-  }>
+  }[]
 }
 
 /**

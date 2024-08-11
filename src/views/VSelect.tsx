@@ -86,8 +86,8 @@ const VSelect = () => {
       }
 
       const [min, max] = [anAxisYIndex, tt.ans].toSorted((a, b) => {
-        let _a = a.center ?? a.top
-        let _b = b.center ?? b.top
+        const _a = a.center ?? a.top
+        const _b = b.center ?? b.top
         return _a - _b
       })
 
@@ -148,11 +148,11 @@ const VSelect = () => {
         style={{ height: 800 }}
         data={data}
         components={{
-          Header: () => <div className="h-[20px]"></div>,
+          Header: () => <div className="h-[20px]" />,
           Footer: () => {
             return (
               <>
-                <div className="absolute border border-gray-500 z-10 bg-blue-50 opacity-30" style={bxStyle}></div>
+                <div className="absolute border border-gray-500 z-10 bg-blue-50 opacity-30" style={bxStyle} />
               </>
             )
           }
@@ -167,7 +167,13 @@ const VSelect = () => {
                   'border-red-400': selectedIds.includes(item.id)
                 })}
               >
-                id: {item.id} - index: {item.idx}
+                id:
+                {' '}
+                {item.id}
+                {' '}
+                - index:
+                {' '}
+                {item.idx}
               </div>
             </div>
           )

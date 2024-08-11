@@ -101,7 +101,7 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
           className="w-full bg-purple-400 h-[20px]"
           style={{ height: thumbHeight }}
           onMouseDown={onThumbMouseDown}
-        ></div>
+        />
       </div>
     </main>
   )

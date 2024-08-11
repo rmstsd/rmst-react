@@ -71,7 +71,7 @@ function MainBg() {
         }}
       />
 
-      <div className="absolute inset-0" style={{ mixBlendMode: 'soft-light', backgroundColor: '#0095ff' }}></div>
+      <div className="absolute inset-0" style={{ mixBlendMode: 'soft-light', backgroundColor: '#0095ff' }} />
     </div>
   )
 }

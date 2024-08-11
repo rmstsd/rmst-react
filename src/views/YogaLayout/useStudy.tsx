@@ -92,7 +92,7 @@ export const useStudy = () => {
 
   return (
     <div className="container">
-      <canvas width={500} height={400} className="border"></canvas>
+      <canvas width={500} height={400} className="border" />
     </div>
   )
 }

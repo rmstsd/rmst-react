@@ -13,9 +13,9 @@ const QuadTree = () => {
 
     myTree.insert({ x: 100, y: 100, width: 100, height: 100 })
 
-    var myCursor = { x: 0, y: 0, width: 20, height: 20 }
+    const myCursor = { x: 0, y: 0, width: 20, height: 20 }
 
-    var candidates = myTree.retrieve(myCursor)
+    const candidates = myTree.retrieve(myCursor)
 
     console.log(candidates)
   }, [])
@@ -32,7 +32,7 @@ const QuadTree = () => {
         }))
       }
     })
-    document.addEventListener('mouseup', evt => {
+    document.addEventListener('mouseup', () => {
       dRef.current = false
     })
   }, [])
@@ -57,7 +57,7 @@ const QuadTree = () => {
 
           dRef.current = true
         }}
-      ></div>
+      />
 
       {String(isPending)}
 

@@ -29,7 +29,7 @@ export default class Virtual {
   calcType: Calc_Type
   offset: number
   direction: Direction_Type
-  range: { start: number; end: number; padFront: number; padBehind: number }
+  range: { start: number, end: number, padFront: number, padBehind: number }
 
   init(param, callUpdate: CallUpdate) {
     // param data

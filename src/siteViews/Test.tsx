@@ -90,7 +90,7 @@ function Apple() {
       )
 
     const images = urls.map((url, i) => {
-      let img = new Image()
+      const img = new Image()
       img.src = url
 
       return img
@@ -130,7 +130,7 @@ function Apple() {
     <div id="scrollContainer" className="">
       <div style={{ height: '300vh' }}>
         <div className="canvas-container sticky top-0 w-fit resize overflow-hidden border border-red-200">
-          <canvas className="h-full w-full"></canvas>
+          <canvas className="h-full w-full" />
         </div>
       </div>
     </div>

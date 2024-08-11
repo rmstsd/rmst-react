@@ -7,7 +7,6 @@ import OrPortalTest from '../views/OrPortalTest'
 
 import Dm from '../views/Dm/Dm'
 import MyPortalTest from '../views/PortalTest/MyPortalTest'
-import NestedContext from '../views/NestedContext'
 import Hooks18 from '../views/Hooks18'
 import VSelect from '../views/VSelect'
 import Immer from '../views/Immer'
@@ -31,7 +30,6 @@ const routes: IRouteObject[] = [
       { path: 'immer', element: <Immer /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'contextSelector', element: <ContextSelector /> },
-      { path: 'NestedContext', element: <NestedContext /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
       { path: 'Litegraph', element: <LgDemo /> },

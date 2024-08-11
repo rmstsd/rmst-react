@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { NodeItem, genNodeItem, oriData } from './oriData'
 import { useImmer } from 'use-immer'
 import { useEventListener } from 'ahooks'
@@ -64,7 +64,7 @@ export default function ZrDragIndex() {
 
           const ans = collisionRects.find(item => item.rect.y < y && y < item.rect.y + item.rect.height)
           if (!ans) {
-            debugger
+            return
           }
 
           return ans?.ansIndex
@@ -82,7 +82,7 @@ export default function ZrDragIndex() {
 
   useEventListener(
     'mouseup',
-    evt => {
+    () => {
       console.log(dragState.inDownMouseMoveInMain)
 
       if (dragState.inDownMouseMoveInMain) {
@@ -149,7 +149,7 @@ export default function ZrDragIndex() {
         ))}
       </main>
 
-      {dragState.isDragSnapshot && <div style={{ ...dragState.pos, ...size }} className="bg-red-100 fixed"></div>}
+      {dragState.isDragSnapshot && <div style={{ ...dragState.pos, ...size }} className="bg-red-100 fixed" />}
     </div>
   )
 }

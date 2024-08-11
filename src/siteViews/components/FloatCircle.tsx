@@ -10,7 +10,7 @@ export default function FloatCircle({ onClick }) {
   const singleWordRef = useRef<SingleWordClass>()
   const controlRef = useRef()
 
-  const qtFuncRef = useRef<{ xTo: gsap.QuickToFunc; yTo: gsap.QuickToFunc }>({ xTo: null, yTo: null })
+  const qtFuncRef = useRef<{ xTo: gsap.QuickToFunc, yTo: gsap.QuickToFunc }>({ xTo: null, yTo: null })
 
   useLayoutEffect(() => {
     gsap.to(controlRef.current, { opacity: 0, duration: 0 })

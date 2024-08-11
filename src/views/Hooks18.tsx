@@ -49,7 +49,7 @@ function Tr1() {
       />
       <hr />
 
-      <> value :{value}</>
+      <>value :{value}</>
 
       <hr />
 

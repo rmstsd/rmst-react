@@ -7,9 +7,9 @@ export type Props = {
 }
 
 type Operation =
-  | { type: 'mount'; key: number; children: React.ReactNode }
-  | { type: 'update'; key: number; children: React.ReactNode }
-  | { type: 'unmount'; key: number }
+  | { type: 'mount', key: number, children: React.ReactNode }
+  | { type: 'update', key: number, children: React.ReactNode }
+  | { type: 'unmount', key: number }
 
 export type PortalMethods = {
   mount: (children: React.ReactNode) => number

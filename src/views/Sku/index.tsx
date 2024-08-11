@@ -74,11 +74,11 @@ const Sku = () => {
       <hr />
       {selected.map(item => (
         <div key={item.attr} className="mt-3">
-          <Input value={item.attr} className="w-[130px]"></Input>
+          <Input value={item.attr} className="w-[130px]" />
 
           <div className="flex gap-[10px] mt-2">
             {item.values.map(o => (
-              <Input key={o} value={o} className="w-[100px]"></Input>
+              <Input key={o} value={o} className="w-[100px]" />
             ))}
           </div>
         </div>

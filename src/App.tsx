@@ -13,6 +13,7 @@ export const useScroll = (callback: Function, deps = []) => {
     if (!lenis) {
       return
     }
+
     lenis.on('scroll', callback)
 
     return () => {
@@ -23,7 +24,7 @@ export const useScroll = (callback: Function, deps = []) => {
 
 const LenisContext = createContext<Lenis>(null)
 
-const App: React.FC = () => {
+const App = () => {
   const element = useRoutes(siteRoutes)
 
   const [lenis] = useState<Lenis>(() => {

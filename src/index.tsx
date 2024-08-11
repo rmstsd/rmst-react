@@ -6,7 +6,7 @@ import '@arco-design/web-react/dist/css/arco.css'
 import App from './App'
 import './app.less'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <HashRouter>
     <ConfigProvider componentConfig={{ Button: { type: 'primary' } }}>
       <App />

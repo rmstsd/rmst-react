@@ -248,7 +248,7 @@ const VirtualList = (props: VirtualListProps) => {
         </Slot>
       )}
 
-      <div style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }}></div>
+      <div style={{ width: isHorizontal ? '0px' : '100%', height: isHorizontal ? '100%' : '0px' }} />
     </div>
   )
 }

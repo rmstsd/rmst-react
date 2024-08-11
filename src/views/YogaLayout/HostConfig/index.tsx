@@ -9,7 +9,7 @@ import { LegacyRoot } from 'react-reconciler/constants'
 export const RmstRenderer = ReactFiberReconciler(HostConfig as any)
 
 export const RmstView = 'RmstView' as unknown as React.FC<PropsWithChildren & { style?: React.CSSProperties }>
-export const RmstText = 'RmstText' as unknown as React.FC<{ children?: string; style?: React.CSSProperties }>
+export const RmstText = 'RmstText' as unknown as React.FC<{ children?: string, style?: React.CSSProperties }>
 
 function Wrapper(props) {
   const Bridge = useContextBridge()
@@ -35,7 +35,7 @@ function Wrapper(props) {
   //   RmstRenderer.updateContainer(jsx, fiberRef.current, null)
   // })
 
-  return <canvas className="rmst-canvas border" width={800} height={400}></canvas>
+  return <canvas className="rmst-canvas border" width={800} height={400} />
 }
 
 export default function RmstStage(props: PropsWithChildren<{ style?: React.CSSProperties }>) {

@@ -22,9 +22,15 @@ const OrPortalTest = () => {
 
       <hr />
 
-      <Button onClick={() => sehtBool(!hbool)}>h {String(hbool)}</Button>
+      <Button onClick={() => sehtBool(!hbool)}>
+        h
+        {String(hbool)}
+      </Button>
 
-      <Button onClick={() => setBool(!bool)}>Portal {String(bool)}</Button>
+      <Button onClick={() => setBool(!bool)}>
+        Portal
+        {String(bool)}
+      </Button>
 
       <Button onClick={() => setMulti(!multi)} className="ml-3">
         multi
@@ -67,7 +73,9 @@ function Other() {
 
   return (
     <div>
-      other <Button onClick={() => setCount(count + 1)}>{count}</Button>
+      other
+      {' '}
+      <Button onClick={() => setCount(count + 1)}>{count}</Button>
     </div>
   )
 }
@@ -78,7 +86,9 @@ function Aa() {
 
   return (
     <div>
-      Aa <Button onClick={() => setCount(count + 1)}>{count}</Button>
+      Aa
+      {' '}
+      <Button onClick={() => setCount(count + 1)}>{count}</Button>
     </div>
   )
 }

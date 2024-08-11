@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 import { mapRange } from '../../animation'
@@ -79,7 +79,7 @@ export default function Frame2() {
             </section>
           </div>
 
-          <div style={{ height: firstSh }}></div>
+          <div style={{ height: firstSh }} />
         </div>
 
         <section className="ml-auto sm:w-1/2">
@@ -96,7 +96,7 @@ export default function Frame2() {
 
       <TeamCredits />
 
-      <div className="next h-[1000px] bg-purple-500"></div>
+      <div className="next h-[1000px] bg-purple-500" />
     </div>
   )
 }
