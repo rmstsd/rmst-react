@@ -19,7 +19,7 @@ export default function Svg() {
   const width = 600
   const height = 600
 
-  const [translate, setTranslate] = useState({ tx: 100, ty: 100 })
+  const [translate, setTranslate] = useState({ tx: 0, ty: 0 })
   const [scale, setScale] = useState(1)
 
   const { tx, ty } = translate
@@ -124,6 +124,8 @@ export default function Svg() {
             ))}
           </g>
         </g>
+
+        <rect x={0} y={0} width={9} height={9} fill="#eee" />
       </svg>
     </div>
   )
