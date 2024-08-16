@@ -29,6 +29,7 @@ module.exports = {
     '@stylistic/operator-linebreak': ['error', 'after'],
     '@stylistic/quote-props': ['error', 'as-needed'],
     '@stylistic/multiline-ternary': ['error', 'never'],
+    '@stylistic/member-delimiter-style': ['error', { singleline: { delimiter: 'semi' } }],
 
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',

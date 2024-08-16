@@ -1,5 +1,5 @@
 import { useEventListener } from 'ahooks'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const strokeWidth = 1
 
@@ -12,6 +12,14 @@ function getGap(zoom: number) {
     i++
   }
   return gaps[i - 1] || 10000
+}
+
+type Matrix = { tx: number; ty: number; scaleX: number; scaleY: number }
+function offsetToSvg(ox: number, oy: number, matrix: Matrix) {
+  const x = (ox - matrix.tx) / matrix.scaleX
+  const y = (oy - matrix.ty) / matrix.scaleY
+
+  return { x, y }
 }
 
 export default function Svg() {
@@ -46,14 +54,29 @@ export default function Svg() {
   const cp_xTicks = xTicks.map(item => ({ coord: item * scale + tx, text: item }))
   const cp_yTicks = yTicks.map(item => ({ coord: item * scale + ty, text: item }))
 
-  useEventListener('wheel', evt => {
-    if (evt.deltaY < 0) {
-      // 放大
-      setScale(scale * 1.1)
-    } else {
-      setScale(scale * 0.9)
-    }
-  })
+  const svgRef = useRef<SVGSVGElement>()
+
+  useEventListener(
+    'wheel',
+    (evt: WheelEvent) => {
+      const { x: canvasCoordX, y: canvasCoordY } = offsetToSvg(evt.offsetX, evt.offsetY, {
+        tx: translate.tx,
+        ty: translate.ty,
+        scaleX: scale,
+        scaleY: scale
+      })
+
+      const newScale = evt.deltaY < 0 ? scale * 1.1 : scale * 0.9
+
+      const dx = -canvasCoordX * (newScale - scale)
+      const dy = -canvasCoordY * (newScale - scale)
+
+      setTranslate(state => ({ tx: state.tx + dx, ty: state.ty + dy }))
+
+      setScale(newScale)
+    },
+    { target: svgRef }
+  )
 
   useEffect(() => {
     let down = false
@@ -88,9 +111,17 @@ export default function Svg() {
 
   return (
     <div className="p-3">
-      <svg width={width} height={height} style={{ boxShadow: '0 0 0 1px gray' }}>
+      <svg ref={svgRef} width={width} height={height} style={{ boxShadow: '0 0 0 1px gray' }}>
         <g transform={`translate(${tx} ${ty}) scale(${scale})`}>
           <rect x={0} y={0} width={100} height={100} fill="pink" />
+          <rect
+            x={100}
+            y={100}
+            width={50}
+            height={50}
+            fill="red"
+            transform="translate(100 100) scale(2 1) translate(-100 -100)"
+          />
         </g>
 
         <g className="axis">
