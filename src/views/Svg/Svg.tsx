@@ -11,7 +11,6 @@ function getGap(zoom: number) {
   while (i < zooms.length && zooms[i] < zoom) {
     i++
   }
-
   return gaps[i - 1] || 10000
 }
 
@@ -24,35 +23,28 @@ export default function Svg() {
 
   const { tx, ty } = translate
 
-  const tickInterval = getGap(scale)
+  const gap = getGap(scale)
 
-  const xZTickCount = Math.ceil((width - tx) / scale / tickInterval)
-  const xFTickCount = Math.ceil(Math.abs(tx) / scale / tickInterval)
-
-  const xTicks = [0]
-  for (let i = 0; i < xZTickCount; i++) {
-    const cur = xTicks.at(-1) + tickInterval
+  const xTickCount = Math.ceil(width / scale / gap)
+  const xStartRealTick = -(tx / scale)
+  const xStartValue = Math.floor(xStartRealTick / gap) * gap
+  const xTicks = [xStartValue]
+  for (let i = 0; i < xTickCount; i++) {
+    const cur = xTicks.at(-1) + gap
     xTicks.push(cur)
   }
-  for (let i = 0; i < xFTickCount; i++) {
-    const cur = xTicks.at(0) - tickInterval
-    xTicks.unshift(cur)
-  }
 
-  const yZTickCount = Math.ceil((height - ty) / scale / tickInterval)
-  const yFTickCount = Math.ceil(Math.abs(ty) / scale / tickInterval)
-  const yTicks = [0]
-  for (let i = 0; i < yZTickCount; i++) {
-    const cur = yTicks.at(-1) + tickInterval
+  const yTickCount = Math.ceil(height / scale / gap)
+  const yStartRealTick = -(ty / scale)
+  const yStartValue = Math.floor(yStartRealTick / gap) * gap
+  const yTicks = [yStartValue]
+  for (let i = 0; i < yTickCount; i++) {
+    const cur = yTicks.at(-1) + gap
     yTicks.push(cur)
   }
-  for (let i = 0; i < yFTickCount; i++) {
-    const cur = yTicks.at(0) - tickInterval
-    yTicks.unshift(cur)
-  }
 
-  const cp_xTicks = xTicks.map(item => ({ coord: item * scale, text: item }))
-  const cp_yTicks = yTicks.map(item => ({ coord: item * scale, text: item }))
+  const cp_xTicks = xTicks.map(item => ({ coord: (item + tx) * scale, text: item }))
+  const cp_yTicks = yTicks.map(item => ({ coord: (item + ty) * scale, text: item }))
 
   useEventListener('wheel', evt => {
     if (evt.deltaY < 0) {
@@ -102,9 +94,9 @@ export default function Svg() {
         </g>
 
         <g className="axis">
-          <g className="x-axis" transform={`translate(${tx} 0)`}>
-            {cp_xTicks.map((item, index) => (
-              <g key={index}>
+          <g className="x-axis">
+            {cp_xTicks.map(item => (
+              <g key={item.text}>
                 <line x1={item.coord} y1={0} x2={item.coord} y2={20} stroke="red" strokeWidth={strokeWidth} />
                 <text x={item.coord} y={20} textAnchor="middle" fontSize={14}>
                   {item.text}
@@ -113,7 +105,7 @@ export default function Svg() {
             ))}
           </g>
 
-          <g className="y-axis" transform={`translate(0 ${ty})`}>
+          <g className="y-axis">
             {cp_yTicks.map((item, index) => (
               <g key={index}>
                 <line x1={0} y1={item.coord} x2={20} y2={item.coord} stroke="orange" strokeWidth={strokeWidth} />
