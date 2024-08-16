@@ -43,8 +43,8 @@ export default function Svg() {
     yTicks.push(cur)
   }
 
-  const cp_xTicks = xTicks.map(item => ({ coord: (item + tx) * scale, text: item }))
-  const cp_yTicks = yTicks.map(item => ({ coord: (item + ty) * scale, text: item }))
+  const cp_xTicks = xTicks.map(item => ({ coord: item * scale + tx, text: item }))
+  const cp_yTicks = yTicks.map(item => ({ coord: item * scale + ty, text: item }))
 
   useEventListener('wheel', evt => {
     if (evt.deltaY < 0) {
