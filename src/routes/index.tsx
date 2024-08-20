@@ -32,8 +32,8 @@ const routes: IRouteObject[] = [
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
-      { path: 'Litegraph', element: <LgDemo /> },
-      { path: 'YogaLayout', element: <YogaLayout /> }
+      { path: 'Litegraph', element: <LgDemo /> }
+      // { path: 'YogaLayout', element: <YogaLayout /> }
     ]
   },
   {
@@ -61,3 +61,5 @@ const routes: IRouteObject[] = [
     hidden: true
   }
 ]
+
+export default routes

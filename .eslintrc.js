@@ -30,9 +30,11 @@ module.exports = {
     '@stylistic/quote-props': ['error', 'as-needed'],
     '@stylistic/multiline-ternary': ['error', 'never'],
     '@stylistic/member-delimiter-style': ['error', { singleline: { delimiter: 'semi' } }],
+    '@stylistic/jsx-curly-newline': ['off'],
 
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',
-    '@typescript-eslint/consistent-type-definitions': 'off'
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    "@typescript-eslint/no-unused-vars": "off",
   }
 }

@@ -6,6 +6,7 @@ import { siteRoutes } from './routes/siteRoutes'
 
 import './initThirdPkg'
 import Svg from './views/Svg/Svg'
+import routes from './routes'
 
 export const useScroll = (callback: Function, deps = []) => {
   const lenis = useContext(LenisContext)
@@ -26,7 +27,7 @@ export const useScroll = (callback: Function, deps = []) => {
 const LenisContext = createContext<Lenis>(null)
 
 const App = () => {
-  const element = useRoutes(siteRoutes)
+  const element = useRoutes(routes)
 
   const [lenis] = useState<Lenis>(() => {
     const lenisIns = new Lenis({})
@@ -43,4 +44,4 @@ const App = () => {
   return <LenisContext.Provider value={lenis}>{element}</LenisContext.Provider>
 }
 
-export default Svg
+export default App

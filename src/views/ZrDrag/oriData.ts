@@ -31,13 +31,26 @@ export const oriData = [
     id: 6,
     title: '发送请求',
     type: 'input'
+  },
+  {
+    id: 7,
+    title: '如果',
+    type: 'if'
   }
 ]
 
+export const rootNode: NodeItem = {
+  id: 'root',
+  title: '根节点',
+  type: 'root',
+  children: []
+}
+
 export type NodeItem = {
-  id: string
-  title: string
-  type: string
+  id: string;
+  title: string;
+  type: string;
+  children?: NodeItem[];
 }
 
 export function genNodeItem(oriItem: OriItem): NodeItem {

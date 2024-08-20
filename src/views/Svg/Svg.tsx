@@ -112,8 +112,24 @@ export default function Svg() {
   return (
     <div className="p-3">
       <svg ref={svgRef} width={width} height={height} style={{ boxShadow: '0 0 0 1px gray' }}>
-        <g transform={`translate(${tx} ${ty}) scale(${scale})`}>
+        <defs>
+          <rect id="shape" x="50" y="50" width="50" height="50" />
+        </defs>
+
+        <symbol id="shape2" x={100} y={100}>
           <rect x={0} y={0} width={100} height={100} fill="pink" />
+          <circle cx="50" cy="55" r="25" fill="firebrick" />
+        </symbol>
+
+        <g transform={`translate(${tx} ${ty}) scale(${scale})`}>
+          {/* <use xlinkHref="#shape2" x={200} /> */}
+
+          <svg x={100} y={100}>
+            <rect x={0} y={0} width={100} height={100} fill="pink" />
+            <circle cx="50" cy="55" r="25" fill="firebrick" stroke="red" strokeWidth={4} />
+          </svg>
+
+          {/* <rect x={0} y={0} width={100} height={100} fill="pink" />
           <rect
             x={100}
             y={100}
@@ -122,6 +138,12 @@ export default function Svg() {
             fill="red"
             transform="translate(100 100) scale(2 1) translate(-100 -100)"
           />
+
+          <a className="border" href="https://developer.mozilla.org/en-US/docs/SVG" target="_blank">
+            <rect x="10" y="10" width="120" height="80" fill="green" />
+
+            <rect x="50" y="50" width="120" height="80" fill="orange" />
+          </a> */}
         </g>
 
         <g className="axis">
@@ -148,7 +170,7 @@ export default function Svg() {
           </g>
         </g>
 
-        <rect x={0} y={0} width={9} height={9} fill="#eee" />
+        {/* <rect x={0} y={0} width={9} height={9} fill="#eee" /> */}
       </svg>
     </div>
   )

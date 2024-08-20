@@ -35,6 +35,7 @@
     "scheduler": "^0.23.0",
     "shallowequal": "^1.1.0",
     "tailwind-merge": "^2.4.0",
+    "unstated-next": "^1.1.0",
     "use-context-selector": "^1.4.4",
     "use-immer": "^0.9.0",
     "yoga-layout": "^3.0.4"
