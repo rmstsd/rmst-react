@@ -47,12 +47,12 @@ export const rootNode: NodeItem = {
 }
 
 export type NodeItem = {
-  id: string;
-  title: string;
-  type: string;
-  children?: NodeItem[];
+  id: string
+  title: string
+  type: string
+  children: NodeItem[]
 }
 
 export function genNodeItem(oriItem: OriItem): NodeItem {
-  return { ...oriItem, id: Math.random().toString(36).slice(4) }
+  return { ...oriItem, id: Math.random().toString(36).slice(4), children: [] }
 }
