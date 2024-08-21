@@ -6,7 +6,6 @@ const strokeWidth = 1
 function getGap(zoom: number) {
   const zooms = [0.02, 0.03, 0.05, 0.1, 0.2, 0.5, 1, 2, 5]
   const gaps = [5000, 2500, 1000, 500, 200, 100, 50, 20, 10]
-
   let i = 0
   while (i < zooms.length && zooms[i] < zoom) {
     i++
@@ -23,10 +22,10 @@ function offsetToSvg(ox: number, oy: number, matrix: Matrix) {
 }
 
 export default function Svg() {
-  const width = 600
+  const width = 650
   const height = 600
 
-  const [translate, setTranslate] = useState({ tx: 0, ty: 0 })
+  const [translate, setTranslate] = useState({ tx: 111, ty: 200 })
   const [scale, setScale] = useState(1)
 
   const { tx, ty } = translate
@@ -151,7 +150,7 @@ export default function Svg() {
             {cp_xTicks.map(item => (
               <g key={item.text}>
                 <line x1={item.coord} y1={0} x2={item.coord} y2={20} stroke="red" strokeWidth={strokeWidth} />
-                <text x={item.coord} y={20} textAnchor="middle" fontSize={14}>
+                <text x={item.coord + 9} y={20} textAnchor="middle" fontSize={14}>
                   {item.text}
                 </text>
               </g>
