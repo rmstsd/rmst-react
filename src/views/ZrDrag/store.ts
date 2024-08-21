@@ -1,16 +1,11 @@
-import { useImmer } from 'use-immer'
+import { proxy, useSnapshot } from 'valtio'
 
-import { createContainer } from 'unstated-next'
 import { rootNode } from './oriData'
 
-function useStoreHook() {
-  const [state, setState] = useImmer({ rootNode, dragItem: null, overId: null, count: 1, countObj: { count: 10 } })
+export const store = proxy({
+  rootNode,
+  dragItem: null,
+  overId: null
+})
 
-  return { state, setState }
-}
-
-export const Store = createContainer(useStoreHook)
-
-const useStore = () => Store.useContainer()
-
-export default useStore
+export const useStore = () => useSnapshot(store)
