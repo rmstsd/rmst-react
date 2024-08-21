@@ -45,6 +45,7 @@ export const rootNode: NodeItem = testData
 
 // {
 //   id: 'root',
+// oriId: 0,
 //   title: '根节点',
 //   type: 'root',
 //   children: []
@@ -54,9 +55,10 @@ export type NodeItem = {
   id: string
   title: string
   type: string
+  oriId: number
   children: NodeItem[]
 }
 
 export function genNodeItem(oriItem: OriItem): NodeItem {
-  return { ...oriItem, id: Math.random().toString(36).slice(4), children: [] }
+  return { ...oriItem, id: Math.random().toString(36).slice(4), oriId: oriItem.id, children: [] }
 }

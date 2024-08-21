@@ -6,9 +6,10 @@ import { findNode, findParentNode } from './utils'
 interface TaskNodeProps {
   parentNode?: NodeItem
   node: NodeItem
+  index?: number
 }
 
-const TaskNode = ({ node }: TaskNodeProps) => {
+const TaskNode = ({ node, index }: TaskNodeProps) => {
   const snap = useStore()
 
   const isRootNode = node.type === 'root'
@@ -18,14 +19,24 @@ const TaskNode = ({ node }: TaskNodeProps) => {
     const draggedParentNode = findParentNode(store.dragItem.id)
     const insertedParentNode = findParentNode(store.insertBeforeId)
 
+    const isSameArray = draggedParentNode.children === insertedParentNode.children
+
     const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
     const insertIndex = insertedParentNode.children.findIndex(o => o.id === store.insertBeforeId)
 
     console.log(movedIndex, insertIndex)
 
-    const [moved] = draggedParentNode.children.slice(movedIndex, movedIndex + 1)
-    insertedParentNode.children.splice(insertIndex, 0, moved) // 先添加
-    draggedParentNode.children.splice(movedIndex, 1) // 再删除
+    const [moved] = draggedParentNode.children.splice(movedIndex, 1)
+
+    let spIndex
+
+    if (isSameArray) {
+      spIndex = insertIndex > movedIndex ? insertIndex - 1 : insertIndex
+    } else {
+      spIndex = insertIndex
+    }
+
+    insertedParentNode.children.splice(spIndex, 0, moved)
 
     store.insertBeforeId = null
   }
@@ -68,15 +79,25 @@ const TaskNode = ({ node }: TaskNodeProps) => {
         }}
       >
         {!isRootNode && (
-          <div className="node-title">
-            {node.id} {node.title}
+          <div className="node-title flex justify-between">
+            <div>
+              {node.id} - {node.oriId} {node.title}
+            </div>
+
+            <button
+              onClick={() => {
+                findParentNode(node.id).children.splice(index, 1)
+              }}
+            >
+              删除
+            </button>
           </div>
         )}
 
         {(isRootNode || node.type === 'if') && (
           <div className="node-body">
-            {node.children.map(item => (
-              <TaskNode node={item} key={item.id} />
+            {node.children.map((item, index) => (
+              <TaskNode node={item} index={index} key={item.id} />
             ))}
             <div
               id="append-after"

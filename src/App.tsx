@@ -29,19 +29,19 @@ const LenisContext = createContext<Lenis>(null)
 const App = () => {
   const element = useRoutes(routes)
 
-  const [lenis] = useState<Lenis>(() => {
-    const lenisIns = new Lenis({})
+  // const [lenis] = useState<Lenis>(() => {
+  //   // const lenisIns = new Lenis({})
 
-    function raf(time) {
-      lenisIns.raf(time)
-      requestAnimationFrame(raf)
-    }
-    requestAnimationFrame(raf)
+  //   // function raf(time) {
+  //   //   lenisIns.raf(time)
+  //   //   requestAnimationFrame(raf)
+  //   // }
+  //   // requestAnimationFrame(raf)
 
-    return lenisIns
-  })
+  //   // return lenisIns
+  // })
 
-  return <LenisContext.Provider value={lenis}>{element}</LenisContext.Provider>
+  return <LenisContext.Provider value={null}>{element}</LenisContext.Provider>
 }
 
 export default App

@@ -5,6 +5,8 @@ import { useStore } from './store'
 export default function ZrDragIndex() {
   const snap = useStore()
 
+  const text = JSON.stringify(snap.rootNode, null, 2)
+
   return (
     <div className="flex h-full">
       <Aside />
@@ -12,7 +14,8 @@ export default function ZrDragIndex() {
       <Flow />
 
       <div className="w-[300px]">
-        <pre>{JSON.stringify(snap.rootNode, null, 2)}</pre>
+        <button onClick={() => navigator.clipboard.writeText(text)}>copy</button>
+        <pre>{text}</pre>
       </div>
     </div>
   )
