@@ -1,3 +1,5 @@
+import { testData } from './testData'
+
 const item = {
   id: 1,
   title: '打开网页',
@@ -39,12 +41,14 @@ export const oriData = [
   }
 ]
 
-export const rootNode: NodeItem = {
-  id: 'root',
-  title: '根节点',
-  type: 'root',
-  children: []
-}
+export const rootNode: NodeItem = testData
+
+// {
+//   id: 'root',
+//   title: '根节点',
+//   type: 'root',
+//   children: []
+// }
 
 export type NodeItem = {
   id: string
