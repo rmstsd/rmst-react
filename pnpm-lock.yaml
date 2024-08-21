@@ -47,9 +47,6 @@ importers:
       litegraph.js:
         specifier: ^0.7.18
         version: 0.7.18
-      prop-types:
-        specifier: ^15.8.1
-        version: 15.8.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -83,15 +80,6 @@ importers:
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
-      unstated-next:
-        specifier: ^1.1.0
-        version: 1.1.0
-      use-context-selector:
-        specifier: ^1.4.4
-        version: 1.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2)
-      use-immer:
-        specifier: ^0.9.0
-        version: 0.9.0(immer@10.1.1)(react@18.3.1)
       valtio:
         specifier: ^1.13.2
         version: 1.13.2(@types/react@18.3.3)(react@18.3.1)
@@ -108,9 +96,6 @@ importers:
       '@stylistic/eslint-plugin':
         specifier: ^2.6.2
         version: 2.6.4(eslint@8.57.0)(typescript@5.5.2)
-      '@types/cytoscape':
-        specifier: ^3.21.2
-        version: 3.21.4
       '@types/flickity':
         specifier: ^2.2.11
         version: 2.2.11
@@ -482,9 +467,6 @@ packages:
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
-
-  '@types/cytoscape@3.21.4':
-    resolution: {integrity: sha512-g4M57Zho+AMNYuEptTWH+aZ5VpyF8VcaI2t0+1/PWRZp5XQM6hku1Vo5/Ui721i+L+WCGkI1EjGAeHcYUQ2PRg==}
 
   '@types/eslint@9.6.0':
     resolution: {integrity: sha512-gi6WQJ7cHRgZxtkQEoyHMppPjq9Kxo5Tjn2prSKDSmZrCz8TZ3jSRCeTJm+WoM+oB0WG37bRqLzaaU3q7JypGg==}
@@ -2700,9 +2682,6 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unstated-next@1.1.0:
-    resolution: {integrity: sha512-AAn47ZncPvgBGOvMcn8tSRxsrqwf2VdAPxLASTuLJvZt4rhKfDvUkmYZLGfclImSfTVMv7tF4ynaVxin0JjDCA==}
-
   update-notifier@7.0.0:
     resolution: {integrity: sha512-Hv25Bh+eAbOLlsjJreVPOs4vd51rrtCrmhyOJtbpAojro34jS4KQaEp4/EvlHJX7jSO42VvEFpkastVyXyIsdQ==}
     engines: {node: '>=18'}
@@ -2723,25 +2702,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  use-context-selector@1.4.4:
-    resolution: {integrity: sha512-pS790zwGxxe59GoBha3QYOwk8AFGp4DN6DOtH+eoqVmgBBRXVx4IlPDhJmmMiNQAgUaLlP+58aqRC3A4rdaSjg==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '*'
-      react-native: '*'
-      scheduler: '>=0.19.0'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-
-  use-immer@0.9.0:
-    resolution: {integrity: sha512-/L+enLi0nvuZ6j4WlyK0US9/ECUtV5v9RUbtxnn5+WbtaXYUaOBoKHDNL9I5AETdurQ4rIFIj/s+Z5X80ATyKw==}
-    peerDependencies:
-      immer: '>=2.0.0'
-      react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
   use-sidecar@1.1.2:
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
@@ -3222,8 +3182,6 @@ snapshots:
   '@timohausmann/quadtree-js@1.2.6': {}
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
-
-  '@types/cytoscape@3.21.4': {}
 
   '@types/eslint@9.6.0':
     dependencies:
@@ -5557,8 +5515,6 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unstated-next@1.1.0: {}
-
   update-notifier@7.0.0:
     dependencies:
       boxen: 7.1.1
@@ -5586,18 +5542,6 @@ snapshots:
       tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.3.3
-
-  use-context-selector@1.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.23.2):
-    dependencies:
-      react: 18.3.1
-      scheduler: 0.23.2
-    optionalDependencies:
-      react-dom: 18.3.1(react@18.3.1)
-
-  use-immer@0.9.0(immer@10.1.1)(react@18.3.1):
-    dependencies:
-      immer: 10.1.1
-      react: 18.3.1
 
   use-sidecar@1.1.2(@types/react@18.3.3)(react@18.3.1):
     dependencies:
