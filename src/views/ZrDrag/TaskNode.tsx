@@ -15,31 +15,29 @@ const TaskNode = ({ node }: TaskNodeProps) => {
 
   const onDropInsertBefore = () => {
     console.log('onDropInsertBefore')
-    const pn = findParentNode(store.dragItem.id)
-    const pn2 = findParentNode(store.insertBeforeId)
+    const draggedParentNode = findParentNode(store.dragItem.id)
+    const insertedParentNode = findParentNode(store.insertBeforeId)
 
-    const movedIndex = pn.children.findIndex(o => o.id === store.dragItem.id)
-    const insertIndex = pn2.children.findIndex(o => o.id === store.insertBeforeId)
+    const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
+    const insertIndex = insertedParentNode.children.findIndex(o => o.id === store.insertBeforeId)
 
     console.log(movedIndex, insertIndex)
 
-    const [moved] = pn.children.slice(movedIndex, movedIndex + 1)
-    pn2.children.splice(insertIndex, 0, moved) // 先添加
-    pn.children.splice(movedIndex, 1) // 再删除
+    const [moved] = draggedParentNode.children.slice(movedIndex, movedIndex + 1)
+    insertedParentNode.children.splice(insertIndex, 0, moved) // 先添加
+    draggedParentNode.children.splice(movedIndex, 1) // 再删除
 
     store.insertBeforeId = null
   }
 
   const onDropAppendAfter = () => {
     console.log('onDropAppendAfter')
-    const pn = findParentNode(store.dragItem.id)
-    const pn2 = findNode(store.appendAfterId)
+    const draggedParentNode = findParentNode(store.dragItem.id)
+    const appendedParentNode = findNode(store.appendAfterId)
 
-    const movedIndex = pn.children.findIndex(o => o.id === store.dragItem.id)
-    const [moved] = pn.children.splice(movedIndex, 1)
-
-    console.log(pn2)
-    pn2.children.push(moved)
+    const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
+    const [moved] = draggedParentNode.children.splice(movedIndex, 1)
+    appendedParentNode.children.push(moved)
 
     store.appendAfterId = null
   }
