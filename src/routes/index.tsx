@@ -18,6 +18,8 @@ import LgDemo from '@/views/LiteGraph/LgDemo'
 import YogaLayout from '@/views/YogaLayout'
 import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 import Cart from '@/views/Sku/Cart'
+import Svg from '@/views/Svg/Svg'
+import ElementRise from '@/views/ElementRise'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -44,7 +46,9 @@ const routes: IRouteObject[] = [
       { path: 'myPortalTest', element: <MyPortalTest /> },
       { path: 'ScrollDemo', element: <ScrollDemo /> },
       { path: 'VSelect', element: <VSelect /> },
-      { path: 'dm', element: <Dm /> }
+      { path: 'dm', element: <Dm /> },
+      { path: 'svg-ruler', element: <Svg /> },
+      { path: 'elementRise', element: <ElementRise /> }
     ]
   },
   {

@@ -34,3 +34,42 @@ export const findNode = (id: NodeItem['id']): NodeItem => {
     }
   }
 }
+
+// 判断 bNode 是否是 aNode 的后代
+export const isDescendant = (aNode: NodeItem, bNode: NodeItem) => {
+  if (aNode.id === bNode.id) {
+    return false
+  }
+
+  return dfs(aNode)
+
+  function dfs(_node: NodeItem) {
+    if (_node.id === bNode.id) {
+      return true
+    }
+
+    for (const item of _node.children) {
+      const b = dfs(item)
+      if (b) {
+        return true
+      }
+    }
+  }
+}
+
+export const contains = (aNode: NodeItem, bNode: NodeItem) => {
+  return dfs(aNode)
+
+  function dfs(_node: NodeItem) {
+    if (_node.id === bNode.id) {
+      return true
+    }
+
+    for (const item of _node.children) {
+      const b = dfs(item)
+      if (b) {
+        return true
+      }
+    }
+  }
+}

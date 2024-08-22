@@ -14,7 +14,15 @@ export default function ZrDragIndex() {
       <Flow />
 
       <div className="w-[300px]">
-        <button onClick={() => navigator.clipboard.writeText(text)}>copy</button>
+        <button
+          onClick={() =>
+            navigator.clipboard.writeText(text).then(() => {
+              console.log('copy success')
+            })
+          }
+        >
+          copy
+        </button>
         <pre>{text}</pre>
       </div>
     </div>
