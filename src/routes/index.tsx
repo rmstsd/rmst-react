@@ -20,6 +20,7 @@ import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 import Cart from '@/views/Sku/Cart'
 import Svg from '@/views/Svg/Svg'
 import ElementRise from '@/views/ElementRise'
+import MapView from '@/mapView'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -34,7 +35,7 @@ const routes: IRouteObject[] = [
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
-      { path: 'Litegraph', element: <LgDemo /> }
+      { path: 'MapView', element: <MapView /> }
       // { path: 'YogaLayout', element: <YogaLayout /> }
     ]
   },

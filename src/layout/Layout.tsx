@@ -8,9 +8,9 @@ const LayoutView: React.FC = props => {
   const location = useLocation()
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex' }} className='h-full'>
       <Menu
-        className="border-r-2 w-[200px] h-screen overflow-auto shrink-0 sticky top-0"
+        className="border-r-2 w-[200px] h-screen overflow-auto shrink-0 sticky top-0 hidden md:block"
         defaultOpenKeys={routes.map(item => item.path)}
         selectedKeys={[location.pathname.split('/')[2]]}
         onClickMenuItem={(key, evt, keyPath) => {

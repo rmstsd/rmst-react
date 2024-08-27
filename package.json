@@ -21,9 +21,11 @@
     "flickity": "^3.0.0",
     "gsap": "^3.12.5",
     "immer": "^10.0.4",
+    "leafer-ui": "^1.0.2",
     "lenis": "^1.1.9",
     "litegraph.js": "^0.7.18",
     "react": "^18.3.1",
+    "react-canvaskit": "0.0.1-alpha.8",
     "react-dom": "^18.3.1",
     "react-flickity-component": "^4.0.7",
     "react-reconciler": "^0.29.2",
@@ -52,7 +54,7 @@
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.5",
     "release-it": "^17.2.1",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.4.2",
     "typescript-eslint": "^8.0.1"
   }
