@@ -16,6 +16,7 @@
     "ahooks": "^3.7.10",
     "axios": "^1.6.7",
     "camelcase": "^8.0.0",
+    "canvaskit-wasm": "^0.39.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "flickity": "^3.0.0",

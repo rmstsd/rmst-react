@@ -39,7 +39,7 @@ function Button(props: ButtonProps) {
   )
 }
 
-export default function Home() {
+function Home() {
   const [type, setType] = useState<ButtonProps['type']>('primary')
   const [size, setSize] = useState<ButtonProps['size']>('medium')
 
@@ -61,4 +61,28 @@ export default function Home() {
       <Button type="danger" /> */}
     </div>
   )
+}
+
+import InitCanvasKit from 'canvaskit-wasm/full'
+
+export default function Kt() {
+  useEffect(() => {
+    InitCanvasKit().then(CanvasKit => {
+      const skcanvas = CanvasKit.MakeCanvas(600, 600)
+
+      const ctx = skcanvas.getContext('2d')
+      const rgradient = ctx.createRadialGradient(200, 300, 10, 100, 100, 300)
+
+      // Add three color stops
+      rgradient.addColorStop(0, 'red')
+      rgradient.addColorStop(0.7, 'white')
+      rgradient.addColorStop(1, 'blue')
+
+      ctx.fillStyle = rgradient
+      ctx.globalAlpha = 0.7
+      ctx.fillRect(0, 0, 600, 600)
+    })
+  }, [])
+
+  return <div></div>
 }

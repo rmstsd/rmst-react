@@ -26,6 +26,9 @@ importers:
       camelcase:
         specifier: ^8.0.0
         version: 8.0.0
+      canvaskit-wasm:
+        specifier: ^0.39.1
+        version: 0.39.1
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -55,7 +58,7 @@ importers:
         version: 18.3.1
       react-canvaskit:
         specifier: 0.0.1-alpha.8
-        version: 0.0.1-alpha.8(canvaskit-wasm@0.32.0)(react@18.3.1)
+        version: 0.0.1-alpha.8(canvaskit-wasm@0.39.1)(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -711,6 +714,9 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
+  '@webgpu/types@0.1.21':
+    resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -896,8 +902,8 @@ packages:
   caniuse-lite@1.0.30001638:
     resolution: {integrity: sha512-5SuJUJ7cZnhPpeLHaH0c/HPAnAHZvS6ElWyHK9GSIbVOQABLzowiI2pjmpvZ1WEbkyz46iFd4UXlOHR5SqgfMQ==}
 
-  canvaskit-wasm@0.32.0:
-    resolution: {integrity: sha512-H3Por5oDOXLXje5j+7aPTUtHvfRpYFm4u073Xi2kSBfS3vZQmDoiLdwQthf00zTUBtOK1lX8+6qmBFHdfKdxRw==}
+  canvaskit-wasm@0.39.1:
+    resolution: {integrity: sha512-Gy3lCmhUdKq+8bvDrs9t8+qf7RvcjuQn+we7vTVVyqgOVO1UVfHpsnBxkTZw+R4ApEJ3D5fKySl9TU11hmjl/A==}
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3745,6 +3751,8 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
+  '@webgpu/types@0.1.21': {}
+
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
       acorn: 8.12.1
@@ -3950,7 +3958,9 @@ snapshots:
 
   caniuse-lite@1.0.30001638: {}
 
-  canvaskit-wasm@0.32.0: {}
+  canvaskit-wasm@0.39.1:
+    dependencies:
+      '@webgpu/types': 0.1.21
 
   chalk@2.4.2:
     dependencies:
@@ -5452,9 +5462,9 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-canvaskit@0.0.1-alpha.8(canvaskit-wasm@0.32.0)(react@18.3.1):
+  react-canvaskit@0.0.1-alpha.8(canvaskit-wasm@0.39.1)(react@18.3.1):
     dependencies:
-      canvaskit-wasm: 0.32.0
+      canvaskit-wasm: 0.39.1
       react: 18.3.1
       react-reconciler: 0.26.2(react@18.3.1)
 
