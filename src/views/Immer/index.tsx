@@ -63,7 +63,7 @@ function Home() {
   )
 }
 
-import InitCanvasKit from 'canvaskit-wasm/full'
+import InitCanvasKit from 'canvaskit-wasm/bin/canvaskit.js'
 
 export default function Kt() {
   useEffect(() => {
@@ -84,5 +84,5 @@ export default function Kt() {
     })
   }, [])
 
-  return <div></div>
+  return <div>kt</div>
 }
