@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "flickity": "^3.0.0",
+    "gl-matrix": "^3.4.3",
     "gsap": "^3.12.5",
     "immer": "^10.0.4",
     "leafer-ui": "^1.0.2",

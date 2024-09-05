@@ -21,6 +21,8 @@ import Cart from '@/views/Sku/Cart'
 import Svg from '@/views/Svg/Svg'
 import ElementRise from '@/views/ElementRise'
 import MapView from '@/mapView'
+import Ck from '@/views/Ck/Ck'
+import Webgl from '@/views/Webgl/Webgl'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -31,6 +33,8 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'immer', element: <Immer /> },
+      { path: 'ck', element: <Ck /> },
+      { path: 'gl', element: <Webgl /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
