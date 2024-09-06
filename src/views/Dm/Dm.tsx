@@ -18,8 +18,8 @@ const Dm = () => {
     const containerRect = containerRef.current.getBoundingClientRect()
     const dmRect = dmDomRef.current.getBoundingClientRect()
 
-    containerRef.current.style.setProperty('--container-width', containerRect.width + 'px')
-    dmDomRef.current.style.setProperty('--dm-width', dmRect.width + 'px')
+    containerRef.current.style.setProperty('--container-width', `${containerRect.width}px`)
+    dmDomRef.current.style.setProperty('--dm-width', `${dmRect.width}px`)
 
     setRoll(true)
   }, [dmValue])
@@ -27,7 +27,7 @@ const Dm = () => {
   React.useEffect(() => {
     const ob = new ResizeObserver(() => {
       const containerRect = containerRef.current.getBoundingClientRect()
-      containerRef.current.style.setProperty('--container-width', containerRect.width + 'px')
+      containerRef.current.style.setProperty('--container-width', `${containerRect.width}px`)
     })
 
     ob.observe(containerRef.current)

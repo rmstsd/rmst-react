@@ -85,13 +85,14 @@ function immer<T extends object>(baseState: T, recipe: (draft: T) => void) {
 
     // 递归检查子数据
     const keys = Object.keys(base)
-    for (let i = 0; i < keys.length; i++) {
-      const value = base[keys[i]]
+    for (const key of keys) {
+      const value = base[key]
       // 对象或者数组需要再次使用 `hasChanges` 递归检查。
       if ((Array.isArray(value) || isPlainObject(value)) && hasChanges(value)) {
         return true
       }
     }
+
     // 其他数据类型都是原始类型, 不要判断, 直接返回 false。
     return false
   }

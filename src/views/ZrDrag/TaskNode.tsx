@@ -51,7 +51,7 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
       return
     }
 
-    console.log('onDropAppendAfter')
+    console.log(`onDropAppendAfter${window.location.href}`, `a    ${store.dragItem.id}`)
     const draggedParentNode = findParentNode(store.dragItem.id)
     const appendedParentNode = findNode(store.appendAfterId)
 

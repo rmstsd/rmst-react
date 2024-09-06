@@ -68,9 +68,7 @@ export default function Ck() {
       const daShortSite = 1
       const daLongSite = 2.4
 
-      const directionData = pathParams.dual
-        ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}`
-        : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
+      const directionData = pathParams.dual ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}` : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
          M${-daStart},${-daShortSite} L${-daStart},${daShortSite} L${-daLongSite},0 L${-daStart},${-daShortSite}`
 
       let directionTransform = ''
@@ -203,7 +201,7 @@ export default function Ck() {
     let prevY = 0
     let tx = 0
     let ty = 0
-    let count = 1
+    const count = 1
     canvasElement.onpointerdown = evt => {
       if (evt.buttons === 1) {
         evt.preventDefault()
@@ -216,9 +214,6 @@ export default function Ck() {
       evt.preventDefault()
 
       if (evt.buttons === 1 && evt.pressure) {
-        evt.clientX - prevX
-        evt.clientY - prevY
-
         tx += evt.clientX - prevX
         ty += evt.clientY - prevY
 
@@ -233,7 +228,7 @@ export default function Ck() {
     }
   }
 
-  return <div className="canvas-container h-full touch-none border" ref={canvasContainerRef}></div>
+  return <div className="canvas-container h-full touch-none border" ref={canvasContainerRef} />
 }
 
 export function createCanvas(containerWidth, containerHeight) {
