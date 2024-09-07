@@ -1,8 +1,9 @@
 import { twMerge } from 'tailwind-merge'
 import { clsx } from 'clsx'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { useEffect, useState } from 'react'
+import React, { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState } from 'react'
 import cn from '@/utils/cn'
+import { Tooltip } from '@arco-design/web-react'
 
 const button = cva('button', {
   variants: {
@@ -27,19 +28,20 @@ type ButtonProps = VariantProps<typeof button> & {
   className?: string
 }
 
-function Button(props: ButtonProps) {
+const Button = forwardRef(function Button(props: ButtonProps, ref) {
   props = { type: 'primary', size: 'medium', ...props }
+  console.log(props)
 
   const { type, size, onClick, className } = props
 
   return (
-    <button className={button({ type, size, className })} onClick={onClick}>
+    <button ref={ref} className={button({ type, size, className })} onClick={onClick}>
       Default Button
     </button>
   )
-}
+})
 
-export default function Home() {
+function Home() {
   const [type, setType] = useState<ButtonProps['type']>('primary')
   const [size, setSize] = useState<ButtonProps['size']>('medium')
 
@@ -61,4 +63,29 @@ export default function Home() {
       <Button type="danger" /> */}
     </div>
   )
+}
+
+export default function Tt() {
+  return (
+    <div className="tt">
+      <Tooltip content="123" trigger="click">
+        <Com />
+      </Tooltip>
+    </div>
+  )
+}
+
+const Com = props => {
+  return <div onClick={() => props.onClick?.()}>000</div>
+}
+
+function Popup(props: React.PropsWithChildren) {
+  const ref = useRef()
+
+  useEffect(() => {
+    console.log(ref.current)
+  }, [])
+  const node = cloneElement(props.children, { ref })
+
+  return <>{node}</>
 }
