@@ -1,3 +1,5 @@
+import type { Context as ContextOrig } from 'react'
+
 import {
   createContext as createContextOrig,
   useContext as useContextOrig,
@@ -5,7 +7,6 @@ import {
   useRef,
   useLayoutEffect
 } from 'react'
-import type { Context as ContextOrig } from 'react'
 import shallowequal from 'shallowequal'
 
 type Listener = () => void
@@ -17,7 +18,7 @@ type ContextValue<V> = {
 }
 
 export interface Context<V> {
-  Provider: React.ComponentType<{ value: V; children: React.ReactNode }>
+  Provider: React.ComponentType<{ value: V, children: React.ReactNode }>
   displayName?: string
 }
 
@@ -29,7 +30,7 @@ export function createContext<V>(defaultValue: V) {
   })
   const ProviderOrig = context.Provider
 
-  const Provider = ({ value, children }: { value: V; children: React.ReactNode }) => {
+  const Provider = ({ value, children }: { value: V, children: React.ReactNode }) => {
     const store = useRef<ContextValue<V>>()
 
     if (!store.current) {

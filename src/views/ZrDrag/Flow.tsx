@@ -1,4 +1,5 @@
-import { NodeItem } from './oriData'
+import type { NodeItem } from './oriData'
+
 import { useStore } from './store'
 import TaskNode from './TaskNode'
 

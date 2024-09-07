@@ -1,11 +1,12 @@
-import type Stage from './Stage'
-import type View from './View'
-import type Text from './Text'
-import type { ILayerProps } from './interface'
 import Yoga from 'yoga-layout'
 
+import type { ILayerProps } from './interface'
+import type Stage from './Stage'
+import type Text from './Text'
+import type View from './View'
+
 export default class Layer {
-  children: Array<View | Text> = []
+  children: (View | Text)[] = []
   parent?: Stage
   canvas!: HTMLCanvasElement
   context!: CanvasRenderingContext2D

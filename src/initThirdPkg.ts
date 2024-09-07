@@ -1,7 +1,7 @@
 // import 'lenis/dist/lenis.css'
 
-import { gsap, ScrollTrigger, Draggable, Flip, Observer, MotionPathPlugin, ScrollToPlugin, TextPlugin } from 'gsap/all'
 import { useGSAP } from '@gsap/react'
+import { gsap, ScrollTrigger, Draggable, Flip, Observer, MotionPathPlugin, ScrollToPlugin, TextPlugin } from 'gsap/all'
 
 gsap.registerPlugin(ScrollTrigger, Draggable, Flip, Observer, MotionPathPlugin, ScrollToPlugin, TextPlugin, useGSAP)
 

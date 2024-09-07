@@ -1,6 +1,7 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { SingleWordClass } from './SingleWordClass'
 import cn from '@/utils/cn'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+
+import { SingleWordClass } from './SingleWordClass'
 
 interface SingleWordProps {
   word: string

@@ -1,11 +1,12 @@
-import type Layer from './Layer'
-import Node from './Node'
 import type { ITextLayout, ITextStyle } from './interface'
+import type Layer from './Layer'
+
+import Node from './Node'
 
 export default class Text extends Node {
   layer!: Layer
   layout = {} as ITextLayout
-  type = 'Text' as 'Text'
+  type = 'Text' as const
 
   public constructor(protected style: ITextStyle) {
     super(style)

@@ -1,9 +1,9 @@
-import { MapPath, MapPoint, SceneAreaMap } from './type/scene-types'
-import { Rect } from './type/geo-types'
+import type React from 'react'
 
-import React from 'react'
+import type { Rect } from './type/geo-types'
+import type { MapPath, MapPoint, SceneAreaMap } from './type/scene-types'
 
-type MapToTyped<T> = { [name: string]: T }
+type MapToTyped<T> = Record<string, T>
 
 export const baseMmPerPx = 25
 

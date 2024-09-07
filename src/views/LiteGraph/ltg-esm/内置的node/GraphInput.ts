@@ -1,4 +1,4 @@
-//Input for a subgraph
+// Input for a subgraph
 function GraphInput() {
   this.addOutput('', 'number')
 
@@ -9,7 +9,7 @@ function GraphInput() {
     value: 0
   }
 
-  var that = this
+  const that = this
 
   this.name_widget = this.addWidget('text', 'Name', this.properties.name, function (v) {
     if (!v) {
@@ -36,18 +36,18 @@ GraphInput.prototype.onConfigure = function () {
   this.updateType()
 }
 
-//ensures the type in the node output and the type in the associated graph input are the same
+// ensures the type in the node output and the type in the associated graph input are the same
 GraphInput.prototype.updateType = function () {
-  var type = this.properties.type
+  const type = this.properties.type
   this.type_widget.value = type
 
-  //update output
+  // update output
   if (this.outputs[0].type != type) {
     if (!LiteGraph.isValidConnection(this.outputs[0].type, type)) this.disconnectOutput(0)
     this.outputs[0].type = type
   }
 
-  //update widget
+  // update widget
   if (type == 'number') {
     this.value_widget.type = 'number'
     this.value_widget.value = 0
@@ -63,13 +63,13 @@ GraphInput.prototype.updateType = function () {
   }
   this.properties.value = this.value_widget.value
 
-  //update graph
+  // update graph
   if (this.graph && this.name_in_graph) {
     this.graph.changeInputType(this.name_in_graph, type)
   }
 }
 
-//this is executed AFTER the property has changed
+// this is executed AFTER the property has changed
 GraphInput.prototype.onPropertyChanged = function (name, v) {
   if (name == 'name') {
     if (v == '' || v == this.name_in_graph || v == 'enabled') {
@@ -77,12 +77,12 @@ GraphInput.prototype.onPropertyChanged = function (name, v) {
     }
     if (this.graph) {
       if (this.name_in_graph) {
-        //already added
+        // already added
         this.graph.renameInput(this.name_in_graph, v)
       } else {
         this.graph.addInput(v, this.properties.type)
       }
-    } //what if not?!
+    } // what if not?!
     this.name_widget.value = v
     this.name_in_graph = v
   } else if (name == 'type') {
@@ -105,9 +105,9 @@ GraphInput.prototype.onAction = function (action, param) {
 }
 
 GraphInput.prototype.onExecute = function () {
-  var name = this.properties.name
-  //read from global input
-  var data = this.graph.inputs[name]
+  const name = this.properties.name
+  // read from global input
+  const data = this.graph.inputs[name]
   if (!data) {
     this.setOutputData(0, this.properties.value)
     return

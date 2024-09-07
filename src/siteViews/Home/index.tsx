@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
 import frame1 from '@/assets/frame-1.mp4'
 import frame2 from '@/assets/frame-2.mp4'
 import cn from '@/utils/cn'
+import gsap from 'gsap'
+import { useEffect, useRef, useState } from 'react'
 
+import { TopMenu } from '../components/TopMenu'
+import Video from '../components/Video'
 import Frame1 from './frame/Frame1'
 import Frame2 from './frame/Frame2'
-
-import Video from '../components/Video'
-import gsap from 'gsap'
-import { TopMenu } from '../components/TopMenu'
 
 const inFrame2 = false
 

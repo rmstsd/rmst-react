@@ -1,5 +1,6 @@
-import { TextNode } from './TextNode'
-import { ViewNode } from './ViewNode'
+import type { TextNode } from './TextNode'
+import type { ViewNode } from './ViewNode'
+
 import { NodeType } from './constant'
 
 export function isTextNode(node): node is TextNode {

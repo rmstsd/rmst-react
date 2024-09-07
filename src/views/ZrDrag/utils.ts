@@ -1,4 +1,5 @@
-import { NodeItem } from './oriData'
+import type { NodeItem } from './oriData'
+
 import { store } from './store'
 
 export const findParentNode = (id: NodeItem['id']): NodeItem => {

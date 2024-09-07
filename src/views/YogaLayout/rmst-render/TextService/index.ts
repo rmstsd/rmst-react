@@ -1,6 +1,6 @@
 // 来自 https://github.com/antvis/G/blob/next/packages/g-lite/src/services/TextService.ts
 
-import { ParsedTextStyleProps } from './inteface'
+import type { ParsedTextStyleProps } from './inteface'
 
 export class Rectangle implements DOMRect {
   left: number
@@ -13,6 +13,7 @@ export class Rectangle implements DOMRect {
     this.top = y
     this.bottom = y + height
   }
+
   toJSON() {}
 }
 
@@ -47,7 +48,7 @@ export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
     if (!stringRegExp.test(fontFamily) && genericFontFamilies.indexOf(fontFamily) < 0) {
       fontFamily = `"${fontFamily}"`
     }
-    ;(fontFamilies as string[])[i] = fontFamily
+    (fontFamilies as string[])[i] = fontFamily
   }
   return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSizeString} ${(fontFamilies as string[]).join(',')}`
 }

@@ -1,5 +1,7 @@
+import type { VideoHTMLAttributes } from 'react'
+
 import cn from '@/utils/cn'
-import { forwardRef, useImperativeHandle, useRef, VideoHTMLAttributes } from 'react'
+import { forwardRef, useImperativeHandle, useRef } from 'react'
 
 const Video = forwardRef<HTMLVideoElement, VideoHTMLAttributes<HTMLVideoElement>>((props, ref) => {
   const { className = '', src, autoPlay = false, loop = false, ...restProps } = props

@@ -1,7 +1,9 @@
-import React, { useContext, useLayoutEffect, useRef } from 'react'
+import type React from 'react'
 
-import PortalConsumer from './z_PortalConsumer'
+import { useContext, useLayoutEffect, useRef } from 'react'
+
 import PortalHost, { PortalContext, PortalMethods } from './PortalHost'
+import PortalConsumer from './z_PortalConsumer'
 
 export type Props = {
   children: React.ReactNode

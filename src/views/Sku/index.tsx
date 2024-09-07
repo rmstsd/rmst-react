@@ -1,6 +1,11 @@
-import { Button, Input, Table, TableColumnProps } from '@arco-design/web-react'
+import type { TableColumnProps } from '@arco-design/web-react'
+
+import { Button, Input, Table } from '@arco-design/web-react'
 import { useState } from 'react'
-import { SkuBase, getAllSku } from './backTrack'
+
+import type { SkuBase } from './backTrack'
+
+import { getAllSku } from './backTrack'
 
 const attr_name_value = {
   颜色: ['黑', '白', '红'],

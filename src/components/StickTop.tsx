@@ -60,7 +60,7 @@ export default function StickTop(props) {
         {props.children}
       </div>
 
-      {state.affix && <div style={state.placeholderStyle}></div>}
+      {state.affix && <div style={state.placeholderStyle} />}
     </div>
   )
 }

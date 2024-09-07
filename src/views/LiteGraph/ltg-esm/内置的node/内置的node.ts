@@ -1,8 +1,8 @@
-//basic nodes
-;(function (global) {
-  var LiteGraph = global.LiteGraph
+// basic nodes
+(function (global) {
+  const LiteGraph = global.LiteGraph
 
-  //Constant
+  // Constant
   function Time() {
     this.addOutput('in ms', 'number')
     this.addOutput('in sec', 'number')
@@ -18,15 +18,13 @@
 
   LiteGraph.registerNodeType('basic/time', Time)
 
-  
-
-  //Output for a subgraph
+  // Output for a subgraph
   function GraphOutput() {
     this.addInput('', '')
 
     this.name_in_graph = ''
     this.properties = { name: '', type: '' }
-    var that = this
+    const that = this
 
     // Object.defineProperty(this.properties, "name", {
     //     get: function() {
@@ -87,12 +85,12 @@
       }
       if (this.graph) {
         if (this.name_in_graph) {
-          //already added
+          // already added
           this.graph.renameOutput(this.name_in_graph, v)
         } else {
           this.graph.addOutput(v, this.properties.type)
         }
-      } //what if not?!
+      } // what if not?!
       this.name_widget.value = v
       this.name_in_graph = v
     } else if (name == 'type') {
@@ -102,17 +100,17 @@
   }
 
   GraphOutput.prototype.updateType = function () {
-    var type = this.properties.type
+    let type = this.properties.type
     if (this.type_widget) this.type_widget.value = type
 
-    //update output
+    // update output
     if (this.inputs[0].type != type) {
       if (type == 'action' || type == 'event') type = LiteGraph.EVENT
       if (!LiteGraph.isValidConnection(this.inputs[0].type, type)) this.disconnectInput(0)
       this.inputs[0].type = type
     }
 
-    //update graph
+    // update graph
     if (this.graph && this.name_in_graph) {
       this.graph.changeOutputType(this.name_in_graph, type)
     }
@@ -145,7 +143,7 @@
   LiteGraph.GraphOutput = GraphOutput
   LiteGraph.registerNodeType('graph/output', GraphOutput)
 
-  //Constant
+  // Constant
   function ConstantNumber() {
     this.addOutput('value', 'number')
     this.addProperty('value', 1.0)
@@ -173,7 +171,7 @@
   }
 
   ConstantNumber.prototype.onDrawBackground = function (ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = this.properties['value'].toFixed(3)
   }
 
@@ -211,7 +209,7 @@
   function ConstantString() {
     this.addOutput('string', 'string')
     this.addProperty('value', '')
-    this.widget = this.addWidget('text', 'value', '', 'value') //link to property value
+    this.widget = this.addWidget('text', 'value', '', 'value') // link to property value
     this.widgets_up = true
     this.size = [180, 30]
   }
@@ -228,8 +226,8 @@
   ConstantString.prototype.setValue = ConstantNumber.prototype.setValue
 
   ConstantString.prototype.onDropFile = function (file) {
-    var that = this
-    var reader = new FileReader()
+    const that = this
+    const reader = new FileReader()
     reader.onload = function (e) {
       that.setProperty('value', e.target.result)
     }
@@ -276,7 +274,7 @@
   }
 
   ConstantFile.prototype.onExecute = function () {
-    var url = this.getInputData(0) || this.properties.url
+    const url = this.getInputData(0) || this.properties.url
     if (url && (url != this._url || this._type != this.properties.type)) this.fetchFile(url)
     this.setOutputData(0, this._data)
   }
@@ -284,7 +282,7 @@
   ConstantFile.prototype.setValue = ConstantNumber.prototype.setValue
 
   ConstantFile.prototype.fetchFile = function (url) {
-    var that = this
+    const that = this
     if (!url || url.constructor !== String) {
       that._data = null
       that.boxcolor = null
@@ -317,14 +315,14 @@
   }
 
   ConstantFile.prototype.onDropFile = function (file) {
-    var that = this
+    const that = this
     this._url = file.name
     this._type = this.properties.type
     this.properties.url = file.name
-    var reader = new FileReader()
+    const reader = new FileReader()
     reader.onload = function (e) {
       that.boxcolor = '#AEA'
-      var v = e.target.result
+      let v = e.target.result
       if (that.properties.type == 'json') v = JSON.parse(v)
       that._data = v
     }
@@ -335,7 +333,7 @@
 
   LiteGraph.registerNodeType('basic/file', ConstantFile)
 
-  //to store json objects
+  // to store json objects
   function JSONParse() {
     this.addInput('parse', LiteGraph.ACTION)
     this.addInput('json', 'string')
@@ -373,7 +371,7 @@
 
   LiteGraph.registerNodeType('basic/jsonparse', JSONParse)
 
-  //to store json objects
+  // to store json objects
   function ConstantData() {
     this.addOutput('data', 'object')
     this.addProperty('value', '')
@@ -408,7 +406,7 @@
 
   LiteGraph.registerNodeType('basic/data', ConstantData)
 
-  //to store json objects
+  // to store json objects
   function ConstantArray() {
     this._value = []
     this.addInput('json', '')
@@ -430,7 +428,7 @@
     }
 
     try {
-      if (value[0] != '[') this._value = JSON.parse('[' + value + ']')
+      if (value[0] != '[') this._value = JSON.parse(`[${value}]`)
       else this._value = JSON.parse(value)
       this.boxcolor = '#AEA'
     } catch (err) {
@@ -439,12 +437,12 @@
   }
 
   ConstantArray.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v && v.length) {
-      //clone
-      if (!this._value) this._value = new Array()
+      // clone
+      if (!this._value) this._value = []
       this._value.length = v.length
-      for (var i = 0; i < v.length; ++i) this._value[i] = v[i]
+      for (let i = 0; i < v.length; ++i) this._value[i] = v[i]
     }
     this.setOutputData(0, this._value)
     this.setOutputData(1, this._value ? this._value.length || 0 : 0)
@@ -466,9 +464,9 @@
   SetArray.desc = 'Sets index of array'
 
   SetArray.prototype.onExecute = function () {
-    var arr = this.getInputData(0)
+    const arr = this.getInputData(0)
     if (!arr) return
-    var v = this.getInputData(1)
+    const v = this.getInputData(1)
     if (v === undefined) return
     if (this.properties.index) arr[Math.floor(this.properties.index)] = v
     this.setOutputData(0, arr)
@@ -487,8 +485,8 @@
   ArrayElement.desc = 'Returns an element from an array'
 
   ArrayElement.prototype.onExecute = function () {
-    var array = this.getInputData(0)
-    var index = this.getInputData(1)
+    const array = this.getInputData(0)
+    let index = this.getInputData(1)
     if (index == null) index = this.properties.index
     if (array == null || index == null) return
     this.setOutputData(0, array[Math.floor(Number(index))])
@@ -509,9 +507,9 @@
   TableElement.desc = 'Returns an element from a table'
 
   TableElement.prototype.onExecute = function () {
-    var table = this.getInputData(0)
+    const table = this.getInputData(0)
     var row = this.getInputData(1)
-    var col = this.getInputData(2)
+    let col = this.getInputData(2)
     if (row == null) row = this.properties.row
     if (col == null) col = this.properties.column
     if (table == null || row == null || col == null) return
@@ -542,7 +540,7 @@
 
   ObjectProperty.prototype.getTitle = function () {
     if (this.flags.collapsed) {
-      return 'in.' + this.properties.value
+      return `in.${this.properties.value}`
     }
     return this.title
   }
@@ -552,7 +550,7 @@
   }
 
   ObjectProperty.prototype.onExecute = function () {
-    var data = this.getInputData(0)
+    const data = this.getInputData(0)
     if (data != null) {
       this.setOutputData(0, data[this.properties.value])
     }
@@ -570,7 +568,7 @@
   ObjectKeys.desc = 'Outputs an array with the keys of an object'
 
   ObjectKeys.prototype.onExecute = function () {
-    var data = this.getInputData(0)
+    const data = this.getInputData(0)
     if (data != null) {
       this.setOutputData(0, Object.keys(data))
     }
@@ -590,9 +588,9 @@
   SetObject.desc = 'Adds propertiesrty to object'
 
   SetObject.prototype.onExecute = function () {
-    var obj = this.getInputData(0)
+    const obj = this.getInputData(0)
     if (!obj) return
-    var v = this.getInputData(1)
+    const v = this.getInputData(1)
     if (v === undefined) return
     if (this.properties.property) obj[this.properties.property] = v
     this.setOutputData(0, obj)
@@ -605,7 +603,7 @@
     this.addInput('B', 'object')
     this.addOutput('out', 'object')
     this._result = {}
-    var that = this
+    const that = this
     this.addWidget('button', 'clear', '', function () {
       that._result = {}
     })
@@ -616,9 +614,9 @@
   MergeObjects.desc = 'Creates an object copying properties from others'
 
   MergeObjects.prototype.onExecute = function () {
-    var A = this.getInputData(0)
-    var B = this.getInputData(1)
-    var C = this._result
+    const A = this.getInputData(0)
+    const B = this.getInputData(1)
+    const C = this._result
     if (A) for (var i in A) C[i] = A[i]
     if (B) for (var i in B) C[i] = B[i]
     this.setOutputData(0, C)
@@ -626,7 +624,7 @@
 
   LiteGraph.registerNodeType('basic/merge_objects', MergeObjects)
 
-  //Store as variable
+  // Store as variable
   function Variable() {
     this.size = [60, 30]
     this.addInput('in')
@@ -638,9 +636,9 @@
   Variable.title = 'Variable'
   Variable.desc = 'store/read variable value'
 
-  Variable.LITEGRAPH = 0 //between all graphs
-  Variable.GRAPH = 1 //only inside this graph
-  Variable.GLOBALSCOPE = 2 //attached to Window
+  Variable.LITEGRAPH = 0 // between all graphs
+  Variable.GRAPH = 1 // only inside this graph
+  Variable.GLOBALSCOPE = 2 // attached to Window
 
   Variable['@container'] = {
     type: 'enum',
@@ -648,7 +646,7 @@
   }
 
   Variable.prototype.onExecute = function () {
-    var container = this.getContainer()
+    const container = this.getContainer()
 
     if (this.isInputConnected(0)) {
       this.value = this.getInputData(0)
@@ -709,7 +707,7 @@
     this.addInput('download', LiteGraph.ACTION)
     this.properties = { filename: 'data.json' }
     this.value = null
-    var that = this
+    const that = this
     this.addWidget('button', 'Download', '', function (v) {
       if (!that.value) return
       that.downloadAsFile()
@@ -722,13 +720,13 @@
   DownloadData.prototype.downloadAsFile = function () {
     if (this.value == null) return
 
-    var str = null
+    let str = null
     if (this.value.constructor === String) str = this.value
     else str = JSON.stringify(this.value)
 
-    var file = new Blob([str])
-    var url = URL.createObjectURL(file)
-    var element = document.createElement('a')
+    const file = new Blob([str])
+    const url = URL.createObjectURL(file)
+    const element = document.createElement('a')
     element.setAttribute('href', url)
     element.setAttribute('download', this.properties.filename)
     element.style.display = 'none'
@@ -737,14 +735,14 @@
     document.body.removeChild(element)
     setTimeout(function () {
       URL.revokeObjectURL(url)
-    }, 1000 * 60) //wait one minute to revoke url
+    }, 1000 * 60) // wait one minute to revoke url
   }
 
   DownloadData.prototype.onAction = function (action, param) {
-    var that = this
+    const that = this
     setTimeout(function () {
       that.downloadAsFile()
-    }, 100) //deferred to avoid blocking the renderer with the popup
+    }, 100) // deferred to avoid blocking the renderer with the popup
   }
 
   DownloadData.prototype.onExecute = function () {
@@ -762,7 +760,7 @@
 
   LiteGraph.registerNodeType('basic/download', DownloadData)
 
-  //Watch a value in the editor
+  // Watch a value in the editor
   function Watch() {
     this.size = [60, 30]
     this.addInput('value', 0, { label: '' })
@@ -791,8 +789,8 @@
     } else if (o.constructor === Number) {
       return o.toFixed(3)
     } else if (o.constructor === Array) {
-      var str = '['
-      for (var i = 0; i < o.length; ++i) {
+      let str = '['
+      for (let i = 0; i < o.length; ++i) {
         str += Watch.toString(o[i]) + (i + 1 != o.length ? ',' : '')
       }
       str += ']'
@@ -803,13 +801,13 @@
   }
 
   Watch.prototype.onDrawBackground = function (ctx) {
-    //show the current value
+    // show the current value
     this.inputs[0].label = Watch.toString(this.value)
   }
 
   LiteGraph.registerNodeType('basic/watch', Watch)
 
-  //in case one type doesnt match other type but you want to connect them anyway
+  // in case one type doesnt match other type but you want to connect them anyway
   function Cast() {
     this.addInput('in', 0)
     this.addOutput('out', 0)
@@ -825,7 +823,7 @@
 
   LiteGraph.registerNodeType('basic/cast', Cast)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function Console() {
     this.mode = LiteGraph.ON_EVENT
     this.size = [80, 30]
@@ -839,10 +837,10 @@
 
   Console.prototype.onAction = function (action, param) {
     // param is the action
-    var msg = this.getInputData(1) //getInputDataByName("msg");
-    //if (msg == null || typeof msg == "undefined") return;
+    let msg = this.getInputData(1) // getInputDataByName("msg");
+    // if (msg == null || typeof msg == "undefined") return;
     if (!msg) msg = this.properties.msg
-    if (!msg) msg = 'Event: ' + param // msg is undefined if the slot is lost?
+    if (!msg) msg = `Event: ${param}` // msg is undefined if the slot is lost?
     if (action == 'log') {
       console.log(msg)
     } else if (action == 'warn') {
@@ -853,7 +851,7 @@
   }
 
   Console.prototype.onExecute = function () {
-    var msg = this.getInputData(1) //getInputDataByName("msg");
+    let msg = this.getInputData(1) // getInputDataByName("msg");
     if (!msg) msg = this.properties.msg
     if (msg != null && typeof msg != 'undefined') {
       this.properties.msg = msg
@@ -871,12 +869,12 @@
 
   LiteGraph.registerNodeType('basic/console', Console)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function Alert() {
     this.mode = LiteGraph.ON_EVENT
     this.addProperty('msg', '')
     this.addInput('', LiteGraph.EVENT)
-    var that = this
+    const that = this
     this.widget = this.addWidget('text', 'Text', '', 'msg')
     this.widgets_up = true
     this.size = [200, 30]
@@ -891,7 +889,7 @@
   }
 
   Alert.prototype.onAction = function (action, param) {
-    var msg = this.properties.msg
+    const msg = this.properties.msg
     setTimeout(function () {
       alert(msg)
     }, 10)
@@ -899,7 +897,7 @@
 
   LiteGraph.registerNodeType('basic/alert', Alert)
 
-  //Execites simple code
+  // Execites simple code
   function NodeScript() {
     this.size = [60, 30]
     this.addProperty('onExecute', 'return A;')
@@ -933,9 +931,9 @@
     if (code.length > 256) {
       console.warn('Script too long, max 256 chars')
     } else {
-      var code_low = code.toLowerCase()
-      var forbidden_words = ['script', 'body', 'document', 'eval', 'nodescript', 'function'] //bad security solution
-      for (var i = 0; i < forbidden_words.length; ++i) {
+      const code_low = code.toLowerCase()
+      const forbidden_words = ['script', 'body', 'document', 'eval', 'nodescript', 'function'] // bad security solution
+      for (let i = 0; i < forbidden_words.length; ++i) {
         if (code_low.indexOf(forbidden_words[i]) != -1) {
           console.warn('invalid script')
           return
@@ -956,9 +954,9 @@
     }
 
     try {
-      var A = this.getInputData(0)
-      var B = this.getInputData(1)
-      var C = this.getInputData(2)
+      const A = this.getInputData(0)
+      const B = this.getInputData(1)
+      const C = this.getInputData(2)
       this.setOutputData(0, this._func(A, B, C, this.data, this))
     } catch (err) {
       console.error('Error in script')
@@ -985,7 +983,7 @@
     this.size = [80, 60]
   }
 
-  GenericCompare.values = ['==', '!='] //[">", "<", "==", "!=", "<=", ">=", "||", "&&" ];
+  GenericCompare.values = ['==', '!='] // [">", "<", "==", "!=", "<=", ">=", "||", "&&" ];
   GenericCompare['@OP'] = {
     type: 'enum',
     title: 'operation',
@@ -996,25 +994,25 @@
   GenericCompare.desc = 'evaluates condition between A and B'
 
   GenericCompare.prototype.getTitle = function () {
-    return '*A ' + this.properties.OP + ' *B'
+    return `*A ${this.properties.OP} *B`
   }
 
   GenericCompare.prototype.onExecute = function () {
-    var A = this.getInputData(0)
+    let A = this.getInputData(0)
     if (A === undefined) {
       A = this.properties.A
     } else {
       this.properties.A = A
     }
 
-    var B = this.getInputData(1)
+    let B = this.getInputData(1)
     if (B === undefined) {
       B = this.properties.B
     } else {
       this.properties.B = B
     }
 
-    var result = false
+    let result = false
     if (typeof A == typeof B) {
       switch (this.properties.OP) {
         case '==':
@@ -1029,8 +1027,8 @@
                 result = false
                 break
               }
-              for (var i = 0; i < aProps.length; i++) {
-                var propName = aProps[i]
+              for (let i = 0; i < aProps.length; i++) {
+                const propName = aProps[i]
                 if (A[propName] !== B[propName]) {
                   result = false
                   break
@@ -1042,7 +1040,7 @@
           }
           if (this.properties.OP == '!=') result = !result
           break
-        /*case ">":
+        /* case ">":
                   result = A > B;
                   break;
               case "<":
@@ -1059,7 +1057,7 @@
                   break;
               case "&&":
                   result = A && B;
-                  break;*/
+                  break; */
       }
     }
     this.setOutputData(0, result)
@@ -1069,11 +1067,11 @@
   LiteGraph.registerNodeType('basic/CompareValues', GenericCompare)
 })(this)
 
-//event related nodes
+// event related nodes
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function LogEvent() {
     this.size = [60, 30]
     this.addInput('event', LiteGraph.ACTION)
@@ -1088,7 +1086,7 @@
 
   LiteGraph.registerNodeType('events/log', LogEvent)
 
-  //convert to Event if the value is true
+  // convert to Event if the value is true
   function TriggerEvent() {
     this.size = [60, 30]
     this.addInput('if', '')
@@ -1103,10 +1101,10 @@
   TriggerEvent.desc = 'Triggers event if input evaluates to true'
 
   TriggerEvent.prototype.onExecute = function (param, options) {
-    var v = this.getInputData(0)
-    var changed = v != this.prev
+    const v = this.getInputData(0)
+    let changed = v != this.prev
     if (this.prev === 0) changed = false
-    var must_resend = (changed && this.properties.only_on_change) || (!changed && !this.properties.only_on_change)
+    const must_resend = (changed && this.properties.only_on_change) || (!changed && !this.properties.only_on_change)
     if (v && must_resend) this.triggerSlot(0, param, null, options)
     if (!v && must_resend) this.triggerSlot(2, param, null, options)
     if (changed) this.triggerSlot(1, param, null, options)
@@ -1115,9 +1113,9 @@
 
   LiteGraph.registerNodeType('events/trigger', TriggerEvent)
 
-  //Sequence of events
+  // Sequence of events
   function Sequence() {
-    var that = this
+    const that = this
     this.addInput('', LiteGraph.ACTION)
     this.addInput('', LiteGraph.ACTION)
     this.addInput('', LiteGraph.ACTION)
@@ -1142,15 +1140,15 @@
   Sequence.prototype.onAction = function (action, param, options) {
     if (this.outputs) {
       options = options || {}
-      for (var i = 0; i < this.outputs.length; ++i) {
-        var output = this.outputs[i]
-        //needs more info about this...
+      for (let i = 0; i < this.outputs.length; ++i) {
+        const output = this.outputs[i]
+        // needs more info about this...
         if (options.action_call)
           // CREATE A NEW ID FOR THE ACTION
-          options.action_call = options.action_call + '_seq_' + i
+          options.action_call = `${options.action_call}_seq_${i}`
         else
           options.action_call =
-            this.id + '_' + (action ? action : 'action') + '_seq_' + i + '_' + Math.floor(Math.random() * 9999)
+            `${this.id}_${action ? action : 'action'}_seq_${i}_${Math.floor(Math.random() * 9999)}`
         this.triggerSlot(i, param, null, options)
       }
     }
@@ -1158,9 +1156,9 @@
 
   LiteGraph.registerNodeType('events/sequence', Sequence)
 
-  //Sequence of events
+  // Sequence of events
   function WaitAll() {
-    var that = this
+    const that = this
     this.addInput('', LiteGraph.ACTION)
     this.addInput('', LiteGraph.ACTION)
     this.addOutput('', LiteGraph.EVENT)
@@ -1183,8 +1181,8 @@
     if (this.flags.collapsed) {
       return
     }
-    for (var i = 0; i < this.inputs.length; ++i) {
-      var y = i * LiteGraph.NODE_SLOT_HEIGHT + 10
+    for (let i = 0; i < this.inputs.length; ++i) {
+      const y = i * LiteGraph.NODE_SLOT_HEIGHT + 10
       ctx.fillStyle = this.ready[i] ? '#AFB' : '#000'
       ctx.fillRect(20, y, 10, 10)
     }
@@ -1193,11 +1191,11 @@
   WaitAll.prototype.onAction = function (action, param, options, slot_index) {
     if (slot_index == null) return
 
-    //check all
+    // check all
     this.ready.length = this.outputs.length
     this.ready[slot_index] = true
-    for (var i = 0; i < this.ready.length; ++i) if (!this.ready[i]) return
-    //pass
+    for (let i = 0; i < this.ready.length; ++i) if (!this.ready[i]) return
+    // pass
     this.reset()
     this.triggerSlot(0)
   }
@@ -1208,9 +1206,9 @@
 
   LiteGraph.registerNodeType('events/waitAll', WaitAll)
 
-  //Sequencer for events
+  // Sequencer for events
   function Stepper() {
-    var that = this
+    const that = this
     this.properties = { index: 0 }
     this.addInput('index', 'number')
     this.addInput('step', LiteGraph.ACTION)
@@ -1233,10 +1231,10 @@
     if (this.flags.collapsed) {
       return
     }
-    var index = this.properties.index || 0
+    const index = this.properties.index || 0
     ctx.fillStyle = '#AFB'
-    var w = this.size[0]
-    var y = (index + 1) * LiteGraph.NODE_SLOT_HEIGHT + 4
+    const w = this.size[0]
+    const y = (index + 1) * LiteGraph.NODE_SLOT_HEIGHT + 4
     ctx.beginPath()
     ctx.moveTo(w - 30, y)
     ctx.lineTo(w - 30, y + LiteGraph.NODE_SLOT_HEIGHT)
@@ -1245,7 +1243,7 @@
   }
 
   Stepper.prototype.onExecute = function () {
-    var index = this.getInputData(0)
+    let index = this.getInputData(0)
     if (index != null) {
       index = Math.floor(index)
       index = clamp(index, 0, this.outputs ? this.outputs.length - 2 : 0)
@@ -1262,14 +1260,14 @@
     if (action == 'reset') this.properties.index = 0
     else if (action == 'step') {
       this.triggerSlot(this.properties.index + 1, param)
-      var n = this.outputs ? this.outputs.length - 1 : 0
+      const n = this.outputs ? this.outputs.length - 1 : 0
       this.properties.index = (this.properties.index + 1) % n
     }
   }
 
   LiteGraph.registerNodeType('events/stepper', Stepper)
 
-  //Filter events
+  // Filter events
   function FilterEvent() {
     this.size = [60, 30]
     this.addInput('event', LiteGraph.ACTION)
@@ -1294,7 +1292,7 @@
     }
 
     if (this.properties.has_property) {
-      var prop = param[this.properties.has_property]
+      const prop = param[this.properties.has_property]
       if (prop == null) {
         return
       }
@@ -1332,7 +1330,7 @@
 
   LiteGraph.registerNodeType('events/branch', EventBranch)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function EventCounter() {
     this.addInput('inc', LiteGraph.ACTION)
     this.addInput('dec', LiteGraph.ACTION)
@@ -1355,7 +1353,7 @@
   }
 
   EventCounter.prototype.onAction = function (action, param, options) {
-    var v = this.num
+    const v = this.num
     if (action == 'inc') {
       this.num += 1
     } else if (action == 'dec') {
@@ -1387,7 +1385,7 @@
 
   LiteGraph.registerNodeType('events/counter', EventCounter)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function DelayEvent() {
     this.size = [60, 30]
     this.addProperty('time_in_ms', 1000)
@@ -1401,7 +1399,7 @@
   DelayEvent.desc = 'Delays one event'
 
   DelayEvent.prototype.onAction = function (action, param, options) {
-    var time = this.properties.time_in_ms
+    const time = this.properties.time_in_ms
     if (time <= 0) {
       this.trigger(null, param, options)
     } else {
@@ -1410,24 +1408,24 @@
   }
 
   DelayEvent.prototype.onExecute = function (param, options) {
-    var dt = this.graph.elapsed_time * 1000 //in ms
+    const dt = this.graph.elapsed_time * 1000 // in ms
 
     if (this.isInputConnected(1)) {
       this.properties.time_in_ms = this.getInputData(1)
     }
 
-    for (var i = 0; i < this._pending.length; ++i) {
-      var actionPass = this._pending[i]
+    for (let i = 0; i < this._pending.length; ++i) {
+      const actionPass = this._pending[i]
       actionPass[0] -= dt
       if (actionPass[0] > 0) {
         continue
       }
 
-      //remove
+      // remove
       this._pending.splice(i, 1)
       --i
 
-      //trigger
+      // trigger
       this.trigger(null, actionPass[1], options)
     }
   }
@@ -1441,7 +1439,7 @@
 
   LiteGraph.registerNodeType('events/delay', DelayEvent)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function TimerEvent() {
     this.addProperty('interval', 1000)
     this.addProperty('event', 'tick')
@@ -1459,7 +1457,7 @@
   }
 
   TimerEvent.prototype.getTitle = function () {
-    return 'Timer: ' + this.last_interval.toString() + 'ms'
+    return `Timer: ${this.last_interval.toString()}ms`
   }
 
   TimerEvent.on_color = '#AAA'
@@ -1471,9 +1469,9 @@
   }
 
   TimerEvent.prototype.onExecute = function () {
-    var dt = this.graph.elapsed_time * 1000 //in ms
+    const dt = this.graph.elapsed_time * 1000 // in ms
 
-    var trigger = this.time == 0
+    const trigger = this.time == 0
 
     this.time += dt
     this.last_interval = Math.max(1, this.getInputOrProperty('interval') | 0)
@@ -1512,7 +1510,7 @@
     this.addOutput('is_green', 'boolean')
     this._ready = false
     this.properties = {}
-    var that = this
+    const that = this
     this.addWidget('button', 'reset', '', function () {
       that._ready = false
     })
@@ -1540,7 +1538,7 @@
     this.addOutput('out', LiteGraph.EVENT)
     this._once = false
     this.properties = {}
-    var that = this
+    const that = this
     this.addWidget('button', 'reset', '', function () {
       that._once = false
     })
@@ -1564,7 +1562,7 @@
     this.addOutput('data', 0)
     this._last_value = null
     this.properties = { data: null, serialize: true }
-    var that = this
+    const that = this
     this.addWidget('button', 'store', '', function () {
       that.properties.data = that._last_value
     })
@@ -1598,9 +1596,9 @@
   LiteGraph.registerNodeType('basic/data_store', DataStore)
 })(this)
 
-//widgets
+// widgets
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   /* Button ****************/
 
@@ -1622,7 +1620,7 @@
     if (this.flags.collapsed) {
       return
     }
-    var margin = 10
+    const margin = 10
     ctx.fillStyle = 'black'
     ctx.fillRect(margin + 1, margin + 1, this.size[0] - margin * 2, this.size[1] - margin * 2)
     ctx.fillStyle = '#AAF'
@@ -1631,10 +1629,10 @@
     ctx.fillRect(margin, margin, this.size[0] - margin * 2, this.size[1] - margin * 2)
 
     if (this.properties.text || this.properties.text === 0) {
-      var font_size = this.properties.font_size || 30
+      const font_size = this.properties.font_size || 30
       ctx.textAlign = 'center'
       ctx.fillStyle = this.clicked ? 'black' : 'white'
-      ctx.font = font_size + 'px ' + WidgetButton.font
+      ctx.font = `${font_size}px ${WidgetButton.font}`
       ctx.fillText(this.properties.text, this.size[0] * 0.5, this.size[1] * 0.5 + font_size * 0.3)
       ctx.textAlign = 'left'
     }
@@ -1676,12 +1674,12 @@
       return
     }
 
-    var size = this.size[1] * 0.5
-    var margin = 0.25
-    var h = this.size[1] * 0.8
-    ctx.font = this.properties.font || (size * 0.8).toFixed(0) + 'px Arial'
-    var w = ctx.measureText(this.title).width
-    var x = (this.size[0] - (w + size)) * 0.5
+    const size = this.size[1] * 0.5
+    const margin = 0.25
+    const h = this.size[1] * 0.8
+    ctx.font = this.properties.font || `${(size * 0.8).toFixed(0)}px Arial`
+    const w = ctx.measureText(this.title).width
+    const x = (this.size[0] - (w + size)) * 0.5
 
     ctx.fillStyle = '#AAA'
     ctx.fillRect(x, h - size, size, size)
@@ -1701,7 +1699,7 @@
   }
 
   WidgetToggle.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v != null) {
       this.properties.value = v
     }
@@ -1738,8 +1736,8 @@
   WidgetNumber.markers_color = '#666'
 
   WidgetNumber.prototype.onDrawForeground = function (ctx) {
-    var x = this.size[0] * 0.5
-    var h = this.size[1]
+    const x = this.size[0] * 0.5
+    const h = this.size[1]
     if (h > 30) {
       ctx.fillStyle = WidgetNumber.markers_color
       ctx.beginPath()
@@ -1752,13 +1750,13 @@
       ctx.lineTo(x + h * 0.1, h * 0.8)
       ctx.lineTo(x + h * -0.1, h * 0.8)
       ctx.fill()
-      ctx.font = (h * 0.7).toFixed(1) + 'px Arial'
+      ctx.font = `${(h * 0.7).toFixed(1)}px Arial`
     } else {
-      ctx.font = (h * 0.8).toFixed(1) + 'px Arial'
+      ctx.font = `${(h * 0.8).toFixed(1)}px Arial`
     }
 
     ctx.textAlign = 'center'
-    ctx.font = (h * 0.7).toFixed(1) + 'px Arial'
+    ctx.font = `${(h * 0.7).toFixed(1)}px Arial`
     ctx.fillStyle = '#EEE'
     ctx.fillText(this.properties.value.toFixed(this._precision), x, h * 0.75)
   }
@@ -1768,7 +1766,7 @@
   }
 
   WidgetNumber.prototype.onPropertyChanged = function (name, value) {
-    var t = (this.properties.step + '').split('.')
+    const t = (`${this.properties.step}`).split('.')
     this._precision = t.length > 1 ? t[1].length : 0
   }
 
@@ -1789,7 +1787,7 @@
       return
     }
 
-    var delta = this.old_y - e.canvasY
+    let delta = this.old_y - e.canvasY
     if (e.shiftKey) {
       delta *= 10
     }
@@ -1798,11 +1796,11 @@
     }
     this.old_y = e.canvasY
 
-    var steps = this._remainder + delta / WidgetNumber.pixels_threshold
+    let steps = this._remainder + delta / WidgetNumber.pixels_threshold
     this._remainder = steps % 1
     steps = steps | 0
 
-    var v = clamp(this.properties.value + steps * this.properties.step, this.properties.min, this.properties.max)
+    const v = clamp(this.properties.value + steps * this.properties.step, this.properties.min, this.properties.max)
     this.properties.value = v
     this.graph._version++
     this.setDirtyCanvas(true)
@@ -1810,7 +1808,7 @@
 
   WidgetNumber.prototype.onMouseUp = function (e, pos) {
     if (e.click_time < 200) {
-      var steps = pos[1] > this.size[1] * 0.5 ? -1 : 1
+      const steps = pos[1] > this.size[1] * 0.5 ? -1 : 1
       this.properties.value = clamp(
         this.properties.value + steps * this.properties.step,
         this.properties.min,
@@ -1838,7 +1836,7 @@
     this.old_y = -1
     this.mouse_captured = false
     this._values = this.properties.values.split(';')
-    var that = this
+    const that = this
     this.widgets_up = true
     this.widget = this.addWidget(
       'combo',
@@ -1898,24 +1896,24 @@
       this.value = (this.properties.value - this.properties.min) / (this.properties.max - this.properties.min)
     }
 
-    var center_x = this.size[0] * 0.5
-    var center_y = this.size[1] * 0.5
-    var radius = Math.min(this.size[0], this.size[1]) * 0.5 - 5
-    var w = Math.floor(radius * 0.05)
+    const center_x = this.size[0] * 0.5
+    const center_y = this.size[1] * 0.5
+    const radius = Math.min(this.size[0], this.size[1]) * 0.5 - 5
+    const w = Math.floor(radius * 0.05)
 
     ctx.globalAlpha = 1
     ctx.save()
     ctx.translate(center_x, center_y)
     ctx.rotate(Math.PI * 0.75)
 
-    //bg
+    // bg
     ctx.fillStyle = 'rgba(0,0,0,0.5)'
     ctx.beginPath()
     ctx.moveTo(0, 0)
     ctx.arc(0, 0, radius, 0, Math.PI * 1.5)
     ctx.fill()
 
-    //value
+    // value
     ctx.strokeStyle = 'black'
     ctx.fillStyle = this.properties.color
     ctx.lineWidth = 2
@@ -1924,21 +1922,21 @@
     ctx.arc(0, 0, radius - 4, 0, Math.PI * 1.5 * Math.max(0.01, this.value))
     ctx.closePath()
     ctx.fill()
-    //ctx.stroke();
+    // ctx.stroke();
     ctx.lineWidth = 1
     ctx.globalAlpha = 1
     ctx.restore()
 
-    //inner
+    // inner
     ctx.fillStyle = 'black'
     ctx.beginPath()
     ctx.arc(center_x, center_y, radius * 0.75, 0, Math.PI * 2, true)
     ctx.fill()
 
-    //miniball
+    // miniball
     ctx.fillStyle = this.mouseOver ? 'white' : this.properties.color
     ctx.beginPath()
-    var angle = this.value * Math.PI * 1.5 + Math.PI * 0.75
+    const angle = this.value * Math.PI * 1.5 + Math.PI * 0.75
     ctx.arc(
       center_x + Math.cos(angle) * radius * 0.65,
       center_y + Math.sin(angle) * radius * 0.65,
@@ -1949,9 +1947,9 @@
     )
     ctx.fill()
 
-    //text
+    // text
     ctx.fillStyle = this.mouseOver ? 'white' : '#AAA'
-    ctx.font = Math.floor(radius * 0.5) + 'px Arial'
+    ctx.font = `${Math.floor(radius * 0.5)}px Arial`
     ctx.textAlign = 'center'
     ctx.fillText(this.properties.value.toFixed(this.properties.precision), center_x, center_y + radius * 0.15)
   }
@@ -1967,7 +1965,7 @@
     if (
       e.canvasY - this.pos[1] < 20 ||
       LiteGraph.distance([e.canvasX, e.canvasY], [this.pos[0] + this.center[0], this.pos[1] + this.center[1]]) >
-        this.radius
+      this.radius
     ) {
       return false
     }
@@ -1981,9 +1979,9 @@
       return
     }
 
-    var m = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]]
+    const m = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]]
 
-    var v = this.value
+    let v = this.value
     v -= (m[1] - this.oldmouse[1]) * 0.01
     if (v > 1.0) {
       v = 1.0
@@ -2006,13 +2004,13 @@
   WidgetKnob.prototype.onPropertyChanged = function (name, value) {
     if (name == 'min' || name == 'max' || name == 'value') {
       this.properties[name] = parseFloat(value)
-      return true //block
+      return true // block
     }
   }
 
   LiteGraph.registerNodeType('widget/knob', WidgetKnob)
 
-  //Show value inside the debug console
+  // Show value inside the debug console
   function WidgetSliderGUI() {
     this.addOutput('', 'number')
     this.properties = {
@@ -2021,7 +2019,7 @@
       max: 1,
       text: 'V'
     }
-    var that = this
+    const that = this
     this.size = [140, 40]
     this.slider = this.addWidget(
       'slider',
@@ -2049,7 +2047,7 @@
 
   LiteGraph.registerNodeType('widget/internal_slider', WidgetSliderGUI)
 
-  //Widget H SLIDER
+  // Widget H SLIDER
   function WidgetHSlider() {
     this.size = [160, 26]
     this.addOutput('', 'number')
@@ -2065,7 +2063,7 @@
       this.value = (this.properties.value - this.properties.min) / (this.properties.max - this.properties.min)
     }
 
-    //border
+    // border
     ctx.globalAlpha = 1
     ctx.lineWidth = 1
     ctx.fillStyle = '#000'
@@ -2098,10 +2096,10 @@
       return
     }
 
-    var m = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]]
+    const m = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]]
 
-    var v = this.value
-    var delta = m[0] - this.oldmouse[0]
+    let v = this.value
+    const delta = m[0] - this.oldmouse[0]
     v += delta / this.size[0]
     if (v > 1.0) {
       v = 1.0
@@ -2121,7 +2119,7 @@
   }
 
   WidgetHSlider.prototype.onMouseLeave = function (e) {
-    //this.oldmouse = null;
+    // this.oldmouse = null;
   }
 
   LiteGraph.registerNodeType('widget/hslider', WidgetHSlider)
@@ -2136,17 +2134,17 @@
   WidgetProgress.desc = 'Shows data in linear progress'
 
   WidgetProgress.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v != undefined) {
       this.properties['value'] = v
     }
   }
 
   WidgetProgress.prototype.onDrawForeground = function (ctx) {
-    //border
+    // border
     ctx.lineWidth = 1
     ctx.fillStyle = this.properties.color
-    var v = (this.properties.value - this.properties.min) / (this.properties.max - this.properties.min)
+    let v = (this.properties.value - this.properties.min) / (this.properties.max - this.properties.min)
     v = Math.min(1, v)
     v = Math.max(0, v)
     ctx.fillRect(2, 2, (this.size[0] - 4) * v, this.size[1] - 4)
@@ -2176,10 +2174,10 @@
   ]
 
   WidgetText.prototype.onDrawForeground = function (ctx) {
-    //ctx.fillStyle="#000";
-    //ctx.fillRect(0,0,100,60);
+    // ctx.fillStyle="#000";
+    // ctx.fillRect(0,0,100,60);
     ctx.fillStyle = this.properties['color']
-    var v = this.properties['value']
+    const v = this.properties['value']
 
     if (this.properties['glowSize']) {
       ctx.shadowColor = this.properties.color
@@ -2190,15 +2188,15 @@
       ctx.shadowColor = 'transparent'
     }
 
-    var fontsize = this.properties['fontsize']
+    const fontsize = this.properties['fontsize']
 
     ctx.textAlign = this.properties['align']
-    ctx.font = fontsize.toString() + 'px ' + this.properties['font']
+    ctx.font = `${fontsize.toString()}px ${this.properties['font']}`
     this.str = typeof v == 'number' ? v.toFixed(this.properties['decimals']) : v
 
     if (typeof this.str == 'string') {
-      var lines = this.str.replace(/[\r\n]/g, '\\n').split('\\n')
-      for (var i = 0; i < lines.length; i++) {
+      const lines = this.str.replace(/[\r\n]/g, '\\n').split('\\n')
+      for (let i = 0; i < lines.length; i++) {
         ctx.fillText(
           lines[i],
           this.properties['align'] == 'left' ? 15 : this.size[0] - 15,
@@ -2213,11 +2211,11 @@
   }
 
   WidgetText.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v != null) {
       this.properties['value'] = v
     }
-    //this.setDirtyCanvas(true);
+    // this.setDirtyCanvas(true);
   }
 
   WidgetText.prototype.resize = function () {
@@ -2225,11 +2223,11 @@
       return
     }
 
-    var lines = this.str.split('\\n')
-    this.last_ctx.font = this.properties['fontsize'] + 'px ' + this.properties['font']
-    var max = 0
-    for (var i = 0; i < lines.length; i++) {
-      var w = this.last_ctx.measureText(lines[i]).width
+    const lines = this.str.split('\\n')
+    this.last_ctx.font = `${this.properties['fontsize']}px ${this.properties['font']}`
+    let max = 0
+    for (let i = 0; i < lines.length; i++) {
+      const w = this.last_ctx.measureText(lines[i]).width
       if (max < w) {
         max = w
       }
@@ -2243,7 +2241,7 @@
   WidgetText.prototype.onPropertyChanged = function (name, value) {
     this.properties[name] = value
     this.str = typeof value == 'number' ? value.toFixed(3) : value
-    //this.resize();
+    // this.resize();
     return true
   }
 
@@ -2290,7 +2288,7 @@
 
     ctx.lineWidth = 1
     ctx.strokeStyle = this.properties['borderColor']
-    //ctx.fillStyle = "#ebebeb";
+    // ctx.fillStyle = "#ebebeb";
     ctx.fillStyle = this.lineargradient
 
     if (this.properties['shadowSize']) {
@@ -2311,7 +2309,7 @@
   LiteGraph.registerNodeType('widget/panel', WidgetPanel)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function GamepadInput() {
     this.addOutput('left_x_axis', 'number')
@@ -2339,9 +2337,9 @@
   GamepadInput.buttons = ['a', 'b', 'x', 'y', 'lb', 'rb', 'lt', 'rt', 'back', 'start', 'ls', 'rs', 'home']
 
   GamepadInput.prototype.onExecute = function () {
-    //get gamepad
-    var gamepad = this.getGamepad()
-    var threshold = this.properties.threshold || 0.0
+    // get gamepad
+    const gamepad = this.getGamepad()
+    const threshold = this.properties.threshold || 0.0
 
     if (gamepad) {
       this._left_axis[0] = Math.abs(gamepad.xbox.axes['lx']) > threshold ? gamepad.xbox.axes['lx'] : 0
@@ -2353,12 +2351,12 @@
     }
 
     if (this.outputs) {
-      for (var i = 0; i < this.outputs.length; i++) {
-        var output = this.outputs[i]
+      for (let i = 0; i < this.outputs.length; i++) {
+        const output = this.outputs[i]
         if (!output.links || !output.links.length) {
           continue
         }
-        var v = null
+        let v = null
 
         if (gamepad) {
           switch (output.name) {
@@ -2432,7 +2430,7 @@
               v = gamepad.xbox.buttons['back'] ? 1 : 0
               break
             case 'button_pressed':
-              for (var j = 0; j < this._current_buttons.length; ++j) {
+              for (let j = 0; j < this._current_buttons.length; ++j) {
                 if (this._current_buttons[j] && !this._previous_buttons[j]) {
                   this.triggerSlot(i, GamepadInput.buttons[j])
                 }
@@ -2442,7 +2440,7 @@
               break
           }
         } else {
-          //if no gamepad is connected, output 0
+          // if no gamepad is connected, output 0
           switch (output.name) {
             case 'button_pressed':
               break
@@ -2463,24 +2461,24 @@
   GamepadInput.mapping_array = ['a', 'b', 'x', 'y', 'lb', 'rb', 'lt', 'rt', 'back', 'start', 'ls', 'rs']
 
   GamepadInput.prototype.getGamepad = function () {
-    var getGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads
+    const getGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads
     if (!getGamepads) {
       return null
     }
-    var gamepads = getGamepads.call(navigator)
-    var gamepad = null
+    const gamepads = getGamepads.call(navigator)
+    let gamepad = null
 
     this._previous_buttons.set(this._current_buttons)
 
-    //pick the first connected
-    for (var i = this.properties.gamepad_index; i < 4; i++) {
+    // pick the first connected
+    for (let i = this.properties.gamepad_index; i < 4; i++) {
       if (!gamepads[i]) {
         continue
       }
       gamepad = gamepads[i]
 
-      //xbox controller mapping
-      var xbox = this.xbox_mapping
+      // xbox controller mapping
+      let xbox = this.xbox_mapping
       if (!xbox) {
         xbox = this.xbox_mapping = {
           axes: [],
@@ -2499,16 +2497,16 @@
       xbox.hat = ''
       xbox.hatmap = GamepadInput.CENTER
 
-      for (var j = 0; j < gamepad.buttons.length; j++) {
+      for (let j = 0; j < gamepad.buttons.length; j++) {
         this._current_buttons[j] = gamepad.buttons[j].pressed
 
         if (j < 12) {
           xbox.buttons[GamepadInput.mapping_array[j]] = gamepad.buttons[j].pressed
-          if (gamepad.buttons[j].was_pressed) this.trigger(GamepadInput.mapping_array[j] + '_button_event')
-        } //mapping of XBOX
+          if (gamepad.buttons[j].was_pressed) this.trigger(`${GamepadInput.mapping_array[j]}_button_event`)
+        } // mapping of XBOX
         else
           switch (
-            j //I use a switch to ensure that a player with another gamepad could play
+            j // I use a switch to ensure that a player with another gamepad could play
           ) {
             case 12:
               if (gamepad.buttons[j].pressed) {
@@ -2550,16 +2548,16 @@
       return
     }
 
-    //render gamepad state?
-    var la = this._left_axis
-    var ra = this._right_axis
+    // render gamepad state?
+    const la = this._left_axis
+    const ra = this._right_axis
     ctx.strokeStyle = '#88A'
     ctx.strokeRect((la[0] + 1) * 0.5 * this.size[0] - 4, (la[1] + 1) * 0.5 * this.size[1] - 4, 8, 8)
     ctx.strokeStyle = '#8A8'
     ctx.strokeRect((ra[0] + 1) * 0.5 * this.size[0] - 4, (ra[1] + 1) * 0.5 * this.size[1] - 4, 8, 8)
-    var h = this.size[1] / this._current_buttons.length
+    const h = this.size[1] / this._current_buttons.length
     ctx.fillStyle = '#AEB'
-    for (var i = 0; i < this._current_buttons.length; ++i) {
+    for (let i = 0; i < this._current_buttons.length; ++i) {
       if (this._current_buttons[i]) {
         ctx.fillRect(0, h * i, 6, h)
       }
@@ -2608,9 +2606,9 @@
   LiteGraph.registerNodeType('input/gamepad', GamepadInput)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
-  //Converter
+  // Converter
   function Converter() {
     this.addInput('in', 0)
     this.addOutput('out', 0)
@@ -2621,14 +2619,14 @@
   Converter.desc = 'type A to type B'
 
   Converter.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
 
     if (this.outputs) {
-      for (var i = 0; i < this.outputs.length; i++) {
-        var output = this.outputs[i]
+      for (let i = 0; i < this.outputs.length; i++) {
+        const output = this.outputs[i]
         if (!output.links || !output.links.length) {
           continue
         }
@@ -2657,7 +2655,7 @@
 
             var result = new Float32Array(count)
             if (v.length) {
-              for (var j = 0; j < v.length && j < result.length; j++) {
+              for (let j = 0; j < v.length && j < result.length; j++) {
                 result[j] = v[j]
               }
             } else {
@@ -2681,7 +2679,7 @@
 
   LiteGraph.registerNodeType('math/converter', Converter)
 
-  //Bypass
+  // Bypass
   function Bypass() {
     this.addInput('in')
     this.addOutput('out')
@@ -2692,7 +2690,7 @@
   Bypass.desc = 'removes the type'
 
   Bypass.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     this.setOutputData(0, v)
   }
 
@@ -2707,7 +2705,7 @@
   ToNumber.desc = 'Cast to number'
 
   ToNumber.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     this.setOutputData(0, Number(v))
   }
 
@@ -2739,8 +2737,8 @@
 
   MathRange.prototype.onExecute = function () {
     if (this.inputs) {
-      for (var i = 0; i < this.inputs.length; i++) {
-        var input = this.inputs[i]
+      for (let i = 0; i < this.inputs.length; i++) {
+        const input = this.inputs[i]
         var v = this.getInputData(i)
         if (v === undefined) {
           continue
@@ -2754,10 +2752,10 @@
       v = 0
     }
 
-    var in_min = this.properties.in_min
-    var in_max = this.properties.in_max
-    var out_min = this.properties.out_min
-    var out_max = this.properties.out_max
+    const in_min = this.properties.in_min
+    const in_max = this.properties.in_max
+    const out_min = this.properties.out_min
+    const out_max = this.properties.out_max
     /*
   if( in_min > in_max )
   {
@@ -2777,7 +2775,7 @@
   }
 
   MathRange.prototype.onDrawBackground = function (ctx) {
-    //show the current value
+    // show the current value
     if (this._last_v) {
       this.outputs[0].label = this._last_v.toFixed(3)
     } else {
@@ -2808,9 +2806,9 @@
 
   MathRand.prototype.onExecute = function () {
     if (this.inputs) {
-      for (var i = 0; i < this.inputs.length; i++) {
-        var input = this.inputs[i]
-        var v = this.getInputData(i)
+      for (let i = 0; i < this.inputs.length; i++) {
+        const input = this.inputs[i]
+        const v = this.getInputData(i)
         if (v === undefined) {
           continue
         }
@@ -2818,14 +2816,14 @@
       }
     }
 
-    var min = this.properties.min
-    var max = this.properties.max
+    const min = this.properties.min
+    const max = this.properties.max
     this._last_v = Math.random() * (max - min) + min
     this.setOutputData(0, this._last_v)
   }
 
   MathRand.prototype.onDrawBackground = function (ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = (this._last_v || 0).toFixed(3)
   }
 
@@ -2838,7 +2836,7 @@
 
   LiteGraph.registerNodeType('math/rand', MathRand)
 
-  //basic continuous noise
+  // basic continuous noise
   function MathNoise() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -2859,7 +2857,7 @@
   MathNoise.getValue = function (f, smooth) {
     if (!MathNoise.data) {
       MathNoise.data = new Float32Array(1024)
-      for (var i = 0; i < MathNoise.data.length; ++i) {
+      for (let i = 0; i < MathNoise.data.length; ++i) {
         MathNoise.data[i] = Math.random()
       }
     }
@@ -2867,10 +2865,10 @@
     if (f < 0) {
       f += 1024
     }
-    var f_min = Math.floor(f)
+    const f_min = Math.floor(f)
     var f = f - f_min
-    var r1 = MathNoise.data[f_min]
-    var r2 = MathNoise.data[f_min == 1023 ? 0 : f_min + 1]
+    const r1 = MathNoise.data[f_min]
+    const r2 = MathNoise.data[f_min == 1023 ? 0 : f_min + 1]
     if (smooth) {
       f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0)
     }
@@ -2878,35 +2876,35 @@
   }
 
   MathNoise.prototype.onExecute = function () {
-    var f = this.getInputData(0) || 0
-    var iterations = this.properties.octaves || 1
-    var r = 0
-    var amp = 1
-    var seed = this.properties.seed || 0
+    let f = this.getInputData(0) || 0
+    const iterations = this.properties.octaves || 1
+    let r = 0
+    let amp = 1
+    const seed = this.properties.seed || 0
     f += seed
-    var speed = this.properties.speed || 1
-    var total_amp = 0
-    for (var i = 0; i < iterations; ++i) {
+    const speed = this.properties.speed || 1
+    let total_amp = 0
+    for (let i = 0; i < iterations; ++i) {
       r += MathNoise.getValue(f * (1 + i) * speed, this.properties.smooth) * amp
       total_amp += amp
       amp *= this.properties.persistence
       if (amp < 0.001) break
     }
     r /= total_amp
-    var min = this.properties.min
-    var max = this.properties.max
+    const min = this.properties.min
+    const max = this.properties.max
     this._last_v = r * (max - min) + min
     this.setOutputData(0, this._last_v)
   }
 
   MathNoise.prototype.onDrawBackground = function (ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = (this._last_v || 0).toFixed(3)
   }
 
   LiteGraph.registerNodeType('math/noise', MathNoise)
 
-  //generates spikes every random time
+  // generates spikes every random time
   function MathSpikes() {
     this.addOutput('out', 'number')
     this.addProperty('min_time', 1)
@@ -2921,14 +2919,14 @@
   MathSpikes.desc = 'spike every random time'
 
   MathSpikes.prototype.onExecute = function () {
-    var dt = this.graph.elapsed_time //in secs
+    const dt = this.graph.elapsed_time // in secs
 
     this._remaining_time -= dt
     this._blink_time -= dt
 
-    var v = 0
+    let v = 0
     if (this._blink_time > 0) {
-      var f = this._blink_time / this.properties.duration
+      const f = this._blink_time / this.properties.duration
       v = 1 / (Math.pow(f * 8 - 4, 4) + 1)
     }
 
@@ -2945,7 +2943,7 @@
 
   LiteGraph.registerNodeType('math/spikes', MathSpikes)
 
-  //Math clamp
+  // Math clamp
   function MathClamp() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -2956,10 +2954,10 @@
 
   MathClamp.title = 'Clamp'
   MathClamp.desc = 'Clamp number between min and max'
-  //MathClamp.filter = "shader";
+  // MathClamp.filter = "shader";
 
   MathClamp.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    let v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -2969,16 +2967,16 @@
   }
 
   MathClamp.prototype.getCode = function (lang) {
-    var code = ''
+    let code = ''
     if (this.isInputConnected(0)) {
-      code += 'clamp({{0}},' + this.properties.min + ',' + this.properties.max + ')'
+      code += `clamp({{0}},${this.properties.min},${this.properties.max})`
     }
     return code
   }
 
   LiteGraph.registerNodeType('math/clamp', MathClamp)
 
-  //Math ABS
+  // Math ABS
   function MathLerp() {
     this.properties = { f: 0.5 }
     this.addInput('A', 'number')
@@ -2991,18 +2989,18 @@
   MathLerp.desc = 'Linear Interpolation'
 
   MathLerp.prototype.onExecute = function () {
-    var v1 = this.getInputData(0)
+    let v1 = this.getInputData(0)
     if (v1 == null) {
       v1 = 0
     }
-    var v2 = this.getInputData(1)
+    let v2 = this.getInputData(1)
     if (v2 == null) {
       v2 = 0
     }
 
-    var f = this.properties.f
+    let f = this.properties.f
 
-    var _f = this.getInputData(2)
+    const _f = this.getInputData(2)
     if (_f !== undefined) {
       f = _f
     }
@@ -3016,7 +3014,7 @@
 
   LiteGraph.registerNodeType('math/lerp', MathLerp)
 
-  //Math ABS
+  // Math ABS
   function MathAbs() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3027,7 +3025,7 @@
   MathAbs.desc = 'Absolute'
 
   MathAbs.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3036,7 +3034,7 @@
 
   LiteGraph.registerNodeType('math/abs', MathAbs)
 
-  //Math Floor
+  // Math Floor
   function MathFloor() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3047,7 +3045,7 @@
   MathFloor.desc = 'Floor number to remove fractional part'
 
   MathFloor.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3056,7 +3054,7 @@
 
   LiteGraph.registerNodeType('math/floor', MathFloor)
 
-  //Math frac
+  // Math frac
   function MathFrac() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3067,7 +3065,7 @@
   MathFrac.desc = 'Returns fractional part'
 
   MathFrac.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3076,7 +3074,7 @@
 
   LiteGraph.registerNodeType('math/frac', MathFrac)
 
-  //Math Floor
+  // Math Floor
   function MathSmoothStep() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3088,13 +3086,13 @@
   MathSmoothStep.desc = 'Smoothstep'
 
   MathSmoothStep.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    let v = this.getInputData(0)
     if (v === undefined) {
       return
     }
 
-    var edge0 = this.properties.A
-    var edge1 = this.properties.B
+    const edge0 = this.properties.A
+    const edge1 = this.properties.B
 
     // Scale, bias and saturate x to 0..1 range
     v = clamp((v - edge0) / (edge1 - edge0), 0.0, 1.0)
@@ -3106,7 +3104,7 @@
 
   LiteGraph.registerNodeType('math/smoothstep', MathSmoothStep)
 
-  //Math scale
+  // Math scale
   function MathScale() {
     this.addInput('in', 'number', { label: '' })
     this.addOutput('out', 'number', { label: '' })
@@ -3118,7 +3116,7 @@
   MathScale.desc = 'v * factor'
 
   MathScale.prototype.onExecute = function () {
-    var value = this.getInputData(0)
+    const value = this.getInputData(0)
     if (value != null) {
       this.setOutputData(0, value * this.properties.factor)
     }
@@ -3126,7 +3124,7 @@
 
   LiteGraph.registerNodeType('math/scale', MathScale)
 
-  //Gate
+  // Gate
   function Gate() {
     this.addInput('v', 'boolean')
     this.addInput('A')
@@ -3138,13 +3136,13 @@
   Gate.desc = 'if v is true, then outputs A, otherwise B'
 
   Gate.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     this.setOutputData(0, this.getInputData(v ? 1 : 2))
   }
 
   LiteGraph.registerNodeType('math/gate', Gate)
 
-  //Math Average
+  // Math Average
   function MathAverageFilter() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3158,12 +3156,12 @@
   MathAverageFilter.desc = 'Average Filter'
 
   MathAverageFilter.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    let v = this.getInputData(0)
     if (v == null) {
       v = 0
     }
 
-    var num_samples = this._values.length
+    const num_samples = this._values.length
 
     this._values[this._current % num_samples] = v
     this._current += 1
@@ -3171,8 +3169,8 @@
       this._current = 0
     }
 
-    var avr = 0
-    for (var i = 0; i < num_samples; ++i) {
+    let avr = 0
+    for (let i = 0; i < num_samples; ++i) {
       avr += this._values[i]
     }
 
@@ -3184,7 +3182,7 @@
       value = 1
     }
     this.properties.samples = Math.round(value)
-    var old = this._values
+    const old = this._values
 
     this._values = new Float32Array(this.properties.samples)
     if (old.length <= this._values.length) {
@@ -3196,7 +3194,7 @@
 
   LiteGraph.registerNodeType('math/average', MathAverageFilter)
 
-  //Math
+  // Math
   function MathTendTo() {
     this.addInput('in', 'number')
     this.addOutput('out', 'number')
@@ -3209,11 +3207,11 @@
   MathTendTo.desc = 'moves the output value always closer to the input'
 
   MathTendTo.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    let v = this.getInputData(0)
     if (v == null) {
       v = 0
     }
-    var f = this.properties.factor
+    const f = this.properties.factor
     if (this._value == null) {
       this._value = v
     } else {
@@ -3224,7 +3222,7 @@
 
   LiteGraph.registerNodeType('math/tendTo', MathTendTo)
 
-  //Math operation
+  // Math operation
   function MathOperation() {
     this.addInput('A', 'number,array,object')
     this.addInput('B', 'number')
@@ -3233,7 +3231,7 @@
     this.addProperty('B', 1)
     this.addProperty('OP', '+', 'enum', { values: MathOperation.values })
     this._func = MathOperation.funcs[this.properties.OP]
-    this._result = [] //only used for arrays
+    this._result = [] // only used for arrays
   }
 
   MathOperation.values = ['+', '-', '*', '/', '%', '^', 'max', 'min']
@@ -3280,8 +3278,8 @@
   MathOperation.size = [100, 60]
 
   MathOperation.prototype.getTitle = function () {
-    if (this.properties.OP == 'max' || this.properties.OP == 'min') return this.properties.OP + '(A,B)'
-    return 'A ' + this.properties.OP + ' B'
+    if (this.properties.OP == 'max' || this.properties.OP == 'min') return `${this.properties.OP}(A,B)`
+    return `A ${this.properties.OP} B`
   }
 
   MathOperation.prototype.setValue = function (v) {
@@ -3295,7 +3293,7 @@
     if (name != 'OP') return
     this._func = MathOperation.funcs[this.properties.OP]
     if (!this._func) {
-      console.warn('Unknown operation: ' + this.properties.OP)
+      console.warn(`Unknown operation: ${this.properties.OP}`)
       this._func = function (A) {
         return A
       }
@@ -3303,8 +3301,8 @@
   }
 
   MathOperation.prototype.onExecute = function () {
-    var A = this.getInputData(0)
-    var B = this.getInputData(1)
+    let A = this.getInputData(0)
+    let B = this.getInputData(1)
     if (A != null) {
       if (A.constructor === Number) this.properties['A'] = A
     } else {
@@ -3317,9 +3315,9 @@
       B = this.properties['B']
     }
 
-    var func = MathOperation.funcs[this.properties.OP]
+    const func = MathOperation.funcs[this.properties.OP]
 
-    var result
+    let result
     if (A.constructor === Number) {
       result = 0
       result = func(A, B)
@@ -3358,7 +3356,7 @@
     title: 'MIN()'
   })
 
-  //Math compare
+  // Math compare
   function MathCompare() {
     this.addInput('A', 'number')
     this.addInput('B', 'number')
@@ -3372,8 +3370,8 @@
   MathCompare.desc = 'compares between two values'
 
   MathCompare.prototype.onExecute = function () {
-    var A = this.getInputData(0)
-    var B = this.getInputData(1)
+    let A = this.getInputData(0)
+    let B = this.getInputData(1)
     if (A !== undefined) {
       this.properties['A'] = A
     } else {
@@ -3386,8 +3384,8 @@
       B = this.properties['B']
     }
 
-    for (var i = 0, l = this.outputs.length; i < l; ++i) {
-      var output = this.outputs[i]
+    for (let i = 0, l = this.outputs.length; i < l; ++i) {
+      const output = this.outputs[i]
       if (!output.links || !output.links.length) {
         continue
       }
@@ -3478,25 +3476,25 @@
   MathCondition.desc = 'evaluates condition between A and B'
 
   MathCondition.prototype.getTitle = function () {
-    return 'A ' + this.properties.OP + ' B'
+    return `A ${this.properties.OP} B`
   }
 
   MathCondition.prototype.onExecute = function () {
-    var A = this.getInputData(0)
+    let A = this.getInputData(0)
     if (A === undefined) {
       A = this.properties.A
     } else {
       this.properties.A = A
     }
 
-    var B = this.getInputData(1)
+    let B = this.getInputData(1)
     if (B === undefined) {
       B = this.properties.B
     } else {
       this.properties.B = B
     }
 
-    var result = true
+    let result = true
     switch (this.properties.OP) {
       case '>':
         result = A > B
@@ -3542,8 +3540,8 @@
   MathBranch.desc = 'If condition is true, outputs IN in true, otherwise in false'
 
   MathBranch.prototype.onExecute = function () {
-    var V = this.getInputData(0)
-    var cond = this.getInputData(1)
+    const V = this.getInputData(0)
+    const cond = this.getInputData(1)
 
     if (cond) {
       this.setOutputData(0, V)
@@ -3571,7 +3569,7 @@
       this.properties.value = 0
     }
 
-    var inc = this.getInputData(0)
+    const inc = this.getInputData(0)
     if (inc !== null) {
       this.properties.value += inc
     } else {
@@ -3582,7 +3580,7 @@
 
   LiteGraph.registerNodeType('math/accumulate', MathAccumulate)
 
-  //Math Trigonometry
+  // Math Trigonometry
   function MathTrigonometry() {
     this.addInput('v', 'number')
     this.addOutput('sin', 'number')
@@ -3594,26 +3592,26 @@
 
   MathTrigonometry.title = 'Trigonometry'
   MathTrigonometry.desc = 'Sin Cos Tan'
-  //MathTrigonometry.filter = "shader";
+  // MathTrigonometry.filter = "shader";
 
   MathTrigonometry.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    let v = this.getInputData(0)
     if (v == null) {
       v = 0
     }
-    var amplitude = this.properties['amplitude']
-    var slot = this.findInputSlot('amplitude')
+    let amplitude = this.properties['amplitude']
+    let slot = this.findInputSlot('amplitude')
     if (slot != -1) {
       amplitude = this.getInputData(slot)
     }
-    var offset = this.properties['offset']
+    let offset = this.properties['offset']
     slot = this.findInputSlot('offset')
     if (slot != -1) {
       offset = this.getInputData(slot)
     }
 
-    for (var i = 0, l = this.outputs.length; i < l; ++i) {
-      var output = this.outputs[i]
+    for (let i = 0, l = this.outputs.length; i < l; ++i) {
+      const output = this.outputs[i]
       var value
       switch (output.name) {
         case 'sin':
@@ -3673,7 +3671,7 @@
     title: 'TAN()'
   })
 
-  //math library for safe math operations without eval
+  // math library for safe math operations without eval
   function MathFormula() {
     this.addInput('x', 'number')
     this.addInput('y', 'number')
@@ -3703,8 +3701,8 @@
       return
     }
 
-    var x = this.getInputData(0)
-    var y = this.getInputData(1)
+    let x = this.getInputData(0)
+    let y = this.getInputData(1)
     if (x != null) {
       this.properties['x'] = x
     } else {
@@ -3717,12 +3715,12 @@
       y = this.properties['y']
     }
 
-    var f = this.properties['formula']
+    const f = this.properties['formula']
 
-    var value
+    let value
     try {
       if (!this._func || this._func_code != this.properties.formula) {
-        this._func = new Function('x', 'y', 'TIME', 'return ' + this.properties.formula)
+        this._func = new Function('x', 'y', 'TIME', `return ${this.properties.formula}`)
         this._func_code = this.properties.formula
       }
       value = this._func(x, y, this.graph.globaltime)
@@ -3738,7 +3736,7 @@
   }
 
   MathFormula.prototype.onDrawBackground = function () {
-    var f = this.properties['formula']
+    const f = this.properties['formula']
     if (this.outputs && this.outputs.length) {
       this.outputs[0].label = f
     }
@@ -3756,7 +3754,7 @@
   Math3DVec2ToXY.desc = 'vector 2 to components'
 
   Math3DVec2ToXY.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3781,16 +3779,16 @@
   Math3DXYToVec2.desc = 'components to vector2'
 
   Math3DXYToVec2.prototype.onExecute = function () {
-    var x = this.getInputData(0)
+    let x = this.getInputData(0)
     if (x == null) {
       x = this.properties.x
     }
-    var y = this.getInputData(1)
+    let y = this.getInputData(1)
     if (y == null) {
       y = this.properties.y
     }
 
-    var data = this._data
+    const data = this._data
     data[0] = x
     data[1] = y
 
@@ -3810,7 +3808,7 @@
   Math3DVec3ToXYZ.desc = 'vector 3 to components'
 
   Math3DVec3ToXYZ.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3837,20 +3835,20 @@
   Math3DXYZToVec3.desc = 'components to vector3'
 
   Math3DXYZToVec3.prototype.onExecute = function () {
-    var x = this.getInputData(0)
+    let x = this.getInputData(0)
     if (x == null) {
       x = this.properties.x
     }
-    var y = this.getInputData(1)
+    let y = this.getInputData(1)
     if (y == null) {
       y = this.properties.y
     }
-    var z = this.getInputData(2)
+    let z = this.getInputData(2)
     if (z == null) {
       z = this.properties.z
     }
 
-    var data = this._data
+    const data = this._data
     data[0] = x
     data[1] = y
     data[2] = z
@@ -3872,7 +3870,7 @@
   Math3DVec4ToXYZW.desc = 'vector 4 to components'
 
   Math3DVec4ToXYZW.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
@@ -3901,24 +3899,24 @@
   Math3DXYZWToVec4.desc = 'components to vector4'
 
   Math3DXYZWToVec4.prototype.onExecute = function () {
-    var x = this.getInputData(0)
+    let x = this.getInputData(0)
     if (x == null) {
       x = this.properties.x
     }
-    var y = this.getInputData(1)
+    let y = this.getInputData(1)
     if (y == null) {
       y = this.properties.y
     }
-    var z = this.getInputData(2)
+    let z = this.getInputData(2)
     if (z == null) {
       z = this.properties.z
     }
-    var w = this.getInputData(3)
+    let w = this.getInputData(3)
     if (w == null) {
       w = this.properties.w
     }
 
-    var data = this._data
+    const data = this._data
     data[0] = x
     data[1] = y
     data[2] = z
@@ -3930,7 +3928,7 @@
   LiteGraph.registerNodeType('math3d/xyzw-to-vec4', Math3DXYZWToVec4)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function Math3DMat4() {
     this.addInput('T', 'vec3')
@@ -3957,14 +3955,14 @@
   }
 
   Math3DMat4.prototype.onExecute = function () {
-    var M = this._result
-    var Q = Math3DMat4.temp_quat
-    var temp_mat4 = Math3DMat4.temp_mat4
-    var temp_vec3 = Math3DMat4.temp_vec3
+    const M = this._result
+    const Q = Math3DMat4.temp_quat
+    const temp_mat4 = Math3DMat4.temp_mat4
+    const temp_vec3 = Math3DMat4.temp_vec3
 
-    var T = this.getInputData(0)
-    var R = this.getInputData(1)
-    var S = this.getInputData(2)
+    let T = this.getInputData(0)
+    let R = this.getInputData(1)
+    let S = this.getInputData(2)
 
     if (this._must_update || T || R || S) {
       T = T || this.properties.T
@@ -3987,7 +3985,7 @@
 
   LiteGraph.registerNodeType('math3d/mat4', Math3DMat4)
 
-  //Math 3D operation
+  // Math 3D operation
   function Math3DOperation() {
     this.addInput('A', 'number,vec3')
     this.addInput('B', 'number,vec3')
@@ -4018,18 +4016,18 @@
   Math3DOperation.size = [100, 60]
 
   Math3DOperation.prototype.getTitle = function () {
-    if (this.properties.OP == 'max' || this.properties.OP == 'min') return this.properties.OP + '(A,B)'
-    return 'A ' + this.properties.OP + ' B'
+    if (this.properties.OP == 'max' || this.properties.OP == 'min') return `${this.properties.OP}(A,B)`
+    return `A ${this.properties.OP} B`
   }
 
   Math3DOperation.prototype.onExecute = function () {
-    var A = this.getInputData(0)
-    var B = this.getInputData(1)
+    let A = this.getInputData(0)
+    let B = this.getInputData(1)
     if (A == null || B == null) return
     if (A.constructor === Number) A = [A, A, A]
     if (B.constructor === Number) B = [B, B, B]
 
-    var result = this._result
+    let result = this._result
     switch (this.properties.OP) {
       case '+':
         result = vec3.add(result, A, B)
@@ -4071,7 +4069,7 @@
         vec3.cross(result, A, B)
         break
       default:
-        console.warn('Unknown operation: ' + this.properties.OP)
+        console.warn(`Unknown operation: ${this.properties.OP}`)
     }
     this.setOutputData(0, result)
   }
@@ -4102,16 +4100,16 @@
   Math3DVec3Scale.desc = 'scales the components of a vec3'
 
   Math3DVec3Scale.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
-    var f = this.getInputData(1)
+    let f = this.getInputData(1)
     if (f == null) {
       f = this.properties.f
     }
 
-    var data = this._data
+    const data = this._data
     data[0] = v[0] * f
     data[1] = v[1] * f
     data[2] = v[2] * f
@@ -4129,11 +4127,11 @@
   Math3DVec3Length.desc = 'returns the module of a vector'
 
   Math3DVec3Length.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
-    var dist = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    const dist = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
     this.setOutputData(0, dist)
   }
 
@@ -4149,12 +4147,12 @@
   Math3DVec3Normalize.desc = 'returns the vector normalized'
 
   Math3DVec3Normalize.prototype.onExecute = function () {
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
     if (v == null) {
       return
     }
-    var dist = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-    var data = this._data
+    const dist = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    const data = this._data
     data[0] = v[0] / dist
     data[1] = v[1] / dist
     data[2] = v[2] / dist
@@ -4177,17 +4175,17 @@
   Math3DVec3Lerp.desc = 'returns the interpolated vector'
 
   Math3DVec3Lerp.prototype.onExecute = function () {
-    var A = this.getInputData(0)
+    const A = this.getInputData(0)
     if (A == null) {
       return
     }
-    var B = this.getInputData(1)
+    const B = this.getInputData(1)
     if (B == null) {
       return
     }
-    var f = this.getInputOrProperty('f')
+    const f = this.getInputOrProperty('f')
 
-    var data = this._data
+    const data = this._data
     data[0] = A[0] * (1 - f) + B[0] * f
     data[1] = A[1] * (1 - f) + B[1] * f
     data[2] = A[2] * (1 - f) + B[2] * f
@@ -4207,22 +4205,22 @@
   Math3DVec3Dot.desc = 'returns the dot product'
 
   Math3DVec3Dot.prototype.onExecute = function () {
-    var A = this.getInputData(0)
+    const A = this.getInputData(0)
     if (A == null) {
       return
     }
-    var B = this.getInputData(1)
+    const B = this.getInputData(1)
     if (B == null) {
       return
     }
 
-    var dot = A[0] * B[0] + A[1] * B[1] + A[2] * B[2]
+    const dot = A[0] * B[0] + A[1] * B[1] + A[2] * B[2]
     this.setOutputData(0, dot)
   }
 
   LiteGraph.registerNodeType('math3d/vec3-dot', Math3DVec3Dot)
 
-  //if glMatrix is installed...
+  // if glMatrix is installed...
   if (global.glMatrix) {
     function Math3DQuaternion() {
       this.addOutput('quat', 'quat')
@@ -4270,16 +4268,16 @@
     Math3DRotation.desc = 'quaternion rotation'
 
     Math3DRotation.prototype.onExecute = function () {
-      var angle = this.getInputData(0)
+      let angle = this.getInputData(0)
       if (angle == null) {
         angle = this.properties.angle
       }
-      var axis = this.getInputData(1)
+      let axis = this.getInputData(1)
       if (axis == null) {
         axis = this.properties.axis
       }
 
-      var R = quat.setAxisAngle(this._value, axis, angle * 0.0174532925)
+      const R = quat.setAxisAngle(this._value, axis, angle * 0.0174532925)
       this.setOutputData(0, R)
     }
 
@@ -4297,13 +4295,13 @@
     MathEulerToQuat.desc = 'Converts euler angles (in degrees) to quaternion'
 
     MathEulerToQuat.prototype.onExecute = function () {
-      var euler = this.getInputData(0)
+      let euler = this.getInputData(0)
       if (euler == null) {
         euler = this.properties.euler
       }
       vec3.scale(this._degs, euler, DEG2RAD)
       if (this.properties.use_yaw_pitch_roll) this._degs = [this._degs[2], this._degs[0], this._degs[1]]
-      var R = quat.fromEuler(this._value, this._degs)
+      const R = quat.fromEuler(this._value, this._degs)
       this.setOutputData(0, R)
     }
 
@@ -4319,16 +4317,16 @@
     MathQuatToEuler.desc = 'Converts rotX,rotY,rotZ in degrees to quat'
 
     MathQuatToEuler.prototype.onExecute = function () {
-      var q = this.getInputData(0)
+      const q = this.getInputData(0)
       if (!q) return
-      var R = quat.toEuler(this._value, q)
+      const R = quat.toEuler(this._value, q)
       vec3.scale(this._value, this._value, DEG2RAD)
       this.setOutputData(0, this._value)
     }
 
     LiteGraph.registerNodeType('math3d/quat_to_euler', MathQuatToEuler)
 
-    //Math3D rotate vec3
+    // Math3D rotate vec3
     function Math3DRotateVec3() {
       this.addInputs([
         ['vec3', 'vec3'],
@@ -4342,11 +4340,11 @@
     Math3DRotateVec3.desc = 'rotate a point'
 
     Math3DRotateVec3.prototype.onExecute = function () {
-      var vec = this.getInputData(0)
+      let vec = this.getInputData(0)
       if (vec == null) {
         vec = this.properties.vec
       }
-      var quat = this.getInputData(1)
+      const quat = this.getInputData(1)
       if (quat == null) {
         this.setOutputData(vec)
       } else {
@@ -4370,16 +4368,16 @@
     Math3DMultQuat.desc = 'rotate quaternion'
 
     Math3DMultQuat.prototype.onExecute = function () {
-      var A = this.getInputData(0)
+      const A = this.getInputData(0)
       if (A == null) {
         return
       }
-      var B = this.getInputData(1)
+      const B = this.getInputData(1)
       if (B == null) {
         return
       }
 
-      var R = quat.multiply(this._value, A, B)
+      const R = quat.multiply(this._value, A, B)
       this.setOutputData(0, R)
     }
 
@@ -4401,26 +4399,26 @@
     Math3DQuatSlerp.desc = 'quaternion spherical interpolation'
 
     Math3DQuatSlerp.prototype.onExecute = function () {
-      var A = this.getInputData(0)
+      const A = this.getInputData(0)
       if (A == null) {
         return
       }
-      var B = this.getInputData(1)
+      const B = this.getInputData(1)
       if (B == null) {
         return
       }
-      var factor = this.properties.factor
+      let factor = this.properties.factor
       if (this.getInputData(2) != null) {
         factor = this.getInputData(2)
       }
 
-      var R = quat.slerp(this._value, A, B, factor)
+      const R = quat.slerp(this._value, A, B, factor)
       this.setOutputData(0, R)
     }
 
     LiteGraph.registerNodeType('math3d/quat-slerp', Math3DQuatSlerp)
 
-    //Math3D rotate vec3
+    // Math3D rotate vec3
     function Math3DRemapRange() {
       this.addInput('vec3', 'vec3')
       this.addOutput('remap', 'vec3')
@@ -4440,14 +4438,14 @@
     Math3DRemapRange.desc = 'remap a 3D range'
 
     Math3DRemapRange.prototype.onExecute = function () {
-      var vec = this.getInputData(0)
+      const vec = this.getInputData(0)
       if (vec) this._value.set(vec)
-      var range_min = this.properties.range_min
-      var range_max = this.properties.range_max
-      var target_min = this.properties.target_min
-      var target_max = this.properties.target_max
+      const range_min = this.properties.range_min
+      const range_max = this.properties.range_max
+      const target_min = this.properties.target_min
+      const target_max = this.properties.target_max
 
-      //swap to avoid errors
+      // swap to avoid errors
       /*
     if(range_min > range_max)
     {
@@ -4462,17 +4460,17 @@
     }
     */
 
-      for (var i = 0; i < 3; ++i) {
-        var r = range_max[i] - range_min[i]
+      for (let i = 0; i < 3; ++i) {
+        const r = range_max[i] - range_min[i]
         this._clamped[i] = clamp(this._value[i], range_min[i], range_max[i])
         if (r == 0) {
           this._value[i] = (target_min[i] + target_max[i]) * 0.5
           continue
         }
 
-        var n = (this._value[i] - range_min[i]) / r
+        let n = (this._value[i] - range_min[i]) / r
         if (this.properties.clamp) n = clamp(n, 0, 1)
-        var t = target_max[i] - target_min[i]
+        const t = target_max[i] - target_min[i]
         this._value[i] = target_min[i] + n * t
       }
 
@@ -4481,13 +4479,13 @@
     }
 
     LiteGraph.registerNodeType('math3d/remap_range', Math3DRemapRange)
-  } //glMatrix
+  } // glMatrix
   else if (LiteGraph.debug) console.warn('No glmatrix found, some Math3D nodes may not work')
 })(this)
 
-//basic nodes
+// basic nodes
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function toString(a) {
     if (a && a.constructor === Object) {
@@ -4543,8 +4541,8 @@
     if (str == null) return []
     if (str.constructor === String) return str.split(separator || ' ')
     else if (str.constructor === Array) {
-      var r = []
-      for (var i = 0; i < str.length; ++i) {
+      const r = []
+      for (let i = 0; i < str.length; ++i) {
         if (typeof str[i] == 'string') r[i] = str[i].split(separator || ' ')
       }
       return r
@@ -4576,9 +4574,9 @@
   StringToTable.desc = 'Splits a string to table'
 
   StringToTable.prototype.onExecute = function () {
-    var input = this.getInputData(0)
+    const input = this.getInputData(0)
     if (!input) return
-    var separator = this.properties.separator || ','
+    const separator = this.properties.separator || ','
     if (input != this._str || separator != this._last_separator) {
       this._last_separator = separator
       this._str = input
@@ -4593,7 +4591,7 @@
   LiteGraph.registerNodeType('string/toTable', StringToTable)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function Selector() {
     this.addInput('sel', 'number')
@@ -4614,7 +4612,7 @@
       return
     }
     ctx.fillStyle = '#AFB'
-    var y = (this.selected + 1) * LiteGraph.NODE_SLOT_HEIGHT + 6
+    const y = (this.selected + 1) * LiteGraph.NODE_SLOT_HEIGHT + 6
     ctx.beginPath()
     ctx.moveTo(50, y)
     ctx.lineTo(50, y + LiteGraph.NODE_SLOT_HEIGHT)
@@ -4623,10 +4621,10 @@
   }
 
   Selector.prototype.onExecute = function () {
-    var sel = this.getInputData(0)
+    let sel = this.getInputData(0)
     if (sel == null || sel.constructor !== Number) sel = 0
     this.selected = sel = Math.round(sel) % (this.inputs.length - 1)
-    var v = this.getInputData(sel + 1)
+    const v = this.getInputData(sel + 1)
     if (v !== undefined) {
       this.setOutputData(0, v)
     }
@@ -4665,12 +4663,12 @@
   }
 
   Sequence.prototype.onExecute = function () {
-    var seq = this.getInputData(1)
+    const seq = this.getInputData(1)
     if (seq && seq != this.current_sequence) {
       this.values = seq.split(',')
       this.current_sequence = seq
     }
-    var index = this.getInputData(0)
+    let index = this.getInputData(0)
     if (index == null) {
       index = 0
     }
@@ -4691,7 +4689,7 @@
   logicAnd.desc = 'Return true if all inputs are true'
   logicAnd.prototype.onExecute = function () {
     var ret = true
-    for (var inX in this.inputs) {
+    for (const inX in this.inputs) {
       if (!this.getInputData(inX)) {
         var ret = false
         break
@@ -4713,8 +4711,8 @@
   logicOr.title = 'OR'
   logicOr.desc = 'Return true if at least one input is true'
   logicOr.prototype.onExecute = function () {
-    var ret = false
-    for (var inX in this.inputs) {
+    let ret = false
+    for (const inX in this.inputs) {
       if (this.getInputData(inX)) {
         ret = true
         break
@@ -4735,7 +4733,7 @@
   logicNot.title = 'NOT'
   logicNot.desc = 'Return the logical negation'
   logicNot.prototype.onExecute = function () {
-    var ret = !this.getInputData(0)
+    const ret = !this.getInputData(0)
     this.setOutputData(0, ret)
   }
   LiteGraph.registerNodeType('logic/NOT', logicNot)
@@ -4749,9 +4747,9 @@
   logicCompare.title = 'bool == bool'
   logicCompare.desc = 'Compare for logical equality'
   logicCompare.prototype.onExecute = function () {
-    var last = null
-    var ret = true
-    for (var inX in this.inputs) {
+    let last = null
+    let ret = true
+    for (const inX in this.inputs) {
       if (last === null) last = this.getInputData(inX)
       else if (last != this.getInputData(inX)) {
         ret = false
@@ -4776,7 +4774,7 @@
   logicBranch.title = 'Branch'
   logicBranch.desc = 'Branch execution on condition'
   logicBranch.prototype.onExecute = function (param, options) {
-    var condtition = this.getInputData(1)
+    const condtition = this.getInputData(1)
     if (condtition) {
       this.triggerSlot(0)
     } else {
@@ -4786,7 +4784,7 @@
   LiteGraph.registerNodeType('logic/IF', logicBranch)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function GraphicsPlot() {
     this.addInput('A', 'Number')
@@ -4807,14 +4805,14 @@
       return
     }
 
-    var size = this.size
+    const size = this.size
 
-    for (var i = 0; i < 4; ++i) {
-      var v = this.getInputData(i)
+    for (let i = 0; i < 4; ++i) {
+      const v = this.getInputData(i)
       if (v == null) {
         continue
       }
-      var values = this.values[i]
+      const values = this.values[i]
       values.push(v)
       if (values.length > size[0]) {
         values.shift()
@@ -4827,11 +4825,11 @@
       return
     }
 
-    var size = this.size
+    const size = this.size
 
-    var scale = (0.5 * size[1]) / this.properties.scale
-    var colors = GraphicsPlot.colors
-    var offset = size[1] * 0.5
+    const scale = (0.5 * size[1]) / this.properties.scale
+    const colors = GraphicsPlot.colors
+    const offset = size[1] * 0.5
 
     ctx.fillStyle = '#000'
     ctx.fillRect(0, 0, size[0], size[1])
@@ -4842,8 +4840,8 @@
     ctx.stroke()
 
     if (this.inputs) {
-      for (var i = 0; i < 4; ++i) {
-        var values = this.values[i]
+      for (let i = 0; i < 4; ++i) {
+        const values = this.values[i]
         if (!this.inputs[i] || !this.inputs[i].link) {
           continue
         }
@@ -4851,7 +4849,7 @@
         ctx.beginPath()
         var v = values[0] * scale * -1 + offset
         ctx.moveTo(0, clamp(v, 0, size[1]))
-        for (var j = 1; j < values.length && j < size[0]; ++j) {
+        for (let j = 1; j < values.length && j < size[0]; ++j) {
           var v = values[j] * scale * -1 + offset
           ctx.lineTo(j, clamp(v, 0, size[1]))
         }
@@ -4925,18 +4923,18 @@
 
     this.img.src = url
     this.boxcolor = '#F95'
-    var that = this
+    const that = this
     this.img.onload = function () {
       if (callback) {
         callback(this)
       }
-      console.log('Image loaded, size: ' + that.img.width + 'x' + that.img.height)
+      console.log(`Image loaded, size: ${that.img.width}x${that.img.height}`)
       this.dirty = true
       that.boxcolor = '#9F9'
       that.setDirtyCanvas(true)
     }
     this.img.onerror = function () {
-      console.log('error loading the image:' + url)
+      console.log(`error loading the image:${url}`)
     }
   }
 
@@ -4947,7 +4945,7 @@
   }
 
   GraphicsImage.prototype.onDropFile = function (file) {
-    var that = this
+    const that = this
     if (this._url) {
       URL.revokeObjectURL(this._url)
     }
@@ -4975,7 +4973,7 @@
   ColorPalette.desc = 'Generates a color'
 
   ColorPalette.prototype.onExecute = function () {
-    var c = []
+    const c = []
 
     if (this.properties.colorA != null) {
       c.push(hex2num(this.properties.colorA))
@@ -4990,7 +4988,7 @@
       c.push(hex2num(this.properties.colorD))
     }
 
-    var f = this.getInputData(0)
+    let f = this.getInputData(0)
     if (f == null) {
       f = 0.5
     }
@@ -5004,16 +5002,16 @@
       return
     }
 
-    var result = [0, 0, 0]
+    let result = [0, 0, 0]
     if (f == 0) {
       result = c[0]
     } else if (f == 1) {
       result = c[c.length - 1]
     } else {
-      var pos = (c.length - 1) * f
-      var c1 = c[Math.floor(pos)]
-      var c2 = c[Math.floor(pos) + 1]
-      var t = pos - Math.floor(pos)
+      const pos = (c.length - 1) * f
+      const c1 = c[Math.floor(pos)]
+      const c2 = c[Math.floor(pos) + 1]
+      const t = pos - Math.floor(pos)
       result[0] = c1[0] * (1 - t) + c2[0] * t
       result[1] = c1[1] * (1 - t) + c2[1] * t
       result[2] = c1[2] * (1 - t) + c2[2] * t
@@ -5025,7 +5023,7 @@
   c[2] = Math.abs( Math.sin( 0.01 * reModular.getTime() * Math.PI) );
   */
 
-    for (var i = 0; i < result.length; i++) {
+    for (let i = 0; i < result.length; i++) {
       result[i] /= 255
     }
 
@@ -5060,8 +5058,8 @@
 
   ImageFrame.prototype.onWidget = function (e, widget) {
     if (widget.name == 'resize' && this.frame) {
-      var width = this.frame.width
-      var height = this.frame.height
+      let width = this.frame.width
+      let height = this.frame.height
 
       if (!width && this.frame.videoWidth != null) {
         width = this.frame.videoWidth
@@ -5078,7 +5076,7 @@
   }
 
   ImageFrame.prototype.show = function () {
-    //var str = this.canvas.toDataURL("image/png");
+    // var str = this.canvas.toDataURL("image/png");
     if (showElement && this.frame) {
       showElement(this.frame)
     }
@@ -5105,7 +5103,7 @@
 
   ImageFade.prototype.onAdded = function () {
     this.createCanvas()
-    var ctx = this.canvas.getContext('2d')
+    const ctx = this.canvas.getContext('2d')
     ctx.fillStyle = '#000'
     ctx.fillRect(0, 0, this.properties['width'], this.properties['height'])
   }
@@ -5117,15 +5115,15 @@
   }
 
   ImageFade.prototype.onExecute = function () {
-    var ctx = this.canvas.getContext('2d')
+    const ctx = this.canvas.getContext('2d')
     this.canvas.width = this.canvas.width
 
-    var A = this.getInputData(0)
+    const A = this.getInputData(0)
     if (A != null) {
       ctx.drawImage(A, 0, 0, this.canvas.width, this.canvas.height)
     }
 
-    var fade = this.getInputData(2)
+    let fade = this.getInputData(2)
     if (fade == null) {
       fade = this.properties['fade']
     } else {
@@ -5133,7 +5131,7 @@
     }
 
     ctx.globalAlpha = fade
-    var B = this.getInputData(1)
+    const B = this.getInputData(1)
     if (B != null) {
       ctx.drawImage(B, 0, 0, this.canvas.width, this.canvas.height)
     }
@@ -5166,13 +5164,13 @@
   }
 
   ImageCrop.prototype.onExecute = function () {
-    var input = this.getInputData(0)
+    const input = this.getInputData(0)
     if (!input) {
       return
     }
 
     if (input.width) {
-      var ctx = this.canvas.getContext('2d')
+      const ctx = this.canvas.getContext('2d')
 
       ctx.drawImage(
         input,
@@ -5216,7 +5214,7 @@
 
   LiteGraph.registerNodeType('graphics/cropImage', ImageCrop)
 
-  //CANVAS stuff
+  // CANVAS stuff
 
   function CanvasNode() {
     this.addInput('clear', LiteGraph.ACTION)
@@ -5231,9 +5229,9 @@
   CanvasNode.desc = 'Canvas to render stuff'
 
   CanvasNode.prototype.onExecute = function () {
-    var canvas = this.canvas
-    var w = this.properties.width | 0
-    var h = this.properties.height | 0
+    const canvas = this.canvas
+    const w = this.properties.width | 0
+    const h = this.properties.height | 0
     if (canvas.width != w) {
       canvas.width = w
     }
@@ -5267,19 +5265,19 @@
   DrawImageNode.desc = 'Draws image into a canvas'
 
   DrawImageNode.prototype.onExecute = function () {
-    var canvas = this.getInputData(0)
+    const canvas = this.getInputData(0)
     if (!canvas) {
       return
     }
 
-    var img = this.getInputOrProperty('img')
+    const img = this.getInputOrProperty('img')
     if (!img) {
       return
     }
 
-    var x = this.getInputOrProperty('x')
-    var y = this.getInputOrProperty('y')
-    var ctx = canvas.getContext('2d')
+    const x = this.getInputOrProperty('x')
+    const y = this.getInputOrProperty('y')
+    const ctx = canvas.getContext('2d')
     ctx.drawImage(img, x, y)
   }
 
@@ -5305,16 +5303,16 @@
   DrawRectangleNode.desc = 'Draws rectangle in canvas'
 
   DrawRectangleNode.prototype.onExecute = function () {
-    var canvas = this.getInputData(0)
+    const canvas = this.getInputData(0)
     if (!canvas) {
       return
     }
 
-    var x = this.getInputOrProperty('x')
-    var y = this.getInputOrProperty('y')
-    var w = this.getInputOrProperty('w')
-    var h = this.getInputOrProperty('h')
-    var ctx = canvas.getContext('2d')
+    const x = this.getInputOrProperty('x')
+    const y = this.getInputOrProperty('y')
+    const w = this.getInputOrProperty('w')
+    const h = this.getInputOrProperty('h')
+    const ctx = canvas.getContext('2d')
     ctx.fillRect(x, y, w, h)
   }
 
@@ -5352,7 +5350,7 @@
       return
     }
 
-    var t = this.getInputData(0)
+    const t = this.getInputData(0)
     if (t && t >= 0 && t <= 1.0) {
       this._video.currentTime = t * this._video.duration
       this._video.pause()
@@ -5376,11 +5374,11 @@
   ImageVideo.prototype.loadVideo = function (url) {
     this._video_url = url
 
-    var pos = url.substr(0, 10).indexOf(':')
-    var protocol = ''
+    const pos = url.substr(0, 10).indexOf(':')
+    let protocol = ''
     if (pos != -1) protocol = url.substr(0, pos)
 
-    var host = ''
+    let host = ''
     if (protocol) {
       host = url.substr(0, url.indexOf('/', protocol.length + 3))
       host = host.substr(protocol.length + 3)
@@ -5397,21 +5395,21 @@
     this._video.muted = true
     this._video.autoplay = true
 
-    var that = this
+    const that = this
     this._video.addEventListener('loadedmetadata', function (e) {
-      //onload
-      console.log('Duration: ' + this.duration + ' seconds')
-      console.log('Size: ' + this.videoWidth + ',' + this.videoHeight)
+      // onload
+      console.log(`Duration: ${this.duration} seconds`)
+      console.log(`Size: ${this.videoWidth},${this.videoHeight}`)
       that.setDirtyCanvas(true)
       this.width = this.videoWidth
       this.height = this.videoHeight
     })
     this._video.addEventListener('progress', function (e) {
-      //onload
+      // onload
       console.log('video loading...')
     })
     this._video.addEventListener('error', function (e) {
-      console.error('Error loading video: ' + this.src)
+      console.error(`Error loading video: ${this.src}`)
       if (this.error) {
         switch (this.error.code) {
           case this.error.MEDIA_ERR_ABORTED:
@@ -5424,7 +5422,7 @@
             console.error('Video is broken..')
             break
           case this.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            console.error("Sorry, your browser can't play this video.")
+            console.error('Sorry, your browser can\'t play this video.')
             break
         }
       }
@@ -5432,10 +5430,10 @@
 
     this._video.addEventListener('ended', function (e) {
       console.log('Video Ended.')
-      this.play() //loop
+      this.play() // loop
     })
 
-    //document.body.appendChild(this.video);
+    // document.body.appendChild(this.video);
   }
 
   ImageVideo.prototype.onPropertyChanged = function (name, value) {
@@ -5449,7 +5447,7 @@
 
   ImageVideo.prototype.play = function () {
     if (this._video && this._video.videoWidth) {
-      //is loaded
+      // is loaded
       this._video.play()
     }
   }
@@ -5527,13 +5525,13 @@
     this._waiting_confirmation = true
 
     // Not showing vendor prefixes.
-    var constraints = {
+    const constraints = {
       audio: false,
       video: !this.properties.filterFacingMode ? true : { facingMode: this.properties.facingMode }
     }
     navigator.mediaDevices.getUserMedia(constraints).then(this.streamReady.bind(this)).catch(onFailSoHard)
 
-    var that = this
+    const that = this
     function onFailSoHard(e) {
       console.log('Webcam rejected', e)
       that._webcam_stream = false
@@ -5545,9 +5543,9 @@
 
   ImageWebcam.prototype.closeStream = function () {
     if (this._webcam_stream) {
-      var tracks = this._webcam_stream.getTracks()
+      const tracks = this._webcam_stream.getTracks()
       if (tracks.length) {
-        for (var i = 0; i < tracks.length; ++i) {
+        for (let i = 0; i < tracks.length; ++i) {
           tracks[i].stop()
         }
       }
@@ -5573,17 +5571,17 @@
 
   ImageWebcam.prototype.streamReady = function (localMediaStream) {
     this._webcam_stream = localMediaStream
-    //this._waiting_confirmation = false;
+    // this._waiting_confirmation = false;
     this.boxcolor = 'green'
 
-    var video = this._video
+    let video = this._video
     if (!video) {
       video = document.createElement('video')
       video.autoplay = true
       video.srcObject = localMediaStream
       this._video = video
-      //document.body.appendChild( video ); //debug
-      //when video info is loaded (size and so)
+      // document.body.appendChild( video ); //debug
+      // when video info is loaded (size and so)
       video.onloadedmetadata = function (e) {
         // Ready to go. Do some stuff.
         console.log(e)
@@ -5607,7 +5605,7 @@
     this._video.width = this._video.videoWidth
     this._video.height = this._video.videoHeight
     this.setOutputData(0, this._video)
-    for (var i = 1; i < this.outputs.length; ++i) {
+    for (let i = 1; i < this.outputs.length; ++i) {
       if (!this.outputs[i]) {
         continue
       }
@@ -5623,8 +5621,8 @@
   }
 
   ImageWebcam.prototype.getExtraMenuOptions = function (graphcanvas) {
-    var that = this
-    var txt = !that.properties.show ? 'Show Frame' : 'Hide Frame'
+    const that = this
+    const txt = !that.properties.show ? 'Show Frame' : 'Hide Frame'
     return [
       {
         content: txt,
@@ -5644,7 +5642,7 @@
       return
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save()
     ctx.drawImage(this._video, 0, 0, this.size[0], this.size[1])
     ctx.restore()
@@ -5663,10 +5661,10 @@
   LiteGraph.registerNodeType('graphics/webcam', ImageWebcam)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
-  var LGraphCanvas = global.LGraphCanvas
+  const LiteGraph = global.LiteGraph
+  const LGraphCanvas = global.LGraphCanvas
 
-  //Works with Litegl.js to create WebGL nodes
+  // Works with Litegl.js to create WebGL nodes
   global.LGraphTexture = null
 
   if (typeof GL == 'undefined') return
@@ -5689,18 +5687,18 @@
     filter: { widget: 'checkbox' }
   }
 
-  //REPLACE THIS TO INTEGRATE WITH YOUR FRAMEWORK
-  LGraphTexture.loadTextureCallback = null //function in charge of loading textures when not present in the container
+  // REPLACE THIS TO INTEGRATE WITH YOUR FRAMEWORK
+  LGraphTexture.loadTextureCallback = null // function in charge of loading textures when not present in the container
   LGraphTexture.image_preview_size = 256
 
-  //flags to choose output texture type
-  LGraphTexture.UNDEFINED = 0 //not specified
-  LGraphTexture.PASS_THROUGH = 1 //do not apply FX (like disable but passing the in to the out)
-  LGraphTexture.COPY = 2 //create new texture with the same properties as the origin texture
-  LGraphTexture.LOW = 3 //create new texture with low precision (byte)
-  LGraphTexture.HIGH = 4 //create new texture with high precision (half-float)
-  LGraphTexture.REUSE = 5 //reuse input texture
-  LGraphTexture.DEFAULT = 2 //use the default
+  // flags to choose output texture type
+  LGraphTexture.UNDEFINED = 0 // not specified
+  LGraphTexture.PASS_THROUGH = 1 // do not apply FX (like disable but passing the in to the out)
+  LGraphTexture.COPY = 2 // create new texture with the same properties as the origin texture
+  LGraphTexture.LOW = 3 // create new texture with low precision (byte)
+  LGraphTexture.HIGH = 4 // create new texture with high precision (half-float)
+  LGraphTexture.REUSE = 5 // reuse input texture
+  LGraphTexture.DEFAULT = 2 // use the default
 
   LGraphTexture.MODE_VALUES = {
     undefined: LGraphTexture.UNDEFINED,
@@ -5712,35 +5710,35 @@
     default: LGraphTexture.DEFAULT
   }
 
-  //returns the container where all the loaded textures are stored (overwrite if you have a Resources Manager)
+  // returns the container where all the loaded textures are stored (overwrite if you have a Resources Manager)
   LGraphTexture.getTexturesContainer = function () {
     return gl.textures
   }
 
-  //process the loading of a texture (overwrite it if you have a Resources Manager)
+  // process the loading of a texture (overwrite it if you have a Resources Manager)
   LGraphTexture.loadTexture = function (name, options) {
     options = options || {}
-    var url = name
+    let url = name
     if (url.substr(0, 7) == 'http://') {
       if (LiteGraph.proxy) {
-        //proxy external files
+        // proxy external files
         url = LiteGraph.proxy + url.substr(7)
       }
     }
 
-    var container = LGraphTexture.getTexturesContainer()
-    var tex = (container[name] = GL.Texture.fromURL(url, options))
+    const container = LGraphTexture.getTexturesContainer()
+    const tex = (container[name] = GL.Texture.fromURL(url, options))
     return tex
   }
 
   LGraphTexture.getTexture = function (name) {
-    var container = this.getTexturesContainer()
+    const container = this.getTexturesContainer()
 
     if (!container) {
       throw 'Cannot load texture, container of textures not found'
     }
 
-    var tex = container[name]
+    const tex = container[name]
     if (!tex && name && name[0] != ':') {
       return this.loadTexture(name)
     }
@@ -5748,13 +5746,13 @@
     return tex
   }
 
-  //used to compute the appropiate output texture
+  // used to compute the appropiate output texture
   LGraphTexture.getTargetTexture = function (origin, target, mode) {
     if (!origin) {
       throw 'LGraphTexture.getTargetTexture expects a reference texture'
     }
 
-    var tex_type = null
+    let tex_type = null
 
     switch (mode) {
       case LGraphTexture.LOW:
@@ -5790,7 +5788,7 @@
   }
 
   LGraphTexture.getTextureType = function (precision, ref_texture) {
-    var type = ref_texture ? ref_texture.type : gl.UNSIGNED_BYTE
+    let type = ref_texture ? ref_texture.type : gl.UNSIGNED_BYTE
     switch (precision) {
       case LGraphTexture.HIGH:
         type = gl.HIGH_PRECISION_FORMAT
@@ -5798,7 +5796,7 @@
       case LGraphTexture.LOW:
         type = gl.UNSIGNED_BYTE
         break
-      //no default
+      // no default
     }
     return type
   }
@@ -5807,7 +5805,7 @@
     if (this._white_texture) {
       return this._white_texture
     }
-    var texture = (this._white_texture = GL.Texture.fromMemory(1, 1, [255, 255, 255, 255], {
+    const texture = (this._white_texture = GL.Texture.fromMemory(1, 1, [255, 255, 255, 255], {
       format: gl.RGBA,
       wrap: gl.REPEAT,
       filter: gl.NEAREST
@@ -5820,12 +5818,12 @@
       return this._noise_texture
     }
 
-    var noise = new Uint8Array(512 * 512 * 4)
-    for (var i = 0; i < 512 * 512 * 4; ++i) {
+    const noise = new Uint8Array(512 * 512 * 4)
+    for (let i = 0; i < 512 * 512 * 4; ++i) {
       noise[i] = Math.random() * 255
     }
 
-    var texture = GL.Texture.fromMemory(512, 512, noise, {
+    const texture = GL.Texture.fromMemory(512, 512, noise, {
       format: gl.RGBA,
       wrap: gl.REPEAT,
       filter: gl.NEAREST
@@ -5839,14 +5837,14 @@
       this._drop_texture = null
       this.properties.name = ''
     } else {
-      var texture = null
+      let texture = null
       if (typeof data == 'string') {
         texture = GL.Texture.fromURL(data)
       } else if (filename.toLowerCase().indexOf('.dds') != -1) {
         texture = GL.Texture.fromDDSInMemory(data)
       } else {
-        var blob = new Blob([file])
-        var url = URL.createObjectURL(blob)
+        const blob = new Blob([file])
+        const url = URL.createObjectURL(blob)
         texture = GL.Texture.fromURL(url)
       }
 
@@ -5856,7 +5854,7 @@
   }
 
   LGraphTexture.prototype.getExtraMenuOptions = function (graphcanvas) {
-    var that = this
+    const that = this
     if (!this._drop_texture) {
       return
     }
@@ -5872,7 +5870,7 @@
   }
 
   LGraphTexture.prototype.onExecute = function () {
-    var tex = null
+    let tex = null
     if (this.isOutputConnected(1)) {
       tex = this.getInputData(0)
     }
@@ -5902,12 +5900,12 @@
     this.setOutputData(0, tex)
     this.setOutputData(1, tex.fullpath || tex.filename)
 
-    for (var i = 2; i < this.outputs.length; i++) {
-      var output = this.outputs[i]
+    for (let i = 2; i < this.outputs.length; i++) {
+      const output = this.outputs[i]
       if (!output) {
         continue
       }
-      var v = null
+      let v = null
       if (output.name == 'width') {
         v = tex.width
       } else if (output.name == 'height') {
@@ -5932,16 +5930,16 @@
 
     if (this._drop_texture && ctx.webgl) {
       ctx.drawImage(this._drop_texture, 0, 0, this.size[0], this.size[1])
-      //this._drop_texture.renderQuad(this.pos[0],this.pos[1],this.size[0],this.size[1]);
+      // this._drop_texture.renderQuad(this.pos[0],this.pos[1],this.size[0],this.size[1]);
       return
     }
 
-    //Different texture? then get it from the GPU
+    // Different texture? then get it from the GPU
     if (this._last_preview_tex != this._last_tex) {
       if (ctx.webgl) {
         this._canvas = this._last_tex
       } else {
-        var tex_canvas = LGraphTexture.generateLowResTexturePreview(this._last_tex)
+        const tex_canvas = LGraphTexture.generateLowResTexturePreview(this._last_tex)
         if (!tex_canvas) {
           return
         }
@@ -5955,10 +5953,10 @@
       return
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save()
     if (!ctx.webgl) {
-      //reverse image
+      // reverse image
       ctx.translate(0, this.size[1])
       ctx.scale(1, -1)
     }
@@ -5966,20 +5964,20 @@
     ctx.restore()
   }
 
-  //very slow, used at your own risk
+  // very slow, used at your own risk
   LGraphTexture.generateLowResTexturePreview = function (tex) {
     if (!tex) {
       return null
     }
 
-    var size = LGraphTexture.image_preview_size
-    var temp_tex = tex
+    const size = LGraphTexture.image_preview_size
+    let temp_tex = tex
 
     if (tex.format == gl.DEPTH_COMPONENT) {
       return null
-    } //cannot generate from depth
+    } // cannot generate from depth
 
-    //Generate low-level version in the GPU to speed up
+    // Generate low-level version in the GPU to speed up
     if (tex.width > size || tex.height > size) {
       temp_tex = this._preview_temp_tex
       if (!this._preview_temp_tex) {
@@ -5989,13 +5987,13 @@
         this._preview_temp_tex = temp_tex
       }
 
-      //copy
+      // copy
       tex.copyTo(temp_tex)
       tex = temp_tex
     }
 
-    //create intermediate canvas with lowquality version
-    var tex_canvas = this._preview_canvas
+    // create intermediate canvas with lowquality version
+    let tex_canvas = this._preview_canvas
     if (!tex_canvas) {
       tex_canvas = createCanvas(size, size)
       this._preview_canvas = tex_canvas
@@ -6024,7 +6022,7 @@
     ]
   }
 
-  //used to replace shader code
+  // used to replace shader code
   LGraphTexture.replaceCode = function (code, context) {
     return code.replace(/\{\{[a-zA-Z0-9_]*\}\}/g, function (v) {
       v = v.replace(/[\{\}]/g, '')
@@ -6034,7 +6032,7 @@
 
   LiteGraph.registerNodeType('texture/texture', LGraphTexture)
 
-  //**************************
+  //* *************************
   function LGraphTexturePreview() {
     this.addInput('Texture', 'Texture')
     this.properties = { flipY: false }
@@ -6052,14 +6050,14 @@
 
     if (!ctx.webgl && !LGraphTexturePreview.allow_preview) {
       return
-    } //not working well
+    } // not working well
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
-    var tex_canvas = null
+    let tex_canvas = null
 
     if (!tex.handle && ctx.webgl) {
       tex_canvas = tex
@@ -6067,7 +6065,7 @@
       tex_canvas = LGraphTexture.generateLowResTexturePreview(tex)
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save()
     if (this.properties.flipY) {
       ctx.translate(0, this.size[1])
@@ -6079,7 +6077,7 @@
 
   LiteGraph.registerNodeType('texture/preview', LGraphTexturePreview)
 
-  //**************************************
+  //* *************************************
 
   function LGraphTextureSave() {
     this.addInput('Texture', 'Texture')
@@ -6096,7 +6094,7 @@
   }
 
   LGraphTextureSave.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
@@ -6109,11 +6107,11 @@
     }
 
     if (this.properties.name) {
-      //for cases where we want to perform something when storing it
+      // for cases where we want to perform something when storing it
       if (LGraphTexture.storeTexture) {
         LGraphTexture.storeTexture(this.properties.name, tex)
       } else {
-        var container = LGraphTexture.getTexturesContainer()
+        const container = LGraphTexture.getTexturesContainer()
         container[this.properties.name] = tex
       }
     }
@@ -6125,7 +6123,7 @@
 
   LiteGraph.registerNodeType('texture/save', LGraphTextureSave)
 
-  //****************************************************
+  //* ***************************************************
 
   function LGraphTextureOperation() {
     this.addInput('Texture', 'Texture')
@@ -6158,8 +6156,8 @@
   LGraphTextureOperation.presets = {}
 
   LGraphTextureOperation.prototype.getExtraMenuOptions = function (graphcanvas) {
-    var that = this
-    var txt = !that.properties.show ? 'Show Texture' : 'Hide Texture'
+    const that = this
+    const txt = !that.properties.show ? 'Show Texture' : 'Hide Texture'
     return [
       {
         content: txt,
@@ -6183,37 +6181,37 @@
       return
     }
 
-    //only works if using a webgl renderer
+    // only works if using a webgl renderer
     if (this._tex.gl != ctx) {
       return
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save()
     ctx.drawImage(this._tex, 0, 0, this.size[0], this.size[1])
     ctx.restore()
   }
 
   LGraphTextureOperation.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex)
       return
     }
 
-    var texB = this.getInputData(1)
+    let texB = this.getInputData(1)
 
     if (!this.properties.uvcode && !this.properties.pixelcode) {
       return
     }
 
-    var width = 512
-    var height = 512
+    let width = 512
+    let height = 512
     if (tex) {
       width = tex.width
       height = tex.height
@@ -6224,7 +6222,7 @@
 
     if (!texB) texB = GL.Texture.getWhiteTexture()
 
-    var type = LGraphTexture.getTextureType(this.properties.precision, tex)
+    const type = LGraphTexture.getTextureType(this.properties.precision, tex)
 
     if (!tex && !this._tex) {
       this._tex = new GL.Texture(width, height, { type: type, format: gl.RGBA, filter: gl.LINEAR })
@@ -6232,28 +6230,28 @@
       this._tex = LGraphTexture.getTargetTexture(tex || this._tex, this._tex, this.properties.precision)
     }
 
-    var uvcode = ''
+    let uvcode = ''
     if (this.properties.uvcode) {
-      uvcode = 'uv = ' + this.properties.uvcode
+      uvcode = `uv = ${this.properties.uvcode}`
       if (this.properties.uvcode.indexOf(';') != -1) {
-        //there are line breaks, means multiline code
+        // there are line breaks, means multiline code
         uvcode = this.properties.uvcode
       }
     }
 
-    var pixelcode = ''
+    let pixelcode = ''
     if (this.properties.pixelcode) {
-      pixelcode = 'result = ' + this.properties.pixelcode
+      pixelcode = `result = ${this.properties.pixelcode}`
       if (this.properties.pixelcode.indexOf(';') != -1) {
-        //there are line breaks, means multiline code
+        // there are line breaks, means multiline code
         pixelcode = this.properties.pixelcode
       }
     }
 
-    var shader = this._shader
+    let shader = this._shader
 
-    if (!this.has_error && (!shader || this._shader_code != uvcode + '|' + pixelcode)) {
-      var final_pixel_code = LGraphTexture.replaceCode(LGraphTextureOperation.pixel_shader, {
+    if (!this.has_error && (!shader || this._shader_code != `${uvcode}|${pixelcode}`)) {
+      const final_pixel_code = LGraphTexture.replaceCode(LGraphTextureOperation.pixel_shader, {
         UV_CODE: uvcode,
         PIXEL_CODE: pixelcode
       })
@@ -6262,26 +6260,26 @@
         shader = new GL.Shader(Shader.SCREEN_VERTEX_SHADER, final_pixel_code)
         this.boxcolor = '#00FF00'
       } catch (err) {
-        //console.log("Error compiling shader: ", err, final_pixel_code );
+        // console.log("Error compiling shader: ", err, final_pixel_code );
         GL.Shader.dumpErrorToConsole(err, Shader.SCREEN_VERTEX_SHADER, final_pixel_code)
         this.boxcolor = '#FF0000'
         this.has_error = true
         return
       }
       this._shader = shader
-      this._shader_code = uvcode + '|' + pixelcode
+      this._shader_code = `${uvcode}|${pixelcode}`
     }
 
     if (!this._shader) return
 
-    var value = this.getInputData(2)
+    let value = this.getInputData(2)
     if (value != null) {
       this.properties.value = value
     } else {
       value = parseFloat(this.properties.value)
     }
 
-    var time = this.graph.getTime()
+    const time = this.graph.getTime()
 
     this._tex.drawTo(function () {
       gl.disable(gl.DEPTH_TEST)
@@ -6293,7 +6291,7 @@
       if (texB) {
         texB.bind(1)
       }
-      var mesh = Mesh.getScreenQuad()
+      const mesh = Mesh.getScreenQuad()
       shader
         .uniforms({
           u_texture: 0,
@@ -6372,13 +6370,13 @@
     'vec3(color.x > colorB.x * value ? 1.0 : 0.0,color.y > colorB.y * value ? 1.0 : 0.0,color.z > colorB.z * value ? 1.0 : 0.0)'
   )
 
-  //webglstudio stuff...
+  // webglstudio stuff...
   LGraphTextureOperation.prototype.onInspect = function (widgets) {
-    var that = this
+    const that = this
     widgets.addCombo('Presets', '', {
       values: Object.keys(LGraphTextureOperation.presets),
       callback: function (v) {
-        var code = LGraphTextureOperation.presets[v]
+        const code = LGraphTextureOperation.presets[v]
         if (!code) return
         that.setProperty('pixelcode', code)
         that.title = v
@@ -6389,7 +6387,7 @@
 
   LiteGraph.registerNodeType('texture/operation', LGraphTextureOperation)
 
-  //****************************************************
+  //* ***************************************************
 
   function LGraphTextureShader() {
     this.addOutput('out', 'Texture')
@@ -6418,17 +6416,17 @@
       return
     }
 
-    var shader = this.getShader()
+    const shader = this.getShader()
     if (!shader) {
       return
     }
 
-    //update connections
-    var uniforms = shader.uniformInfo
+    // update connections
+    const uniforms = shader.uniformInfo
 
-    //remove deprecated slots
+    // remove deprecated slots
     if (this.inputs) {
-      var already = {}
+      const already = {}
       for (var i = 0; i < this.inputs.length; ++i) {
         var info = this.getInputInfo(i)
         if (!info) {
@@ -6444,18 +6442,18 @@
       }
     }
 
-    //update existing ones
+    // update existing ones
     for (var i in uniforms) {
       var info = shader.uniformInfo[i]
       if (info.loc === null) {
         continue
-      } //is an attribute, not a uniform
+      } // is an attribute, not a uniform
       if (i == 'time') {
-        //default one
+        // default one
         continue
       }
 
-      var type = 'number'
+      let type = 'number'
       if (this._shader.samplers[i]) {
         type = 'texture'
       } else {
@@ -6483,13 +6481,13 @@
         }
       }
 
-      var slot = this.findInputSlot(i)
+      const slot = this.findInputSlot(i)
       if (slot == -1) {
         this.addInput(i, type)
         continue
       }
 
-      var input_info = this.getInputInfo(slot)
+      const input_info = this.getInputInfo(slot)
       if (!input_info) {
         this.addInput(i, type)
       } else {
@@ -6503,7 +6501,7 @@
   }
 
   LGraphTextureShader.prototype.getShader = function () {
-    //replug
+    // replug
     if (this._shader && this._shader_code == this.properties.code) {
       return this._shader
     }
@@ -6522,21 +6520,21 @@
   LGraphTextureShader.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var shader = this.getShader()
+    const shader = this.getShader()
     if (!shader) {
       return
     }
 
-    var tex_slot = 0
-    var in_tex = null
+    let tex_slot = 0
+    let in_tex = null
 
-    //set uniforms
+    // set uniforms
     if (this.inputs)
-      for (var i = 0; i < this.inputs.length; ++i) {
-        var info = this.getInputInfo(i)
-        var data = this.getInputData(i)
+      for (let i = 0; i < this.inputs.length; ++i) {
+        const info = this.getInputInfo(i)
+        let data = this.getInputData(i)
         if (data == null) {
           continue
         }
@@ -6549,15 +6547,15 @@
           data = tex_slot
           tex_slot++
         }
-        shader.setUniform(info.name, data) //data is tex_slot
+        shader.setUniform(info.name, data) // data is tex_slot
       }
 
-    var uniforms = this._uniforms
-    var type = LGraphTexture.getTextureType(this.properties.precision, in_tex)
+    const uniforms = this._uniforms
+    const type = LGraphTexture.getTextureType(this.properties.precision, in_tex)
 
-    //render to texture
-    var w = this.properties.width | 0
-    var h = this.properties.height | 0
+    // render to texture
+    let w = this.properties.width | 0
+    let h = this.properties.height | 0
     if (w == 0) {
       w = in_tex ? in_tex.width : gl.canvas.width
     }
@@ -6575,7 +6573,7 @@
     if (!this._tex || this._tex.type != type || this._tex.width != w || this._tex.height != h) {
       this._tex = new GL.Texture(w, h, { type: type, format: gl.RGBA, filter: gl.LINEAR })
     }
-    var tex = this._tex
+    const tex = this._tex
     tex.drawTo(function () {
       shader.uniforms(uniforms).draw(GL.Mesh.getScreenQuad())
     })
@@ -6624,20 +6622,20 @@
   LGraphTextureScaleOffset.desc = 'Applies an scaling and offseting'
 
   LGraphTextureScaleOffset.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (!this.isOutputConnected(0) || !tex) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex)
       return
     }
 
-    var width = tex.width
-    var height = tex.height
-    var type = this.precision === LGraphTexture.LOW ? gl.UNSIGNED_BYTE : gl.HIGH_PRECISION_FORMAT
+    const width = tex.width
+    const height = tex.height
+    let type = this.precision === LGraphTexture.LOW ? gl.UNSIGNED_BYTE : gl.HIGH_PRECISION_FORMAT
     if (this.precision === LGraphTexture.DEFAULT) {
       type = tex.type
     }
@@ -6650,13 +6648,13 @@
       })
     }
 
-    var shader = this._shader
+    let shader = this._shader
 
     if (!shader) {
       shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphTextureScaleOffset.pixel_shader)
     }
 
-    var scale = this.getInputData(1)
+    let scale = this.getInputData(1)
     if (scale) {
       this.properties.scale[0] = scale[0]
       this.properties.scale[1] = scale[1]
@@ -6664,7 +6662,7 @@
       scale = this.properties.scale
     }
 
-    var offset = this.getInputData(2)
+    let offset = this.getInputData(2)
     if (offset) {
       this.properties.offset[0] = offset[0]
       this.properties.offset[1] = offset[1]
@@ -6677,7 +6675,7 @@
       gl.disable(gl.CULL_FACE)
       gl.disable(gl.BLEND)
       tex.bind(0)
-      var mesh = Mesh.getScreenQuad()
+      const mesh = Mesh.getScreenQuad()
       shader
         .uniforms({
           u_texture: 0,
@@ -6739,22 +6737,22 @@
   LGraphTextureWarp.desc = 'Texture warp operation'
 
   LGraphTextureWarp.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex)
       return
     }
 
-    var texB = this.getInputData(1)
+    const texB = this.getInputData(1)
 
-    var width = 512
-    var height = 512
-    var type = gl.UNSIGNED_BYTE
+    let width = 512
+    let height = 512
+    let type = gl.UNSIGNED_BYTE
     if (tex) {
       width = tex.width
       height = tex.height
@@ -6775,19 +6773,19 @@
       this._tex = LGraphTexture.getTargetTexture(tex || this._tex, this._tex, this.properties.precision)
     }
 
-    var shader = this._shader
+    let shader = this._shader
 
     if (!shader) {
       shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphTextureWarp.pixel_shader)
     }
 
-    var factor = this.getInputData(2)
+    let factor = this.getInputData(2)
     if (factor != null) {
       this.properties.factor = factor
     } else {
       factor = parseFloat(this.properties.factor)
     }
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     uniforms.u_factor = factor
     uniforms.u_scale.set(this.properties.scale)
     uniforms.u_offset.set(this.properties.offset)
@@ -6802,7 +6800,7 @@
       if (texB) {
         texB.bind(1)
       }
-      var mesh = Mesh.getScreenQuad()
+      const mesh = Mesh.getScreenQuad()
       shader.uniforms(uniforms).draw(mesh)
     })
 
@@ -6828,7 +6826,7 @@
 
   LiteGraph.registerNodeType('texture/warp', LGraphTextureWarp)
 
-  //****************************************************
+  //* ***************************************************
 
   // Texture to Viewport *****************************************
   function LGraphTextureToViewport() {
@@ -6852,7 +6850,7 @@
   LGraphTextureToViewport.prototype.onDrawBackground = function (ctx) {
     if (this.flags.collapsed || this.size[1] <= 40) return
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
@@ -6861,7 +6859,7 @@
   }
 
   LGraphTextureToViewport.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
@@ -6878,23 +6876,23 @@
     }
 
     gl.disable(gl.DEPTH_TEST)
-    var gamma = this.properties.gamma || 1.0
+    let gamma = this.properties.gamma || 1.0
     if (this.isInputConnected(1)) {
       gamma = this.getInputData(1)
     }
 
     tex.setParameter(gl.TEXTURE_MAG_FILTER, this.properties.filter ? gl.LINEAR : gl.NEAREST)
 
-    var old_viewport = LGraphTextureToViewport._prev_viewport
+    const old_viewport = LGraphTextureToViewport._prev_viewport
     old_viewport.set(gl.viewport_data)
-    var new_view = this.properties.viewport
+    const new_view = this.properties.viewport
     gl.viewport(
       old_viewport[0] + old_viewport[2] * new_view[0],
       old_viewport[1] + old_viewport[3] * new_view[1],
       old_viewport[2] * new_view[2],
       old_viewport[3] * new_view[3]
     )
-    var viewport = gl.getViewport() //gl.getParameter(gl.VIEWPORT);
+    const viewport = gl.getViewport() // gl.getParameter(gl.VIEWPORT);
 
     if (this.properties.antialiasing) {
       if (!LGraphTextureToViewport._shader) {
@@ -6904,7 +6902,7 @@
         )
       }
 
-      var mesh = Mesh.getScreenQuad()
+      const mesh = Mesh.getScreenQuad()
       tex.bind(0)
       LGraphTextureToViewport._shader
         .uniforms({
@@ -7036,28 +7034,28 @@
   }
 
   LGraphTextureCopy.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex && !this._temp_texture) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    //copy the texture
+    // copy the texture
     if (tex) {
-      var width = tex.width
-      var height = tex.height
+      let width = tex.width
+      let height = tex.height
 
       if (this.properties.size != 0) {
         width = this.properties.size
         height = this.properties.size
       }
 
-      var temp = this._temp_texture
+      const temp = this._temp_texture
 
-      var type = tex.type
+      let type = tex.type
       if (this.properties.precision === LGraphTexture.LOW) {
         type = gl.UNSIGNED_BYTE
       } else if (this.properties.precision === LGraphTexture.HIGH) {
@@ -7065,7 +7063,7 @@
       }
 
       if (!temp || temp.width != width || temp.height != height || temp.type != type) {
-        var minFilter = gl.LINEAR
+        let minFilter = gl.LINEAR
         if (this.properties.generate_mipmaps && isPowerOfTwo(width) && isPowerOfTwo(height)) {
           minFilter = gl.LINEAR_MIPMAP_LINEAR
         }
@@ -7109,16 +7107,16 @@
   }
 
   LGraphTextureDownsample.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex && !this._temp_texture) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    //we do not allow any texture different than texture 2D
+    // we do not allow any texture different than texture 2D
     if (!tex || tex.texture_type !== GL.TEXTURE_2D) {
       return
     }
@@ -7128,7 +7126,7 @@
       return
     }
 
-    var shader = LGraphTextureDownsample._shader
+    let shader = LGraphTextureDownsample._shader
     if (!shader) {
       LGraphTextureDownsample._shader = shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
@@ -7136,27 +7134,27 @@
       )
     }
 
-    var width = tex.width | 0
-    var height = tex.height | 0
-    var type = tex.type
+    let width = tex.width | 0
+    let height = tex.height | 0
+    let type = tex.type
     if (this.properties.precision === LGraphTexture.LOW) {
       type = gl.UNSIGNED_BYTE
     } else if (this.properties.precision === LGraphTexture.HIGH) {
       type = gl.HIGH_PRECISION_FORMAT
     }
-    var iterations = this.properties.iterations || 1
+    const iterations = this.properties.iterations || 1
 
-    var origin = tex
-    var target = null
+    let origin = tex
+    let target = null
 
-    var temp = []
-    var options = {
+    const temp = []
+    const options = {
       type: type,
       format: tex.format
     }
 
-    var offset = vec2.create()
-    var uniforms = {
+    const offset = vec2.create()
+    const uniforms = {
       u_offset: offset
     }
 
@@ -7175,14 +7173,14 @@
       origin.copyTo(target, shader, uniforms)
       if (width == 1 && height == 1) {
         break
-      } //nothing else to do
+      } // nothing else to do
       origin = target
     }
 
-    //keep the last texture used
+    // keep the last texture used
     this._texture = temp.pop()
 
-    //free the rest
+    // free the rest
     for (var i = 0; i < temp.length; ++i) {
       GL.Texture.releaseTemporary(temp[i])
     }
@@ -7232,25 +7230,25 @@
   }
 
   LGraphTextureResize.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex && !this._temp_texture) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    //we do not allow any texture different than texture 2D
+    // we do not allow any texture different than texture 2D
     if (!tex || tex.texture_type !== GL.TEXTURE_2D) {
       return
     }
 
-    var width = this.properties.size[0] | 0
-    var height = this.properties.size[1] | 0
+    let width = this.properties.size[0] | 0
+    let height = this.properties.size[1] | 0
     if (width == 0) width = tex.width
     if (height == 0) height = tex.height
-    var type = tex.type
+    let type = tex.type
     if (this.properties.precision === LGraphTexture.LOW) {
       type = gl.UNSIGNED_BYTE
     } else if (this.properties.precision === LGraphTexture.HIGH) {
@@ -7280,8 +7278,8 @@
     this.addOutput('avg', 'vec4')
     this.addOutput('lum', 'number')
     this.properties = {
-      use_previous_frame: true, //to avoid stalls
-      high_quality: false //to use as much pixels as possible
+      use_previous_frame: true, // to avoid stalls
+      high_quality: false // to use as much pixels as possible
     }
 
     this._uniforms = {
@@ -7300,45 +7298,45 @@
       this.updateAverage()
     }
 
-    var v = this._luminance
+    const v = this._luminance
     this.setOutputData(0, this._temp_texture)
     this.setOutputData(1, v)
     this.setOutputData(2, (v[0] + v[1] + v[2]) / 3)
   }
 
-  //executed before rendering the frame
+  // executed before rendering the frame
   LGraphTextureAverage.prototype.onPreRenderExecute = function () {
     this.updateAverage()
   }
 
   LGraphTextureAverage.prototype.updateAverage = function () {
-    var tex = this.getInputData(0)
+    let tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0) && !this.isOutputConnected(1) && !this.isOutputConnected(2)) {
       return
-    } //saves work
+    } // saves work
 
     if (!LGraphTextureAverage._shader) {
       LGraphTextureAverage._shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphTextureAverage.pixel_shader)
-      //creates 256 random numbers and stores them in two mat4
-      var samples = new Float32Array(16)
-      for (var i = 0; i < samples.length; ++i) {
-        samples[i] = Math.random() //poorly distributed samples
+      // creates 256 random numbers and stores them in two mat4
+      const samples = new Float32Array(16)
+      for (let i = 0; i < samples.length; ++i) {
+        samples[i] = Math.random() // poorly distributed samples
       }
-      //upload only once
+      // upload only once
       LGraphTextureAverage._shader.uniforms({
         u_samples_a: samples.subarray(0, 16),
         u_samples_b: samples.subarray(16, 32)
       })
     }
 
-    var temp = this._temp_texture
+    const temp = this._temp_texture
     var type = gl.UNSIGNED_BYTE
     if (tex.type != type) {
-      //force floats, half floats cannot be read with gl.readPixels
+      // force floats, half floats cannot be read with gl.readPixels
       type = gl.FLOAT
     }
 
@@ -7368,8 +7366,8 @@
       this._uniforms.u_mipmap_offset = 9
     }
 
-    var shader = LGraphTextureAverage._shader
-    var uniforms = this._uniforms
+    const shader = LGraphTextureAverage._shader
+    const uniforms = this._uniforms
     uniforms.u_mipmap_offset = this.properties.mipmap_offset
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.BLEND)
@@ -7378,15 +7376,15 @@
     })
 
     if (this.isOutputConnected(1) || this.isOutputConnected(2)) {
-      var pixel = this._temp_texture.getPixels()
+      const pixel = this._temp_texture.getPixels()
       if (pixel) {
-        var v = this._luminance
+        const v = this._luminance
         var type = this._temp_texture.type
         v.set(pixel)
         if (type == gl.UNSIGNED_BYTE) {
           vec4.scale(v, v, 1 / 255)
         } else if (type == GL.HALF_FLOAT || type == GL.HALF_FLOAT_OES) {
-          //no half floats possible, hard to read back unless copyed to a FLOAT texture, so temp_texture is always forced to FLOAT
+          // no half floats possible, hard to read back unless copyed to a FLOAT texture, so temp_texture is always forced to FLOAT
         }
       }
     }
@@ -7425,7 +7423,7 @@
     this.addOutput('max', 'vec4')
     this.properties = {
       mode: 'max',
-      use_previous_frame: true //to avoid stalls
+      use_previous_frame: true // to avoid stalls
     }
 
     this._uniforms = {
@@ -7454,7 +7452,7 @@
     this.setOutputData(1, this._luminance)
   }
 
-  //executed before rendering the frame
+  // executed before rendering the frame
   LGraphTextureMinMax.prototype.onPreRenderExecute = function () {
     this.update()
   }
@@ -7467,23 +7465,23 @@
 
     if (!this.isOutputConnected(0) && !this.isOutputConnected(1)) {
       return
-    } //saves work
+    } // saves work
 
     if (!LGraphTextureMinMax._shader) {
       LGraphTextureMinMax._shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphTextureMinMax.pixel_shader)
     }
 
-    var temp = this._temp_texture
-    var type = gl.UNSIGNED_BYTE
+    const temp = this._temp_texture
+    let type = gl.UNSIGNED_BYTE
     if (tex.type != type) {
-      //force floats, half floats cannot be read with gl.readPixels
+      // force floats, half floats cannot be read with gl.readPixels
       type = gl.FLOAT
     }
 
-    var size = 512
+    let size = 512
 
     if (!this._textures_chain.length || this._textures_chain[0].type != type) {
-      var index = 0
+      const index = 0
       while (i) {
         this._textures_chain[i] = new GL.Texture(size, size, {
           type: type,
@@ -7497,15 +7495,15 @@
     }
 
     tex.copyTo(this._textures_chain[0])
-    var prev = this._textures_chain[0]
+    let prev = this._textures_chain[0]
     for (var i = 1; i <= this._textures_chain.length; ++i) {
       var tex = this._textures_chain[i]
 
       prev = tex
     }
 
-    var shader = LGraphTextureMinMax._shader
-    var uniforms = this._uniforms
+    const shader = LGraphTextureMinMax._shader
+    const uniforms = this._uniforms
     uniforms.u_mipmap_offset = this.properties.mipmap_offset
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.BLEND)
@@ -7536,7 +7534,7 @@
   }\n\
   '
 
-  //LiteGraph.registerNodeType("texture/clustered_operation", LGraphTextureClusteredOperation);
+  // LiteGraph.registerNodeType("texture/clustered_operation", LGraphTextureClusteredOperation);
 
   function LGraphTextureTemporalSmooth() {
     this.addInput('in', 'Texture')
@@ -7554,7 +7552,7 @@
   LGraphTextureTemporalSmooth.desc = 'Smooth texture over time'
 
   LGraphTextureTemporalSmooth.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex || !this.isOutputConnected(0)) {
       return
     }
@@ -7566,9 +7564,9 @@
       )
     }
 
-    var temp = this._temp_texture
+    const temp = this._temp_texture
     if (!temp || temp.type != tex.type || temp.width != tex.width || temp.height != tex.height) {
-      var options = {
+      const options = {
         type: tex.type,
         format: gl.RGBA,
         filter: gl.NEAREST
@@ -7578,11 +7576,11 @@
       tex.copyTo(this._temp_texture2)
     }
 
-    var tempA = this._temp_texture
-    var tempB = this._temp_texture2
+    const tempA = this._temp_texture
+    const tempB = this._temp_texture2
 
-    var shader = LGraphTextureTemporalSmooth._shader
-    var uniforms = this._uniforms
+    const shader = LGraphTextureTemporalSmooth._shader
+    const uniforms = this._uniforms
     uniforms.u_factor = 1.0 - this.getInputOrProperty('factor')
 
     gl.disable(gl.BLEND)
@@ -7594,7 +7592,7 @@
 
     this.setOutputData(0, tempA)
 
-    //swap
+    // swap
     this._temp_texture = tempB
     this._temp_texture2 = tempA
   }
@@ -7638,7 +7636,7 @@
   }
 
   LGraphTextureLinearAvgSmooth.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex || !this.isOutputConnected(0)) {
       return
     }
@@ -7654,14 +7652,14 @@
       )
     }
 
-    var samples = clamp(this.properties.samples, 0, 64)
-    var frame = this.frame
-    var interval = this.properties.frames_interval
+    const samples = clamp(this.properties.samples, 0, 64)
+    const frame = this.frame
+    const interval = this.properties.frames_interval
 
     if (interval == 0 || frame % interval == 0) {
-      var temp = this._temp_texture
+      const temp = this._temp_texture
       if (!temp || temp.type != tex.type || temp.width != samples) {
-        var options = {
+        const options = {
           type: tex.type,
           format: gl.RGBA,
           filter: gl.NEAREST
@@ -7671,12 +7669,12 @@
         this._temp_texture_out = new GL.Texture(1, 1, options)
       }
 
-      var tempA = this._temp_texture
-      var tempB = this._temp_texture2
+      const tempA = this._temp_texture
+      const tempB = this._temp_texture2
 
-      var shader_copy = LGraphTextureLinearAvgSmooth._shader_copy
-      var shader_avg = LGraphTextureLinearAvgSmooth._shader_avg
-      var uniforms = this._uniforms
+      const shader_copy = LGraphTextureLinearAvgSmooth._shader_copy
+      const shader_avg = LGraphTextureLinearAvgSmooth._shader_avg
+      const uniforms = this._uniforms
       uniforms.u_samples = samples
       uniforms.u_isamples = 1.0 / samples
 
@@ -7693,7 +7691,7 @@
 
       this.setOutputData(0, this._temp_texture_out)
 
-      //swap
+      // swap
       this._temp_texture = tempB
       this._temp_texture2 = tempA
     } else this.setOutputData(0, this._temp_texture_out)
@@ -7748,24 +7746,24 @@
 
   LGraphImageToTexture.title = 'Image to Texture'
   LGraphImageToTexture.desc = 'Uploads an image to the GPU'
-  //LGraphImageToTexture.widgets_info = { size: { widget:"combo", values:[0,32,64,128,256,512,1024,2048]} };
+  // LGraphImageToTexture.widgets_info = { size: { widget:"combo", values:[0,32,64,128,256,512,1024,2048]} };
 
   LGraphImageToTexture.prototype.onExecute = function () {
-    var img = this.getInputData(0)
+    const img = this.getInputData(0)
     if (!img) {
       return
     }
 
-    var width = img.videoWidth || img.width
-    var height = img.videoHeight || img.height
+    const width = img.videoWidth || img.width
+    const height = img.videoHeight || img.height
 
-    //this is in case we are using a webgl canvas already, no need to reupload it
+    // this is in case we are using a webgl canvas already, no need to reupload it
     if (img.gltexture) {
       this.setOutputData(0, img.gltexture)
       return
     }
 
-    var temp = this._temp_texture
+    const temp = this._temp_texture
     if (!temp || temp.width != width || temp.height != height) {
       this._temp_texture = new GL.Texture(width, height, {
         format: gl.RGBA,
@@ -7776,7 +7774,7 @@
     try {
       this._temp_texture.uploadImage(img)
     } catch (err) {
-      console.error('image comes from an unsafe location, cannot be uploaded to webgl: ' + err)
+      console.error(`image comes from an unsafe location, cannot be uploaded to webgl: ${err}`)
       return
     }
 
@@ -7809,9 +7807,9 @@
   LGraphTextureLUT.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH || this.properties.enabled === false) {
       this.setOutputData(0, tex)
@@ -7822,7 +7820,7 @@
       return
     }
 
-    var lut_tex = this.getInputData(1)
+    let lut_tex = this.getInputData(1)
 
     if (!lut_tex) {
       lut_tex = LGraphTexture.getTexture(this.properties.texture)
@@ -7839,14 +7837,14 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.bindTexture(gl.TEXTURE_2D, null)
 
-    var intensity = this.properties.intensity
+    let intensity = this.properties.intensity
     if (this.isInputConnected(2)) {
       this.properties.intensity = intensity = this.getInputData(2)
     }
 
     this._tex = LGraphTexture.getTargetTexture(tex, this._tex, this.properties.precision)
 
-    //var mesh = Mesh.getScreenQuad();
+    // var mesh = Mesh.getScreenQuad();
 
     this._tex.drawTo(function () {
       lut_tex.bind(1)
@@ -7934,9 +7932,9 @@
   LGraphTextureEncode.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH || this.properties.enabled === false) {
       this.setOutputData(0, tex)
@@ -7947,7 +7945,7 @@
       return
     }
 
-    var symbols_tex = this.getInputData(1)
+    let symbols_tex = this.getInputData(1)
 
     if (!symbols_tex) {
       symbols_tex = LGraphTexture.getTexture(this.properties.texture)
@@ -7965,7 +7963,7 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.bindTexture(gl.TEXTURE_2D, null)
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     uniforms.u_row_simbols = Math.floor(this.properties.num_row_symbols)
     uniforms.u_symbol_size = this.properties.symbol_size
     uniforms.u_brightness = this.properties.brightness
@@ -8035,7 +8033,7 @@
     this.addOutput('B', 'Texture')
     this.addOutput('A', 'Texture')
 
-    //this.properties = { use_single_channel: true };
+    // this.properties = { use_single_channel: true };
     if (!LGraphTextureChannels._shader) {
       LGraphTextureChannels._shader = new GL.Shader(Shader.SCREEN_VERTEX_SHADER, LGraphTextureChannels.pixel_shader)
     }
@@ -8045,7 +8043,7 @@
   LGraphTextureChannels.desc = 'Split texture channels'
 
   LGraphTextureChannels.prototype.onExecute = function () {
-    var texA = this.getInputData(0)
+    const texA = this.getInputData(0)
     if (!texA) {
       return
     }
@@ -8054,9 +8052,9 @@
       this._channels = Array(4)
     }
 
-    //var format = this.properties.use_single_channel ? gl.LUMINANCE : gl.RGBA; //not supported by WebGL1
-    var format = gl.RGB
-    var connections = 0
+    // var format = this.properties.use_single_channel ? gl.LUMINANCE : gl.RGBA; //not supported by WebGL1
+    const format = gl.RGB
+    let connections = 0
     for (var i = 0; i < 4; i++) {
       if (this.isOutputConnected(i)) {
         if (
@@ -8085,9 +8083,9 @@
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
 
-    var mesh = Mesh.getScreenQuad()
-    var shader = LGraphTextureChannels._shader
-    var masks = [
+    const mesh = Mesh.getScreenQuad()
+    const shader = LGraphTextureChannels._shader
+    const masks = [
       [1, 0, 0, 0],
       [0, 1, 0, 0],
       [0, 0, 1, 0],
@@ -8154,24 +8152,24 @@
   }
 
   LGraphChannelsTexture.prototype.onExecute = function () {
-    var white = LGraphTexture.getWhiteTexture()
-    var texR = this.getInputData(0) || white
-    var texG = this.getInputData(1) || white
-    var texB = this.getInputData(2) || white
-    var texA = this.getInputData(3) || white
+    const white = LGraphTexture.getWhiteTexture()
+    const texR = this.getInputData(0) || white
+    const texG = this.getInputData(1) || white
+    const texB = this.getInputData(2) || white
+    const texA = this.getInputData(3) || white
 
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
 
-    var mesh = Mesh.getScreenQuad()
+    const mesh = Mesh.getScreenQuad()
     if (!LGraphChannelsTexture._shader) {
       LGraphChannelsTexture._shader = new GL.Shader(Shader.SCREEN_VERTEX_SHADER, LGraphChannelsTexture.pixel_shader)
     }
-    var shader = LGraphChannelsTexture._shader
+    const shader = LGraphChannelsTexture._shader
 
-    var w = Math.max(texR.width, texG.width, texB.width, texA.width)
-    var h = Math.max(texR.height, texG.height, texB.height, texA.height)
-    var type = this.properties.precision == LGraphTexture.HIGH ? LGraphTexture.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
+    const w = Math.max(texR.width, texG.width, texB.width, texA.width)
+    const h = Math.max(texR.height, texG.height, texB.height, texA.height)
+    const type = this.properties.precision == LGraphTexture.HIGH ? LGraphTexture.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
 
     if (!this._texture || this._texture.width != w || this._texture.height != h || this._texture.type != type) {
       this._texture = new GL.Texture(w, h, {
@@ -8181,12 +8179,12 @@
       })
     }
 
-    var color = this._color
+    const color = this._color
     color[0] = this.properties.R
     color[1] = this.properties.G
     color[2] = this.properties.B
     color[3] = this.properties.A
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
 
     this._texture.drawTo(function () {
       texR.bind(0)
@@ -8238,15 +8236,15 @@
   }
 
   LGraphTextureColor.prototype.onDrawBackground = function (ctx) {
-    var c = this.properties.color
+    const c = this.properties.color
     ctx.fillStyle =
-      'rgb(' +
-      Math.floor(clamp(c[0], 0, 1) * 255) +
-      ',' +
-      Math.floor(clamp(c[1], 0, 1) * 255) +
-      ',' +
-      Math.floor(clamp(c[2], 0, 1) * 255) +
-      ')'
+      `rgb(${
+        Math.floor(clamp(c[0], 0, 1) * 255)
+      },${
+        Math.floor(clamp(c[1], 0, 1) * 255)
+      },${
+        Math.floor(clamp(c[2], 0, 1) * 255)
+      })`
     if (this.flags.collapsed) {
       this.boxcolor = ctx.fillStyle
     } else {
@@ -8255,7 +8253,7 @@
   }
 
   LGraphTextureColor.prototype.onExecute = function () {
-    var type = this.properties.precision == LGraphTexture.HIGH ? LGraphTexture.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
+    const type = this.properties.precision == LGraphTexture.HIGH ? LGraphTexture.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
 
     if (!this._tex || this._tex.type != type) {
       this._tex = new GL.Texture(1, 1, {
@@ -8264,12 +8262,12 @@
         minFilter: gl.NEAREST
       })
     }
-    var color = this.properties.color
+    const color = this.properties.color
 
     if (this.inputs) {
-      for (var i = 0; i < this.inputs.length; i++) {
-        var input = this.inputs[i]
-        var v = this.getInputData(i)
+      for (let i = 0; i < this.inputs.length; i++) {
+        const input = this.inputs[i]
+        const v = this.getInputData(i)
         if (v === undefined) {
           continue
         }
@@ -8351,35 +8349,35 @@
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
 
-    var mesh = GL.Mesh.getScreenQuad()
-    var shader = LGraphTextureGradient._shader
+    const mesh = GL.Mesh.getScreenQuad()
+    const shader = LGraphTextureGradient._shader
 
-    var A = this.getInputData(0)
+    let A = this.getInputData(0)
     if (!A) {
       A = this.properties.A
     }
-    var B = this.getInputData(1)
+    let B = this.getInputData(1)
     if (!B) {
       B = this.properties.B
     }
 
-    //angle and scale
-    for (var i = 2; i < this.inputs.length; i++) {
-      var input = this.inputs[i]
-      var v = this.getInputData(i)
+    // angle and scale
+    for (let i = 2; i < this.inputs.length; i++) {
+      const input = this.inputs[i]
+      const v = this.getInputData(i)
       if (v === undefined) {
         continue
       }
       this.properties[input.name] = v
     }
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     this._uniforms.u_angle = this.properties.angle * DEG2RAD
     this._uniforms.u_scale = this.properties.scale
     vec3.copy(uniforms.u_colorA, A)
     vec3.copy(uniforms.u_colorB, B)
 
-    var size = parseInt(this.properties.texture_size)
+    const size = parseInt(this.properties.texture_size)
     if (!this._tex || this._tex.width != size) {
       this._tex = new GL.Texture(size, size, {
         format: gl.RGB,
@@ -8451,25 +8449,25 @@
   }
 
   LGraphTextureMix.prototype.onExecute = function () {
-    var texA = this.getInputData(0)
+    const texA = this.getInputData(0)
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, texA)
       return
     }
 
-    var texB = this.getInputData(1)
+    const texB = this.getInputData(1)
     if (!texA || !texB) {
       return
     }
 
-    var texMix = this.getInputData(2)
+    const texMix = this.getInputData(2)
 
-    var factor = this.getInputData(3)
+    const factor = this.getInputData(3)
 
     this._tex = LGraphTexture.getTargetTexture(
       this.properties.size_from_biggest && texB.width > texA.width ? texB : texA,
@@ -8480,9 +8478,9 @@
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
 
-    var mesh = Mesh.getScreenQuad()
-    var shader = null
-    var uniforms = this._uniforms
+    const mesh = Mesh.getScreenQuad()
+    let shader = null
+    const uniforms = this._uniforms
     if (texMix) {
       shader = LGraphTextureMix._shader_tex
       if (!shader) {
@@ -8500,11 +8498,11 @@
           LGraphTextureMix.pixel_shader
         )
       }
-      var f = factor == null ? this.properties.factor : factor
+      const f = factor == null ? this.properties.factor : factor
       uniforms.u_mix.set([f, f, f, f])
     }
 
-    var invert = this.properties.invert
+    const invert = this.properties.invert
 
     this._tex.drawTo(function () {
       texA.bind(invert ? 1 : 0)
@@ -8573,9 +8571,9 @@
   LGraphTextureEdges.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex)
@@ -8591,11 +8589,11 @@
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
 
-    var mesh = Mesh.getScreenQuad()
-    var shader = LGraphTextureEdges._shader
-    var invert = this.properties.invert
-    var factor = this.properties.factor
-    var threshold = this.properties.threshold ? 1 : 0
+    const mesh = Mesh.getScreenQuad()
+    const shader = LGraphTextureEdges._shader
+    const invert = this.properties.invert
+    const factor = this.properties.factor
+    const threshold = this.properties.threshold ? 1 : 0
 
     this._tex.drawTo(function () {
       tex.bind(0)
@@ -8668,14 +8666,14 @@
   LGraphTextureDepthRange.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
-    var precision = gl.UNSIGNED_BYTE
+    let precision = gl.UNSIGNED_BYTE
     if (this.properties.high_precision) {
       precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT
     }
@@ -8693,16 +8691,16 @@
       })
     }
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
 
-    //iterations
-    var distance = this.properties.distance
+    // iterations
+    let distance = this.properties.distance
     if (this.isInputConnected(1)) {
       distance = this.getInputData(1)
       this.properties.distance = distance
     }
 
-    var range = this.properties.range
+    let range = this.properties.range
     if (this.isInputConnected(2)) {
       range = this.getInputData(2)
       this.properties.range = range
@@ -8713,7 +8711,7 @@
 
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
-    var mesh = Mesh.getScreenQuad()
+    const mesh = Mesh.getScreenQuad()
     if (!LGraphTextureDepthRange._shader) {
       LGraphTextureDepthRange._shader = new GL.Shader(Shader.SCREEN_VERTEX_SHADER, LGraphTextureDepthRange.pixel_shader)
       LGraphTextureDepthRange._shader_onlydepth = new GL.Shader(
@@ -8722,19 +8720,17 @@
         { ONLY_DEPTH: '' }
       )
     }
-    var shader = this.properties.only_depth
-      ? LGraphTextureDepthRange._shader_onlydepth
-      : LGraphTextureDepthRange._shader
+    const shader = this.properties.only_depth ? LGraphTextureDepthRange._shader_onlydepth : LGraphTextureDepthRange._shader
 
-    //NEAR AND FAR PLANES
-    var planes = null
+    // NEAR AND FAR PLANES
+    let planes = null
     if (tex.near_far_planes) {
       planes = tex.near_far_planes
     } else if (window.LS && LS.Renderer._main_camera) {
       planes = LS.Renderer._main_camera._uniforms.u_camera_planes
     } else {
       planes = [0.1, 1000]
-    } //hardcoded
+    } // hardcoded
     uniforms.u_camera_planes = planes
 
     this._temp_texture.drawTo(function () {
@@ -8790,7 +8786,7 @@
     }
     this._uniforms = {
       u_texture: 0,
-      u_camera_planes: null, //filled later
+      u_camera_planes: null, // filled later
       u_ires: vec2.create()
     }
   }
@@ -8805,14 +8801,14 @@
   LGraphTextureLinearDepth.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex || (tex.format != gl.DEPTH_COMPONENT && tex.format != gl.DEPTH_STENCIL)) {
       return
     }
 
-    var precision = this.properties.precision == LGraphTexture.HIGH ? gl.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
+    const precision = this.properties.precision == LGraphTexture.HIGH ? gl.HIGH_PRECISION_FORMAT : gl.UNSIGNED_BYTE
 
     if (
       !this._temp_texture ||
@@ -8827,30 +8823,30 @@
       })
     }
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     uniforms.u_invert = this.properties.invert ? 1 : 0
 
     gl.disable(gl.BLEND)
     gl.disable(gl.DEPTH_TEST)
-    var mesh = Mesh.getScreenQuad()
+    const mesh = Mesh.getScreenQuad()
     if (!LGraphTextureLinearDepth._shader)
       LGraphTextureLinearDepth._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
         LGraphTextureLinearDepth.pixel_shader
       )
-    var shader = LGraphTextureLinearDepth._shader
+    const shader = LGraphTextureLinearDepth._shader
 
-    //NEAR AND FAR PLANES
-    var planes = null
+    // NEAR AND FAR PLANES
+    let planes = null
     if (tex.near_far_planes) {
       planes = tex.near_far_planes
     } else if (window.LS && LS.Renderer._main_camera) {
       planes = LS.Renderer._main_camera._uniforms.u_camera_planes
     } else {
       planes = [0.1, 1000]
-    } //hardcoded
+    } // hardcoded
     uniforms.u_camera_planes = planes
-    //uniforms.u_ires.set([1/tex.width, 1/tex.height]);
+    // uniforms.u_ires.set([1/tex.width, 1/tex.height]);
     uniforms.u_ires.set([0, 0])
 
     this._temp_texture.drawTo(function () {
@@ -8909,20 +8905,20 @@
   LGraphTextureBlur.max_iterations = 20
 
   LGraphTextureBlur.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var temp = this._final_texture
+    let temp = this._final_texture
 
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
-      //we need two textures to do the blurring
-      //this._temp_texture = new GL.Texture( tex.width, tex.height, { type: tex.type, format: gl.RGBA, filter: gl.LINEAR });
+      // we need two textures to do the blurring
+      // this._temp_texture = new GL.Texture( tex.width, tex.height, { type: tex.type, format: gl.RGBA, filter: gl.LINEAR });
       temp = this._final_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
         format: gl.RGBA,
@@ -8930,27 +8926,27 @@
       })
     }
 
-    //iterations
-    var iterations = this.properties.iterations
+    // iterations
+    let iterations = this.properties.iterations
     if (this.isInputConnected(1)) {
       iterations = this.getInputData(1)
       this.properties.iterations = iterations
     }
     iterations = Math.min(Math.floor(iterations), LGraphTextureBlur.max_iterations)
     if (iterations == 0) {
-      //skip blurring
+      // skip blurring
       this.setOutputData(0, tex)
       return
     }
 
-    var intensity = this.properties.intensity
+    let intensity = this.properties.intensity
     if (this.isInputConnected(2)) {
       intensity = this.getInputData(2)
       this.properties.intensity = intensity
     }
 
-    //blur sometimes needs an aspect correction
-    var aspect = LiteGraph.camera_aspect
+    // blur sometimes needs an aspect correction
+    let aspect = LiteGraph.camera_aspect
     if (!aspect && window.gl !== undefined) {
       aspect = gl.canvas.height / gl.canvas.width
     }
@@ -8959,9 +8955,9 @@
     }
     aspect = this.properties.preserve_aspect ? aspect : 1
 
-    var scale = this.properties.scale || [1, 1]
+    const scale = this.properties.scale || [1, 1]
     tex.applyBlur(aspect * scale[0], scale[1], intensity, temp)
-    for (var i = 1; i < iterations; ++i) {
+    for (let i = 1; i < iterations; ++i) {
       temp.applyBlur(aspect * scale[0] * (i + 1), scale[1] * (i + 1), intensity)
     }
 
@@ -8994,8 +8990,8 @@
 
   LiteGraph.registerNodeType('texture/blur', LGraphTextureBlur)
 
-  //Independent glow FX
-  //based on https://catlikecoding.com/unity/tutorials/advanced-rendering/bloom/
+  // Independent glow FX
+  // based on https://catlikecoding.com/unity/tutorials/advanced-rendering/bloom/
   function FXGlow() {
     this.intensity = 0.5
     this.persistence = 0.6
@@ -9017,10 +9013,10 @@
   }
 
   FXGlow.prototype.applyFX = function (tex, output_texture, glow_texture, average_texture) {
-    var width = tex.width
-    var height = tex.height
+    let width = tex.width
+    let height = tex.height
 
-    var texture_info = {
+    const texture_info = {
       format: tex.format,
       type: tex.type,
       minFilter: GL.LINEAR,
@@ -9028,10 +9024,10 @@
       wrap: gl.CLAMP_TO_EDGE
     }
 
-    var uniforms = this._uniforms
-    var textures = this._textures
+    const uniforms = this._uniforms
+    const textures = this._textures
 
-    //cut
+    // cut
     var shader = FXGlow._cut_shader
     if (!shader) {
       shader = FXGlow._cut_shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, FXGlow.cut_pixel_shader)
@@ -9041,26 +9037,26 @@
     gl.disable(gl.BLEND)
 
     uniforms.u_threshold = this.threshold
-    var currentDestination = (textures[0] = GL.Texture.getTemporary(width, height, texture_info))
+    let currentDestination = (textures[0] = GL.Texture.getTemporary(width, height, texture_info))
     tex.blit(currentDestination, shader.uniforms(uniforms))
-    var currentSource = currentDestination
+    let currentSource = currentDestination
 
-    var iterations = this.iterations
+    let iterations = this.iterations
     iterations = clamp(iterations, 1, 16) | 0
-    var texel_size = uniforms.u_texel_size
-    var intensity = this.intensity
+    const texel_size = uniforms.u_texel_size
+    const intensity = this.intensity
 
     uniforms.u_intensity = 1
-    uniforms.u_delta = this.scale //1
+    uniforms.u_delta = this.scale // 1
 
-    //downscale/upscale shader
+    // downscale/upscale shader
     var shader = FXGlow._shader
     if (!shader) {
       shader = FXGlow._shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, FXGlow.scale_pixel_shader)
     }
 
-    var i = 1
-    //downscale
+    let i = 1
+    // downscale
     for (; i < iterations; i++) {
       width = width >> 1
       if ((height | 0) > 1) {
@@ -9076,7 +9072,7 @@
       currentSource = currentDestination
     }
 
-    //average
+    // average
     if (average_texture) {
       texel_size[0] = 1 / currentSource.width
       texel_size[1] = 1 / currentSource.height
@@ -9085,7 +9081,7 @@
       currentSource.blit(average_texture, shader.uniforms(uniforms))
     }
 
-    //upscale and blend
+    // upscale and blend
     gl.enable(gl.BLEND)
     gl.blendFunc(gl.ONE, gl.ONE)
     uniforms.u_intensity = this.persistence
@@ -9103,16 +9099,16 @@
     }
     gl.disable(gl.BLEND)
 
-    //glow
+    // glow
     if (glow_texture) {
       currentSource.blit(glow_texture)
     }
 
-    //final composition
+    // final composition
     if (output_texture) {
-      var final_texture = output_texture
-      var dirt_texture = this.dirt_texture
-      var dirt_factor = this.dirt_factor
+      const final_texture = output_texture
+      const dirt_texture = this.dirt_texture
+      const dirt_factor = this.dirt_factor
       uniforms.u_intensity = intensity
 
       shader = dirt_texture ? FXGlow._dirt_final_shader : FXGlow._final_shader
@@ -9251,24 +9247,24 @@ void main() {\n\
   }
 
   LGraphTextureGlow.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isAnyOutputConnected()) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH || this.getInputOrProperty('enabled') === false) {
       this.setOutputData(0, tex)
       return
     }
 
-    var width = tex.width
-    var height = tex.height
+    const width = tex.width
+    const height = tex.height
 
-    var fx = this.fx
+    const fx = this.fx
     fx.threshold = this.getInputOrProperty('threshold')
     fx.iterations = this.getInputOrProperty('iterations')
     fx.intensity = this.getInputOrProperty('intensity')
@@ -9277,9 +9273,9 @@ void main() {\n\
     fx.dirt_factor = this.getInputOrProperty('dirt_factor')
     fx.scale = this.properties.scale
 
-    var type = LGraphTexture.getTextureType(this.properties.precision, tex)
+    const type = LGraphTexture.getTextureType(this.properties.precision, tex)
 
-    var average_texture = null
+    let average_texture = null
     if (this.isOutputConnected(2)) {
       average_texture = this._average_texture
       if (!average_texture || average_texture.type != tex.type || average_texture.format != tex.format) {
@@ -9291,7 +9287,7 @@ void main() {\n\
       }
     }
 
-    var glow_texture = null
+    let glow_texture = null
     if (this.isOutputConnected(1)) {
       glow_texture = this._glow_texture
       if (
@@ -9309,7 +9305,7 @@ void main() {\n\
       }
     }
 
-    var final_texture = null
+    let final_texture = null
     if (this.isOutputConnected(0)) {
       final_texture = this._final_texture
       if (
@@ -9327,7 +9323,7 @@ void main() {\n\
       }
     }
 
-    //apply FX
+    // apply FX
     fx.applyFX(tex, final_texture, glow_texture, average_texture)
 
     if (this.isOutputConnected(0)) this.setOutputData(0, final_texture)
@@ -9353,16 +9349,16 @@ void main() {\n\
   LGraphTextureKuwaharaFilter._shaders = []
 
   LGraphTextureKuwaharaFilter.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var temp = this._temp_texture
+    const temp = this._temp_texture
 
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
@@ -9372,19 +9368,19 @@ void main() {\n\
       })
     }
 
-    //iterations
-    var radius = this.properties.radius
+    // iterations
+    let radius = this.properties.radius
     radius = Math.min(Math.floor(radius), LGraphTextureKuwaharaFilter.max_radius)
     if (radius == 0) {
-      //skip blurring
+      // skip blurring
       this.setOutputData(0, tex)
       return
     }
 
-    var intensity = this.properties.intensity
+    const intensity = this.properties.intensity
 
-    //blur sometimes needs an aspect correction
-    var aspect = LiteGraph.camera_aspect
+    // blur sometimes needs an aspect correction
+    let aspect = LiteGraph.camera_aspect
     if (!aspect && window.gl !== undefined) {
       aspect = gl.canvas.height / gl.canvas.width
     }
@@ -9401,8 +9397,8 @@ void main() {\n\
       )
     }
 
-    var shader = LGraphTextureKuwaharaFilter._shaders[radius]
-    var mesh = GL.Mesh.getScreenQuad()
+    const shader = LGraphTextureKuwaharaFilter._shaders[radius]
+    const mesh = GL.Mesh.getScreenQuad()
     tex.bind(0)
 
     this._temp_texture.drawTo(function () {
@@ -9419,7 +9415,7 @@ void main() {\n\
     this.setOutputData(0, this._temp_texture)
   }
 
-  //from https://www.shadertoy.com/view/MsXSz4
+  // from https://www.shadertoy.com/view/MsXSz4
   LGraphTextureKuwaharaFilter.pixel_shader =
     '\n\
 precision highp float;\n\
@@ -9537,16 +9533,16 @@ if (sigma2 < min_sigma2) {\n\
   LGraphTextureXDoGFilter._shaders = []
 
   LGraphTextureXDoGFilter.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var temp = this._temp_texture
+    const temp = this._temp_texture
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
@@ -9561,14 +9557,14 @@ if (sigma2 < min_sigma2) {\n\
         LGraphTextureXDoGFilter.xdog_pixel_shader
       )
     }
-    var shader = LGraphTextureXDoGFilter._xdog_shader
-    var mesh = GL.Mesh.getScreenQuad()
+    const shader = LGraphTextureXDoGFilter._xdog_shader
+    const mesh = GL.Mesh.getScreenQuad()
 
-    var sigma = this.properties.sigma
-    var k = this.properties.k
-    var p = this.properties.p
-    var epsilon = this.properties.epsilon
-    var phi = this.properties.phi
+    const sigma = this.properties.sigma
+    const k = this.properties.k
+    const p = this.properties.p
+    const epsilon = this.properties.epsilon
+    const phi = this.properties.phi
     tex.bind(0)
     this._temp_texture.drawTo(function () {
       shader
@@ -9588,7 +9584,7 @@ if (sigma2 < min_sigma2) {\n\
     this.setOutputData(0, this._temp_texture)
   }
 
-  //from https://github.com/RaymondMcGuire/GPU-Based-Image-Processing-Tools/blob/master/lib_webgl/scripts/main.js
+  // from https://github.com/RaymondMcGuire/GPU-Based-Image-Processing-Tools/blob/master/lib_webgl/scripts/main.js
   LGraphTextureXDoGFilter.xdog_pixel_shader =
     '\n\
 precision highp float;\n\
@@ -9666,20 +9662,20 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LGraphTextureWebcam.prototype.openStream = function () {
     if (!navigator.getUserMedia) {
-      //console.log('getUserMedia() is not supported in your browser, use chrome and enable WebRTC from about://flags');
+      // console.log('getUserMedia() is not supported in your browser, use chrome and enable WebRTC from about://flags');
       return
     }
 
     this._waiting_confirmation = true
 
     // Not showing vendor prefixes.
-    var constraints = {
+    const constraints = {
       audio: false,
       video: { facingMode: this.properties.facingMode }
     }
     navigator.mediaDevices.getUserMedia(constraints).then(this.streamReady.bind(this)).catch(onFailSoHard)
 
-    var that = this
+    const that = this
     function onFailSoHard(e) {
       LGraphTextureWebcam.is_webcam_open = false
       console.log('Webcam rejected', e)
@@ -9691,9 +9687,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LGraphTextureWebcam.prototype.closeStream = function () {
     if (this._webcam_stream) {
-      var tracks = this._webcam_stream.getTracks()
+      const tracks = this._webcam_stream.getTracks()
       if (tracks.length) {
-        for (var i = 0; i < tracks.length; ++i) {
+        for (let i = 0; i < tracks.length; ++i) {
           tracks[i].stop()
         }
       }
@@ -9707,16 +9703,16 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LGraphTextureWebcam.prototype.streamReady = function (localMediaStream) {
     this._webcam_stream = localMediaStream
-    //this._waiting_confirmation = false;
+    // this._waiting_confirmation = false;
     this.boxcolor = 'green'
-    var video = this._video
+    let video = this._video
     if (!video) {
       video = document.createElement('video')
       video.autoplay = true
       video.srcObject = localMediaStream
       this._video = video
-      //document.body.appendChild( video ); //debug
-      //when video info is loaded (size and so)
+      // document.body.appendChild( video ); //debug
+      // when video info is loaded (size and so)
       video.onloadedmetadata = function (e) {
         // Ready to go. Do some stuff.
         LGraphTextureWebcam.is_webcam_open = true
@@ -9739,9 +9735,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       return
     }
 
-    var tracks = this._webcam_stream.getTracks()
+    const tracks = this._webcam_stream.getTracks()
     if (tracks.length) {
-      for (var i = 0; i < tracks.length; ++i) {
+      for (let i = 0; i < tracks.length; ++i) {
         tracks[i].stop()
       }
     }
@@ -9759,10 +9755,10 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       return
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save()
     if (!ctx.webgl) {
-      //reverse image
+      // reverse image
       ctx.drawImage(this._video, 0, 0, this.size[0], this.size[1])
     } else {
       if (this._video_texture) {
@@ -9781,10 +9777,10 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       return
     }
 
-    var width = this._video.videoWidth
-    var height = this._video.videoHeight
+    const width = this._video.videoWidth
+    const height = this._video.videoHeight
 
-    var temp = this._video_texture
+    const temp = this._video_texture
     if (!temp || temp.width != width || temp.height != height) {
       this._video_texture = new GL.Texture(width, height, {
         format: gl.RGB,
@@ -9796,12 +9792,12 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     this._video_texture.version = ++this.version
 
     if (this.properties.texture_name) {
-      var container = LGraphTexture.getTexturesContainer()
+      const container = LGraphTexture.getTexturesContainer()
       container[this.properties.texture_name] = this._video_texture
     }
 
     this.setOutputData(0, this._video_texture)
-    for (var i = 1; i < this.outputs.length; ++i) {
+    for (let i = 1; i < this.outputs.length; ++i) {
       if (!this.outputs[i]) {
         continue
       }
@@ -9828,7 +9824,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LiteGraph.registerNodeType('texture/webcam', LGraphTextureWebcam)
 
-  //from https://github.com/spite/Wagner
+  // from https://github.com/spite/Wagner
   function LGraphLensFX() {
     this.addInput('in', 'Texture')
     this.addInput('f', 'number')
@@ -9854,21 +9850,21 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphLensFX.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH || this.getInputOrProperty('enabled') === false) {
       this.setOutputData(0, tex)
       return
     }
 
-    var temp = this._temp_texture
+    let temp = this._temp_texture
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
       temp = this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
@@ -9877,20 +9873,20 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       })
     }
 
-    var shader = LGraphLensFX._shader
+    let shader = LGraphLensFX._shader
     if (!shader) {
       shader = LGraphLensFX._shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphLensFX.pixel_shader)
     }
 
-    var factor = this.getInputData(1)
+    let factor = this.getInputData(1)
     if (factor == null) {
       factor = this.properties.factor
     }
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     uniforms.u_factor = factor
 
-    //apply shader
+    // apply shader
     gl.disable(gl.DEPTH_TEST)
     temp.drawTo(function () {
       tex.bind(0)
@@ -9970,24 +9966,24 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTextureFromData.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var data = this.getInputData(0)
+    const data = this.getInputData(0)
     if (!data) return
 
-    var channels = this.properties.channels
-    var w = this.properties.width
-    var h = this.properties.height
+    const channels = this.properties.channels
+    let w = this.properties.width
+    let h = this.properties.height
     if (!w || !h) {
       w = Math.floor(data.length / channels)
       h = 1
     }
-    var format = gl.RGBA
+    let format = gl.RGBA
     if (channels == 3) format = gl.RGB
     else if (channels == 1) format = gl.LUMINANCE
 
-    var temp = this._temp_texture
-    var type = LGraphTexture.getTextureType(this.properties.precision)
+    let temp = this._temp_texture
+    const type = LGraphTexture.getTextureType(this.properties.precision)
     if (!temp || temp.width != w || temp.height != h || temp.type != type) {
       temp = this._temp_texture = new GL.Texture(w, h, { type: type, format: format, filter: gl.LINEAR })
     }
@@ -9998,7 +9994,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LiteGraph.registerNodeType('texture/fromdata', LGraphTextureFromData)
 
-  //applies a curve (or generates one)
+  // applies a curve (or generates one)
   function LGraphTextureCurve() {
     this.addInput('in', 'Texture')
     this.addOutput('out', 'Texture')
@@ -10042,21 +10038,21 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTextureCurve.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
-    var temp = this._temp_texture
+    let temp = this._temp_texture
     if (!tex) {
-      //generate one texture, nothing else
+      // generate one texture, nothing else
       if (this._must_update || !this._curve_texture) this.updateCurve()
       this.setOutputData(0, this._curve_texture)
       return
     }
 
-    var type = LGraphTexture.getTextureType(this.properties.precision, tex)
+    const type = LGraphTexture.getTextureType(this.properties.precision, tex)
 
-    //apply curve to input texture
+    // apply curve to input texture
     if (!temp || temp.type != type || temp.width != tex.width || temp.height != tex.height || temp.format != tex.format)
       temp = this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: type,
@@ -10064,7 +10060,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
         filter: gl.LINEAR
       })
 
-    var shader = LGraphTextureCurve._shader
+    let shader = LGraphTextureCurve._shader
     if (!shader) {
       shader = LGraphTextureCurve._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
@@ -10074,10 +10070,10 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
     if (this._must_update || !this._curve_texture) this.updateCurve()
 
-    var uniforms = this._uniforms
-    var curve_texture = this._curve_texture
+    const uniforms = this._uniforms
+    const curve_texture = this._curve_texture
 
-    //apply shader
+    // apply shader
     temp.drawTo(function () {
       gl.disable(gl.DEPTH_TEST)
       tex.bind(0)
@@ -10091,32 +10087,32 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTextureCurve.prototype.sampleCurve = function (f, points) {
     var points = points || this._points.RGB
     if (!points) return
-    for (var i = 0; i < points.length - 1; ++i) {
-      var p = points[i]
-      var pn = points[i + 1]
+    for (let i = 0; i < points.length - 1; ++i) {
+      const p = points[i]
+      const pn = points[i + 1]
       if (pn[0] < f) continue
-      var r = pn[0] - p[0]
+      const r = pn[0] - p[0]
       if (Math.abs(r) < 0.00001) return p[1]
-      var local_f = (f - p[0]) / r
+      const local_f = (f - p[0]) / r
       return p[1] * (1.0 - local_f) + pn[1] * local_f
     }
     return 0
   }
 
   LGraphTextureCurve.prototype.updateCurve = function () {
-    var values = this._values
-    var num = values.length / 4
-    var split = this.properties.split_channels
-    for (var i = 0; i < num; ++i) {
+    const values = this._values
+    const num = values.length / 4
+    const split = this.properties.split_channels
+    for (let i = 0; i < num; ++i) {
       if (split) {
         values[i * 4] = clamp(this.sampleCurve(i / num, this._points.R) * 255, 0, 255)
         values[i * 4 + 1] = clamp(this.sampleCurve(i / num, this._points.G) * 255, 0, 255)
         values[i * 4 + 2] = clamp(this.sampleCurve(i / num, this._points.B) * 255, 0, 255)
       } else {
-        var v = this.sampleCurve(i / num) //sample curve
+        const v = this.sampleCurve(i / num) // sample curve
         values[i * 4] = values[i * 4 + 1] = values[i * 4 + 2] = clamp(v * 255, 0, 255)
       }
-      values[i * 4 + 3] = 255 //alpha fixed
+      values[i * 4 + 3] = 255 // alpha fixed
     }
     if (!this._curve_texture)
       this._curve_texture = new GL.Texture(256, 1, { format: gl.RGBA, magFilter: gl.LINEAR, wrap: gl.CLAMP_TO_EDGE })
@@ -10124,8 +10120,8 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphTextureCurve.prototype.onSerialize = function (o) {
-    var curves = {}
-    for (var i in this._points) curves[i] = this._points[i].concat()
+    const curves = {}
+    for (const i in this._points) curves[i] = this._points[i].concat()
     o.curves = curves
   }
 
@@ -10137,7 +10133,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LGraphTextureCurve.prototype.onMouseDown = function (e, localpos, graphcanvas) {
     if (this.curve_editor) {
-      var r = this.curve_editor.onMouseDown([localpos[0], localpos[1] - this.curve_offset], graphcanvas)
+      const r = this.curve_editor.onMouseDown([localpos[0], localpos[1] - this.curve_offset], graphcanvas)
       if (r) this.captureInput(true)
       return r
     }
@@ -10162,7 +10158,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     if (!this.curve_editor) this.curve_editor = new LiteGraph.CurveEditor(this._points.R)
     ctx.save()
     ctx.translate(0, this.curve_offset)
-    var channel = this.widgets[1].value
+    let channel = this.widgets[1].value
 
     if (this.properties.split_channels) {
       if (channel == 'RGB') {
@@ -10232,7 +10228,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LiteGraph.registerNodeType('texture/curve', LGraphTextureCurve)
 
-  //simple exposition, but plan to expand it to support different gamma curves
+  // simple exposition, but plan to expand it to support different gamma curves
   function LGraphExposition() {
     this.addInput('in', 'Texture')
     this.addInput('exp', 'number')
@@ -10250,16 +10246,16 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphExposition.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var temp = this._temp_texture
+    let temp = this._temp_texture
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
       temp = this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
@@ -10268,19 +10264,19 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       })
     }
 
-    var shader = LGraphExposition._shader
+    let shader = LGraphExposition._shader
     if (!shader) {
       shader = LGraphExposition._shader = new GL.Shader(GL.Shader.SCREEN_VERTEX_SHADER, LGraphExposition.pixel_shader)
     }
 
-    var exp = this.properties.exposition
-    var exp_input = this.getInputData(1)
+    let exp = this.properties.exposition
+    const exp_input = this.getInputData(1)
     if (exp_input != null) {
       exp = this.properties.exposition = exp_input
     }
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
 
-    //apply shader
+    // apply shader
     temp.drawTo(function () {
       gl.disable(gl.DEPTH_TEST)
       tex.bind(0)
@@ -10337,21 +10333,21 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphToneMapping.prototype.onExecute = function () {
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex) {
       return
     }
 
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH || this.getInputOrProperty('enabled') === false) {
       this.setOutputData(0, tex)
       return
     }
 
-    var temp = this._temp_texture
+    let temp = this._temp_texture
 
     if (!temp || temp.width != tex.width || temp.height != tex.height || temp.type != tex.type) {
       temp = this._temp_texture = new GL.Texture(tex.width, tex.height, {
@@ -10361,13 +10357,13 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       })
     }
 
-    var avg = this.getInputData(1)
+    let avg = this.getInputData(1)
     if (avg == null) {
       avg = this.properties.average_lum
     }
 
-    var uniforms = this._uniforms
-    var shader = null
+    const uniforms = this._uniforms
+    let shader = null
 
     if (avg.constructor === Number) {
       this.properties.average_lum = avg
@@ -10395,7 +10391,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     uniforms.u_scale = this.properties.scale
     uniforms.u_igamma = 1 / this.properties.gamma
 
-    //apply shader
+    // apply shader
     gl.disable(gl.DEPTH_TEST)
     temp.drawTo(function () {
       tex.bind(0)
@@ -10505,19 +10501,19 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTexturePerlin.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var w = this.properties.width | 0
-    var h = this.properties.height | 0
+    let w = this.properties.width | 0
+    let h = this.properties.height | 0
     if (w == 0) {
       w = gl.viewport_data[2]
-    } //0 means default
+    } // 0 means default
     if (h == 0) {
       h = gl.viewport_data[3]
-    } //0 means default
-    var type = LGraphTexture.getTextureType(this.properties.precision)
+    } // 0 means default
+    const type = LGraphTexture.getTextureType(this.properties.precision)
 
-    var temp = this._texture
+    let temp = this._texture
     if (!temp || temp.width != w || temp.height != h || temp.type != type) {
       temp = this._texture = new GL.Texture(w, h, {
         type: type,
@@ -10526,23 +10522,23 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       })
     }
 
-    var persistence = this.getInputOrProperty('persistence')
-    var octaves = this.getInputOrProperty('octaves')
-    var offset = this.getInputOrProperty('offset')
-    var scale = this.getInputOrProperty('scale')
-    var amplitude = this.getInputOrProperty('amplitude')
-    var seed = this.getInputOrProperty('seed')
+    const persistence = this.getInputOrProperty('persistence')
+    const octaves = this.getInputOrProperty('octaves')
+    const offset = this.getInputOrProperty('offset')
+    const scale = this.getInputOrProperty('scale')
+    const amplitude = this.getInputOrProperty('amplitude')
+    const seed = this.getInputOrProperty('seed')
 
-    //reusing old texture
-    var key = '' + w + h + type + persistence + octaves + scale + seed + offset[0] + offset[1] + amplitude
+    // reusing old texture
+    const key = `${w}${h}${type}${persistence}${octaves}${scale}${seed}${offset[0]}${offset[1]}${amplitude}`
     if (key == this._key) {
       this.setOutputData(0, temp)
       return
     }
     this._key = key
 
-    //gather uniforms
-    var uniforms = this._uniforms
+    // gather uniforms
+    const uniforms = this._uniforms
     uniforms.u_persistence = persistence
     uniforms.u_octaves = octaves
     uniforms.u_offset.set(offset)
@@ -10552,8 +10548,8 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     uniforms.u_viewport[0] = w
     uniforms.u_viewport[1] = h
 
-    //render
-    var shader = LGraphTexturePerlin._shader
+    // render
+    let shader = LGraphTexturePerlin._shader
     if (!shader) {
       shader = LGraphTexturePerlin._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
@@ -10647,7 +10643,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTextureCanvas2D.desc = 'Executes Canvas2D code inside a texture or the viewport.'
   LGraphTextureCanvas2D.help = 'Set width and height to 0 to match viewport size.'
 
-  LGraphTextureCanvas2D.default_code = "//vars: canvas,ctx,time\nctx.fillStyle='red';\nctx.fillRect(0,0,50,50);\n"
+  LGraphTextureCanvas2D.default_code = '//vars: canvas,ctx,time\nctx.fillStyle=\'red\';\nctx.fillRect(0,0,50,50);\n'
 
   LGraphTextureCanvas2D.widgets_info = {
     precision: { widget: 'combo', values: LGraphTexture.MODE_VALUES },
@@ -10675,7 +10671,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphTextureCanvas2D.prototype.onExecute = function () {
-    var func = this._func
+    const func = this._func
     if (!func || !this.isOutputConnected(0)) {
       return
     }
@@ -10683,10 +10679,10 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   }
 
   LGraphTextureCanvas2D.prototype.executeDraw = function (func_context) {
-    var width = this.properties.width || gl.canvas.width
-    var height = this.properties.height || gl.canvas.height
-    var temp = this._temp_texture
-    var type = LGraphTexture.getTextureType(this.properties.precision)
+    const width = this.properties.width || gl.canvas.width
+    const height = this.properties.height || gl.canvas.height
+    let temp = this._temp_texture
+    const type = LGraphTexture.getTextureType(this.properties.precision)
     if (!temp || temp.width != width || temp.height != height || temp.type != type) {
       temp = this._temp_texture = new GL.Texture(width, height, {
         format: gl.RGBA,
@@ -10695,13 +10691,13 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       })
     }
 
-    var v = this.getInputData(0)
+    const v = this.getInputData(0)
 
-    var properties = this.properties
-    var that = this
-    var time = this.graph.getTime()
-    var ctx = gl
-    var canvas = gl.canvas
+    const properties = this.properties
+    const that = this
+    const time = this.graph.getTime()
+    let ctx = gl
+    let canvas = gl.canvas
     if (this.properties.use_html_canvas || !global.enableWebGLCanvas) {
       if (!this._canvas) {
         canvas = this._canvas = createCanvas(width.height)
@@ -10715,7 +10711,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     }
 
     if (ctx == gl)
-      //using Canvas2DtoWebGL
+      // using Canvas2DtoWebGL
       temp.drawTo(function () {
         gl.start2D()
         if (properties.clear) {
@@ -10737,7 +10733,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
         }
         gl.finish2D()
       })
-    //rendering to offscreen canvas and uploading to texture
+    // rendering to offscreen canvas and uploading to texture
     else {
       if (properties.clear) ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -10786,9 +10782,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphTextureMatte.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) {
       return
-    } //saves work
+    } // saves work
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex)
@@ -10812,10 +10808,10 @@ gl_FragColor = vec4(destColor, 1.0);\n\
         u_slope: 1
       }
     }
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
 
-    var mesh = Mesh.getScreenQuad()
-    var shader = LGraphTextureMatte._shader
+    const mesh = Mesh.getScreenQuad()
+    let shader = LGraphTextureMatte._shader
     if (!shader) {
       shader = LGraphTextureMatte._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
@@ -10853,7 +10849,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LiteGraph.registerNodeType('texture/matte', LGraphTextureMatte)
 
-  //***********************************
+  //* **********************************
   function LGraphCubemapToTexture2D() {
     this.addInput('in', 'texture')
     this.addInput('yaw', 'number')
@@ -10867,11 +10863,11 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGraphCubemapToTexture2D.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) return
 
-    var tex = this.getInputData(0)
+    const tex = this.getInputData(0)
     if (!tex || tex.texture_type != GL.TEXTURE_CUBE_MAP) return
     if (this._last_tex && (this._last_tex.height != tex.height || this._last_tex.type != tex.type))
       this._last_tex = null
-    var yaw = this.getInputOrProperty('yaw')
+    const yaw = this.getInputOrProperty('yaw')
     this._last_tex = GL.Texture.cubemapToTexture2D(tex, tex.height, this._last_tex, true, yaw)
     this.setOutputData(0, this._last_tex)
   }
@@ -10881,14 +10877,14 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 ;(function (global) {
   if (typeof GL == 'undefined') return
 
-  var LiteGraph = global.LiteGraph
-  var LGraphCanvas = global.LGraphCanvas
+  const LiteGraph = global.LiteGraph
+  const LGraphCanvas = global.LGraphCanvas
 
-  var SHADERNODES_COLOR = '#345'
+  const SHADERNODES_COLOR = '#345'
 
-  var LGShaders = (LiteGraph.Shaders = {})
+  const LGShaders = (LiteGraph.Shaders = {})
 
-  var GLSL_types = (LGShaders.GLSL_types = [
+  const GLSL_types = (LGShaders.GLSL_types = [
     'float',
     'vec2',
     'vec3',
@@ -10898,9 +10894,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     'sampler2D',
     'samplerCube'
   ])
-  var GLSL_types_const = (LGShaders.GLSL_types_const = ['float', 'vec2', 'vec3', 'vec4'])
+  const GLSL_types_const = (LGShaders.GLSL_types_const = ['float', 'vec2', 'vec3', 'vec4'])
 
-  var GLSL_functions_desc = {
+  const GLSL_functions_desc = {
     radians: 'T radians(T degrees)',
     degrees: 'T degrees(T radians)',
     sin: 'T sin(T angle)',
@@ -10923,13 +10919,13 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     round: 'T round(T x)',
     ceil: 'T ceil(T x)',
     fract: 'T fract(T x)',
-    mod: 'T mod(T x,T y)', //"T mod(T x,float y)"
+    mod: 'T mod(T x,T y)', // "T mod(T x,float y)"
     min: 'T min(T x,T y)',
     max: 'T max(T x,T y)',
     clamp: 'T clamp(T x,T minVal = 0.0,T maxVal = 1.0)',
-    mix: 'T mix(T x,T y,T a)', //"T mix(T x,T y,float a)"
-    step: 'T step(T edge, T edge2, T x)', //"T step(float edge, T x)"
-    smoothstep: 'T smoothstep(T edge, T edge2, T x)', //"T smoothstep(float edge, T x)"
+    mix: 'T mix(T x,T y,T a)', // "T mix(T x,T y,float a)"
+    step: 'T step(T edge, T edge2, T x)', // "T step(float edge, T x)"
+    smoothstep: 'T smoothstep(T edge, T edge2, T x)', // "T smoothstep(float edge, T x)"
     length: 'float length(T x)',
     distance: 'float distance(T p0, T p1)',
     normalize: 'T normalize(T x)',
@@ -10939,9 +10935,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     refract: 'vec3 refract(vec3 V,vec3 N, float IOR)'
   }
 
-  //parse them
-  var GLSL_functions = {}
-  var GLSL_functions_name = []
+  // parse them
+  const GLSL_functions = {}
+  const GLSL_functions_name = []
   parseGLSLDescriptions()
 
   LGShaders.ALL_TYPES = 'float,vec2,vec3,vec4'
@@ -10949,15 +10945,15 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   function parseGLSLDescriptions() {
     GLSL_functions_name.length = 0
 
-    for (var i in GLSL_functions_desc) {
-      var op = GLSL_functions_desc[i]
-      var index = op.indexOf(' ')
-      var return_type = op.substr(0, index)
-      var index2 = op.indexOf('(', index)
-      var func_name = op.substr(index, index2 - index).trim()
-      var params = op.substr(index2 + 1, op.length - index2 - 2).split(',')
-      for (var j in params) {
-        var p = params[j].split(' ').filter(function (a) {
+    for (const i in GLSL_functions_desc) {
+      const op = GLSL_functions_desc[i]
+      const index = op.indexOf(' ')
+      const return_type = op.substr(0, index)
+      const index2 = op.indexOf('(', index)
+      const func_name = op.substr(index, index2 - index).trim()
+      const params = op.substr(index2 + 1, op.length - index2 - 2).split(',')
+      for (const j in params) {
+        const p = params[j].split(' ').filter(function (a) {
           return a
         })
         params[j] = { type: p[0].trim(), name: p[1].trim() }
@@ -10965,25 +10961,25 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       }
       GLSL_functions[i] = { return_type: return_type, func: func_name, params: params }
       GLSL_functions_name.push(func_name)
-      //console.log( GLSL_functions[i] );
+      // console.log( GLSL_functions[i] );
     }
   }
 
-  //common actions to all shader node classes
+  // common actions to all shader node classes
   function registerShaderNode(type, node_ctor) {
-    //static attributes
+    // static attributes
     node_ctor.color = SHADERNODES_COLOR
     node_ctor.filter = 'shader'
 
-    //common methods
+    // common methods
     node_ctor.prototype.clearDestination = function () {
       this.shader_destination = {}
     }
     node_ctor.prototype.propagateDestination = function propagateDestination(dest_name) {
       this.shader_destination[dest_name] = true
       if (this.inputs)
-        for (var i = 0; i < this.inputs.length; ++i) {
-          var origin_node = this.getInputNode(i)
+        for (let i = 0; i < this.inputs.length; ++i) {
+          const origin_node = this.getInputNode(i)
           if (origin_node) origin_node.propagateDestination(dest_name)
         }
     }
@@ -11022,27 +11018,27 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     }
   */
 
-    LiteGraph.registerNodeType('shader::' + type, node_ctor)
+    LiteGraph.registerNodeType(`shader::${type}`, node_ctor)
   }
 
   function getShaderNodeVarName(node, name) {
-    return 'VAR_' + (name || 'TEMP') + '_' + node.id
+    return `VAR_${name || 'TEMP'}_${node.id}`
   }
 
   function getInputLinkID(node, slot) {
     if (!node.inputs) return null
-    var link = node.getInputLink(slot)
+    const link = node.getInputLink(slot)
     if (!link) return null
-    var origin_node = node.graph.getNodeById(link.origin_id)
+    const origin_node = node.graph.getNodeById(link.origin_id)
     if (!origin_node) return null
     if (origin_node.getOutputVarName) return origin_node.getOutputVarName(link.origin_slot)
-    //generate
-    return 'link_' + origin_node.id + '_' + link.origin_slot
+    // generate
+    return `link_${origin_node.id}_${link.origin_slot}`
   }
 
   function getOutputLinkID(node, slot) {
     if (!node.isOutputConnected(slot)) return null
-    return 'link_' + node.id + '_' + slot
+    return `link_${node.id}_${slot}`
   }
 
   LGShaders.registerShaderNode = registerShaderNode
@@ -11051,9 +11047,9 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   LGShaders.getShaderNodeVarName = getShaderNodeVarName
   LGShaders.parseGLSLDescriptions = parseGLSLDescriptions
 
-  //given a const number, it transform it to a string that matches a type
-  var valueToGLSL = (LiteGraph.valueToGLSL = function valueToGLSL(v, type, precision) {
-    var n = 5 //num decimals
+  // given a const number, it transform it to a string that matches a type
+  const valueToGLSL = (LiteGraph.valueToGLSL = function valueToGLSL(v, type, precision) {
+    let n = 5 // num decimals
     if (precision != null) n = precision
     if (!type) {
       if (v.constructor === Number) type = 'float'
@@ -11077,29 +11073,29 @@ gl_FragColor = vec4(destColor, 1.0);\n\
           default:
             throw 'unknown type for glsl value size'
         }
-      } else throw 'unknown type for glsl value: ' + v.constructor
+      } else throw `unknown type for glsl value: ${v.constructor}`
     }
     switch (type) {
       case 'float':
         return v.toFixed(n)
         break
       case 'vec2':
-        return 'vec2(' + v[0].toFixed(n) + ',' + v[1].toFixed(n) + ')'
+        return `vec2(${v[0].toFixed(n)},${v[1].toFixed(n)})`
         break
       case 'color3':
       case 'vec3':
-        return 'vec3(' + v[0].toFixed(n) + ',' + v[1].toFixed(n) + ',' + v[2].toFixed(n) + ')'
+        return `vec3(${v[0].toFixed(n)},${v[1].toFixed(n)},${v[2].toFixed(n)})`
         break
       case 'color4':
       case 'vec4':
-        return 'vec4(' + v[0].toFixed(n) + ',' + v[1].toFixed(n) + ',' + v[2].toFixed(n) + ',' + v[3].toFixed(n) + ')'
+        return `vec4(${v[0].toFixed(n)},${v[1].toFixed(n)},${v[2].toFixed(n)},${v[3].toFixed(n)})`
         break
       case 'mat3':
         return 'mat3(1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0)'
-        break //not fully supported yet
+        break // not fully supported yet
       case 'mat4':
         return 'mat4(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0)'
-        break //not fully supported yet
+        break // not fully supported yet
       default:
         throw ('unknown glsl type in valueToGLSL:', type)
     }
@@ -11107,8 +11103,8 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     return ''
   })
 
-  //makes sure that a var is of a type, and if not, it converts it
-  var varToTypeGLSL = (LiteGraph.varToTypeGLSL = function varToTypeGLSL(v, input_type, output_type) {
+  // makes sure that a var is of a type, and if not, it converts it
+  const varToTypeGLSL = (LiteGraph.varToTypeGLSL = function varToTypeGLSL(v, input_type, output_type) {
     if (input_type == output_type) return v
     if (v == null)
       switch (output_type) {
@@ -11120,96 +11116,96 @@ gl_FragColor = vec4(destColor, 1.0);\n\
           return 'vec3(0.0)'
         case 'vec4':
           return 'vec4(0.0,0.0,0.0,1.0)'
-        default: //null
+        default: // null
           return null
       }
 
     if (!output_type) throw 'error: no output type specified'
     if (output_type == 'float') {
       switch (input_type) {
-        //case "float":
+        // case "float":
         case 'vec2':
         case 'vec3':
         case 'vec4':
-          return v + '.x'
+          return `${v}.x`
           break
-        default: //null
+        default: // null
           return '0.0'
           break
       }
     } else if (output_type == 'vec2') {
       switch (input_type) {
         case 'float':
-          return 'vec2(' + v + ')'
-        //case "vec2":
+          return `vec2(${v})`
+        // case "vec2":
         case 'vec3':
         case 'vec4':
-          return v + '.xy'
-        default: //null
+          return `${v}.xy`
+        default: // null
           return 'vec2(0.0)'
       }
     } else if (output_type == 'vec3') {
       switch (input_type) {
         case 'float':
-          return 'vec3(' + v + ')'
+          return `vec3(${v})`
         case 'vec2':
-          return 'vec3(' + v + ',0.0)'
-        //case "vec3":
+          return `vec3(${v},0.0)`
+        // case "vec3":
         case 'vec4':
-          return v + '.xyz'
-        default: //null
+          return `${v}.xyz`
+        default: // null
           return 'vec3(0.0)'
       }
     } else if (output_type == 'vec4') {
       switch (input_type) {
         case 'float':
-          return 'vec4(' + v + ')'
+          return `vec4(${v})`
         case 'vec2':
-          return 'vec4(' + v + ',0.0,1.0)'
+          return `vec4(${v},0.0,1.0)`
         case 'vec3':
-          return 'vec4(' + v + ',1.0)'
-        default: //null
+          return `vec4(${v},1.0)`
+        default: // null
           return 'vec4(0.0,0.0,0.0,1.0)'
       }
     }
     throw 'type cannot be converted'
   })
 
-  //used to plug incompatible stuff
-  var convertVarToGLSLType = (LiteGraph.convertVarToGLSLType = function convertVarToGLSLType(
+  // used to plug incompatible stuff
+  const convertVarToGLSLType = (LiteGraph.convertVarToGLSLType = function convertVarToGLSLType(
     varname,
     type,
     target_type
   ) {
     if (type == target_type) return varname
-    if (type == 'float') return target_type + '(' + varname + ')'
+    if (type == 'float') return `${target_type}(${varname})`
     if (target_type == 'vec2')
-      //works for vec2,vec3 and vec4
-      return 'vec2(' + varname + '.xy)'
+      // works for vec2,vec3 and vec4
+      return `vec2(${varname}.xy)`
     if (target_type == 'vec3') {
-      //works for vec2,vec3 and vec4
-      if (type == 'vec2') return 'vec3(' + varname + ',0.0)'
-      if (type == 'vec4') return 'vec4(' + varname + '.xyz)'
+      // works for vec2,vec3 and vec4
+      if (type == 'vec2') return `vec3(${varname},0.0)`
+      if (type == 'vec4') return `vec4(${varname}.xyz)`
     }
     if (target_type == 'vec4') {
-      if (type == 'vec2') return 'vec4(' + varname + ',0.0,0.0)'
-      if (target_type == 'vec3') return 'vec4(' + varname + ',1.0)'
+      if (type == 'vec2') return `vec4(${varname},0.0,0.0)`
+      if (target_type == 'vec3') return `vec4(${varname},1.0)`
     }
     return null
   })
 
-  //used to host a shader body **************************************
+  // used to host a shader body **************************************
   function LGShaderContext() {
-    //to store the code template
+    // to store the code template
     this.vs_template = ''
     this.fs_template = ''
 
-    //required so nodes now where to fetch the input data
+    // required so nodes now where to fetch the input data
     this.buffer_names = {
       uvs: 'v_coord'
     }
 
-    this.extra = {} //to store custom info from the nodes (like if this shader supports a feature, etc)
+    this.extra = {} // to store custom info from the nodes (like if this shader supports a feature, etc)
 
     this._functions = {}
     this._uniforms = {}
@@ -11240,62 +11236,62 @@ gl_FragColor = vec4(destColor, 1.0);\n\
 
   LGShaderContext.prototype.addCode = function (hook, code, destinations) {
     destinations = destinations || { '': '' }
-    for (var i in destinations) {
-      var h = i ? i + '_' + hook : hook
-      if (!this._codeparts[h]) this._codeparts[h] = code + '\n'
-      else this._codeparts[h] += code + '\n'
+    for (const i in destinations) {
+      const h = i ? `${i}_${hook}` : hook
+      if (!this._codeparts[h]) this._codeparts[h] = `${code}\n`
+      else this._codeparts[h] += `${code}\n`
     }
   }
 
-  //the system works by grabbing code fragments from every node and concatenating them in blocks depending on where must they be attached
+  // the system works by grabbing code fragments from every node and concatenating them in blocks depending on where must they be attached
   LGShaderContext.prototype.computeCodeBlocks = function (graph, extra_uniforms) {
-    //prepare context
+    // prepare context
     this.clear()
 
-    //grab output nodes
-    var vertexout = graph.findNodesByType('shader::output/vertex')
+    // grab output nodes
+    let vertexout = graph.findNodesByType('shader::output/vertex')
     vertexout = vertexout && vertexout.length ? vertexout[0] : null
-    var fragmentout = graph.findNodesByType('shader::output/fragcolor')
+    let fragmentout = graph.findNodesByType('shader::output/fragcolor')
     fragmentout = fragmentout && fragmentout.length ? fragmentout[0] : null
     if (!fragmentout)
-      //??
+      // ??
       return null
 
-    //propagate back destinations
+    // propagate back destinations
     graph.sendEventToAllNodes('clearDestination')
     if (vertexout) vertexout.propagateDestination('vs')
     if (fragmentout) fragmentout.propagateDestination('fs')
 
-    //gets code from graph
+    // gets code from graph
     graph.sendEventToAllNodes('onGetCode', this)
 
-    var uniforms = ''
-    for (var i in this._uniforms) uniforms += 'uniform ' + this._uniforms[i] + ' ' + i + ';\n'
-    if (extra_uniforms) for (var i in extra_uniforms) uniforms += 'uniform ' + extra_uniforms[i] + ' ' + i + ';\n'
+    let uniforms = ''
+    for (var i in this._uniforms) uniforms += `uniform ${this._uniforms[i]} ${i};\n`
+    if (extra_uniforms) for (var i in extra_uniforms) uniforms += `uniform ${extra_uniforms[i]} ${i};\n`
 
-    var functions = ''
-    for (var i in this._functions) functions += '//' + i + '\n' + this._functions[i] + '\n'
+    let functions = ''
+    for (var i in this._functions) functions += `//${i}\n${this._functions[i]}\n`
 
-    var blocks = this._codeparts
+    const blocks = this._codeparts
     blocks.uniforms = uniforms
     blocks.functions = functions
     return blocks
   }
 
-  //replaces blocks using the vs and fs template and returns the final codes
+  // replaces blocks using the vs and fs template and returns the final codes
   LGShaderContext.prototype.computeShaderCode = function (graph) {
-    var blocks = this.computeCodeBlocks(graph)
-    var vs_code = GL.Shader.replaceCodeUsingContext(this.vs_template, blocks)
-    var fs_code = GL.Shader.replaceCodeUsingContext(this.fs_template, blocks)
+    const blocks = this.computeCodeBlocks(graph)
+    const vs_code = GL.Shader.replaceCodeUsingContext(this.vs_template, blocks)
+    const fs_code = GL.Shader.replaceCodeUsingContext(this.fs_template, blocks)
     return {
       vs_code: vs_code,
       fs_code: fs_code
     }
   }
 
-  //generates the shader code from the template and the
+  // generates the shader code from the template and the
   LGShaderContext.prototype.computeShader = function (graph, shader) {
-    var finalcode = this.computeShaderCode(graph)
+    const finalcode = this.computeShaderCode(graph)
     console.log(finalcode.vs_code, finalcode.fs_code)
 
     if (!LiteGraph.catch_exceptions) {
@@ -11319,7 +11315,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
             finalcode.fs_code
               .split('\n')
               .map(function (v, i) {
-                return i + '.- ' + v
+                return `${i}.- ${v}`
               })
               .join('\n')
           )
@@ -11329,15 +11325,15 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       return null
     }
 
-    return null //never here
+    return null // never here
   }
 
   LGShaderContext.prototype.getShader = function (graph) {
-    //if graph not changed?
+    // if graph not changed?
     if (this._shader && this._shader._version == graph._version) return this._shader
 
-    //compile shader
-    var shader = this.computeShader(graph, this._shader)
+    // compile shader
+    const shader = this.computeShader(graph, this._shader)
     if (!shader) return null
 
     this._shader = shader
@@ -11345,16 +11341,16 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     return shader
   }
 
-  //some shader nodes could require to fill the box with some uniforms
+  // some shader nodes could require to fill the box with some uniforms
   LGShaderContext.prototype.fillUniforms = function (uniforms, param) {
     if (!this._uniform_value) return
 
-    for (var i in this._uniform_value) {
-      var v = this._uniform_value[i]
+    for (const i in this._uniform_value) {
+      const v = this._uniform_value[i]
       if (v == null) continue
       if (v.constructor === Function) uniforms[i] = v.call(this, param)
       else if (v.constructor === GL.Texture) {
-        //todo...
+        // todo...
       } else uniforms[i] = v
     }
   }
@@ -11365,7 +11361,7 @@ gl_FragColor = vec4(destColor, 1.0);\n\
   // applies a shader graph to texture, it can be uses as an example
 
   function LGraphShaderGraph() {
-    //before inputs
+    // before inputs
     this.subgraph = new LiteGraph.LGraph()
     this.subgraph._subgraph_node = this
     this.subgraph._is_subgraph = true
@@ -11380,14 +11376,14 @@ gl_FragColor = vec4(destColor, 1.0);\n\
       precision: typeof LGraphTexture != 'undefined' ? LGraphTexture.DEFAULT : 2
     }
 
-    var inputNode = this.subgraph.findNodesByType('shader::input/uniform')[0]
+    const inputNode = this.subgraph.findNodesByType('shader::input/uniform')[0]
     inputNode.pos = [200, 300]
 
-    var sampler = LiteGraph.createNode('shader::texture/sampler2D')
+    const sampler = LiteGraph.createNode('shader::texture/sampler2D')
     sampler.pos = [400, 300]
     this.subgraph.add(sampler)
 
-    var outnode = LiteGraph.createNode('shader::output/fragcolor')
+    const outnode = LiteGraph.createNode('shader::output/fragcolor')
     outnode.pos = [600, 300]
     this.subgraph.add(outnode)
 
@@ -11395,12 +11391,12 @@ gl_FragColor = vec4(destColor, 1.0);\n\
     sampler.connect(0, outnode)
 
     this.size = [180, 60]
-    this.redraw_on_mouse = true //force redraw
+    this.redraw_on_mouse = true // force redraw
 
     this._uniforms = {}
     this._shader = null
     this._context = new LGShaderContext()
-    this._context.vs_template = '#define VERTEX\n' + GL.Shader.SCREEN_VERTEX_SHADER
+    this._context.vs_template = `#define VERTEX\n${GL.Shader.SCREEN_VERTEX_SHADER}`
     this._context.fs_template = LGraphShaderGraph.template
   }
 
@@ -11443,22 +11439,22 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderGraph.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) return
 
-    //read input texture
-    var intex = this.getInputData(0)
+    // read input texture
+    let intex = this.getInputData(0)
     if (intex && intex.constructor != GL.Texture) intex = null
 
-    var w = this.properties.width | 0
-    var h = this.properties.height | 0
+    let w = this.properties.width | 0
+    let h = this.properties.height | 0
     if (w == 0) {
       w = intex ? intex.width : gl.viewport_data[2]
-    } //0 means default
+    } // 0 means default
     if (h == 0) {
       h = intex ? intex.height : gl.viewport_data[3]
-    } //0 means default
+    } // 0 means default
 
-    var type = LGraphTexture.getTextureType(this.properties.precision, intex)
+    const type = LGraphTexture.getTextureType(this.properties.precision, intex)
 
-    var texture = this._texture
+    let texture = this._texture
     if (!texture || texture.width != w || texture.height != h || texture.type != type) {
       texture = this._texture = new GL.Texture(w, h, {
         type: type,
@@ -11467,26 +11463,26 @@ gl_FragColor = fragcolor;\n\
       })
     }
 
-    var shader = this.getShader(this.subgraph)
+    const shader = this.getShader(this.subgraph)
     if (!shader) return
 
-    var uniforms = this._uniforms
+    const uniforms = this._uniforms
     this._context.fillUniforms(uniforms)
 
-    var tex_slot = 0
+    let tex_slot = 0
     if (this.inputs)
-      for (var i = 0; i < this.inputs.length; ++i) {
-        var input = this.inputs[i]
-        var data = this.getInputData(i)
+      for (let i = 0; i < this.inputs.length; ++i) {
+        const input = this.inputs[i]
+        let data = this.getInputData(i)
         if (input.type == 'texture') {
           if (!data) data = GL.Texture.getWhiteTexture()
           data = data.bind(tex_slot++)
         }
 
-        if (data != null) uniforms['u_' + input.name] = data
+        if (data != null) uniforms[`u_${input.name}`] = data
       }
 
-    var mesh = GL.Mesh.getScreenQuad()
+    const mesh = GL.Mesh.getScreenQuad()
 
     gl.disable(gl.DEPTH_TEST)
     gl.disable(gl.BLEND)
@@ -11496,35 +11492,35 @@ gl_FragColor = fragcolor;\n\
       shader.draw(mesh)
     })
 
-    //use subgraph output
+    // use subgraph output
     this.setOutputData(0, texture)
   }
 
-  //add input node inside subgraph
+  // add input node inside subgraph
   LGraphShaderGraph.prototype.onInputAdded = function (slot_info) {
-    var subnode = LiteGraph.createNode('shader::input/uniform')
+    const subnode = LiteGraph.createNode('shader::input/uniform')
     subnode.setProperty('name', slot_info.name)
     subnode.setProperty('type', slot_info.type)
     this.subgraph.add(subnode)
   }
 
-  //remove all
+  // remove all
   LGraphShaderGraph.prototype.onInputRemoved = function (slot, slot_info) {
-    var nodes = this.subgraph.findNodesByType('shader::input/uniform')
-    for (var i = 0; i < nodes.length; ++i) {
-      var node = nodes[i]
+    const nodes = this.subgraph.findNodesByType('shader::input/uniform')
+    for (let i = 0; i < nodes.length; ++i) {
+      const node = nodes[i]
       if (node.properties.name == slot_info.name) this.subgraph.remove(node)
     }
   }
 
   LGraphShaderGraph.prototype.computeSize = function () {
-    var num_inputs = this.inputs ? this.inputs.length : 0
-    var num_outputs = this.outputs ? this.outputs.length : 0
+    const num_inputs = this.inputs ? this.inputs.length : 0
+    const num_outputs = this.outputs ? this.outputs.length : 0
     return [200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT + 10]
   }
 
   LGraphShaderGraph.prototype.getShader = function () {
-    var shader = this._context.getShader(this.subgraph)
+    const shader = this._context.getShader(this.subgraph)
     if (!shader) this.boxcolor = 'red'
     else this.boxcolor = null
     return shader
@@ -11533,17 +11529,17 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderGraph.prototype.onDrawBackground = function (ctx, graphcanvas, canvas, pos) {
     if (this.flags.collapsed) return
 
-    //allows to preview the node if the canvas is a webgl canvas
-    var tex = this.getOutputData(0)
-    var inputs_y = this.inputs ? this.inputs.length * LiteGraph.NODE_SLOT_HEIGHT : 0
+    // allows to preview the node if the canvas is a webgl canvas
+    const tex = this.getOutputData(0)
+    const inputs_y = this.inputs ? this.inputs.length * LiteGraph.NODE_SLOT_HEIGHT : 0
     if (tex && ctx == tex.gl && this.size[1] > inputs_y + LiteGraph.NODE_TITLE_HEIGHT) {
       ctx.drawImage(tex, 10, y, this.size[0] - 20, this.size[1] - inputs_y - LiteGraph.NODE_TITLE_HEIGHT)
     }
 
     var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
 
-    //button
-    var over = LiteGraph.isInsideRectangle(
+    // button
+    const over = LiteGraph.isInsideRectangle(
       pos[0],
       pos[1],
       this.pos[0],
@@ -11557,7 +11553,7 @@ gl_FragColor = fragcolor;\n\
     else ctx.roundRect(0, y, this.size[0] + 1, LiteGraph.NODE_TITLE_HEIGHT, 0, 8)
     ctx.fill()
 
-    //button
+    // button
     ctx.textAlign = 'center'
     ctx.font = '24px Arial'
     ctx.fillStyle = over ? '#DDD' : '#999'
@@ -11565,23 +11561,23 @@ gl_FragColor = fragcolor;\n\
   }
 
   LGraphShaderGraph.prototype.onMouseDown = function (e, localpos, graphcanvas) {
-    var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
+    const y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
     if (localpos[1] > y) {
       graphcanvas.showSubgraphPropertiesDialog(this)
     }
   }
 
   LGraphShaderGraph.prototype.onDrawSubgraphBackground = function (graphcanvas) {
-    //TODO
+    // TODO
   }
 
   LGraphShaderGraph.prototype.getExtraMenuOptions = function (graphcanvas) {
-    var that = this
-    var options = [
+    const that = this
+    const options = [
       {
         content: 'Print Code',
         callback: function () {
-          var code = that._context.computeShaderCode()
+          const code = that._context.computeShaderCode()
           console.log(code.vs_code, code.fs_code)
         }
       }
@@ -11593,12 +11589,12 @@ gl_FragColor = fragcolor;\n\
   LiteGraph.registerNodeType('texture/shaderGraph', LGraphShaderGraph)
 
   function shaderNodeFromFunction(classname, params, return_type, code) {
-    //TODO
+    // TODO
   }
 
-  //Shader Nodes ***********************************************************
+  // Shader Nodes ***********************************************************
 
-  //applies a shader graph to a code
+  // applies a shader graph to a code
   function LGraphShaderUniform() {
     this.addOutput('out', '')
     this.properties = { name: '', type: '' }
@@ -11608,21 +11604,21 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderUniform.desc = 'Input data for the shader'
 
   LGraphShaderUniform.prototype.getTitle = function () {
-    if (this.properties.name && this.flags.collapsed) return this.properties.type + ' ' + this.properties.name
+    if (this.properties.name && this.flags.collapsed) return `${this.properties.type} ${this.properties.name}`
     return 'Uniform'
   }
 
   LGraphShaderUniform.prototype.onPropertyChanged = function (name, value) {
-    this.outputs[0].name = this.properties.type + ' ' + this.properties.name
+    this.outputs[0].name = `${this.properties.type} ${this.properties.name}`
   }
 
   LGraphShaderUniform.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var type = this.properties.type
+    let type = this.properties.type
     if (!type) {
       if (!context.onGetPropertyInfo) return
-      var info = context.onGetPropertyInfo(this.property.name)
+      const info = context.onGetPropertyInfo(this.property.name)
       if (!info) return
       type = info.type
     }
@@ -11630,12 +11626,12 @@ gl_FragColor = fragcolor;\n\
     else if (type == 'texture') type = 'sampler2D'
     if (LGShaders.GLSL_types.indexOf(type) == -1) return
 
-    context.addUniform('u_' + this.properties.name, type)
+    context.addUniform(`u_${this.properties.name}`, type)
     this.setOutputData(0, type)
   }
 
   LGraphShaderUniform.prototype.getOutputVarName = function (slot) {
-    return 'u_' + this.properties.name
+    return `u_${this.properties.name}`
   }
 
   registerShaderNode('input/uniform', LGraphShaderUniform)
@@ -11649,25 +11645,25 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderAttribute.desc = 'Input data from mesh attribute'
 
   LGraphShaderAttribute.prototype.getTitle = function () {
-    return 'att. ' + this.properties.name
+    return `att. ${this.properties.name}`
   }
 
   LGraphShaderAttribute.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var type = this.properties.type
+    let type = this.properties.type
     if (!type || LGShaders.GLSL_types.indexOf(type) == -1) return
     if (type == 'number') type = 'float'
     if (this.properties.name != 'coord') {
-      context.addCode('varying', ' varying ' + type + ' v_' + this.properties.name + ';')
-      //if( !context.varyings[ this.properties.name ] )
-      //context.addCode( "vs_code", "v_" + this.properties.name + " = " + input_name + ";" );
+      context.addCode('varying', ` varying ${type} v_${this.properties.name};`)
+      // if( !context.varyings[ this.properties.name ] )
+      // context.addCode( "vs_code", "v_" + this.properties.name + " = " + input_name + ";" );
     }
     this.setOutputData(0, type)
   }
 
   LGraphShaderAttribute.prototype.getOutputVarName = function (slot) {
-    return 'v_' + this.properties.name
+    return `v_${this.properties.name}`
   }
 
   registerShaderNode('input/attribute', LGraphShaderAttribute)
@@ -11685,19 +11681,19 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderSampler2D.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var texname = getInputLinkID(this, 0)
-    var varname = getShaderNodeVarName(this)
-    var code = 'vec4 ' + varname + ' = vec4(0.0);\n'
+    const texname = getInputLinkID(this, 0)
+    const varname = getShaderNodeVarName(this)
+    let code = `vec4 ${varname} = vec4(0.0);\n`
     if (texname) {
-      var uvname = getInputLinkID(this, 1) || context.buffer_names.uvs
-      code += varname + ' = texture2D(' + texname + ',' + uvname + ');\n'
+      const uvname = getInputLinkID(this, 1) || context.buffer_names.uvs
+      code += `${varname} = texture2D(${texname},${uvname});\n`
     }
 
-    var link0 = getOutputLinkID(this, 0)
-    if (link0) code += 'vec4 ' + getOutputLinkID(this, 0) + ' = ' + varname + ';\n'
+    const link0 = getOutputLinkID(this, 0)
+    if (link0) code += `vec4 ${getOutputLinkID(this, 0)} = ${varname};\n`
 
-    var link1 = getOutputLinkID(this, 1)
-    if (link1) code += 'vec3 ' + getOutputLinkID(this, 1) + ' = ' + varname + '.xyz;\n'
+    const link1 = getOutputLinkID(this, 1)
+    if (link1) code += `vec3 ${getOutputLinkID(this, 1)} = ${varname}.xyz;\n`
 
     context.addCode('code', code, this.shader_destination)
     this.setOutputData(0, 'vec4')
@@ -11706,7 +11702,7 @@ gl_FragColor = fragcolor;\n\
 
   registerShaderNode('texture/sampler2D', LGraphShaderSampler2D)
 
-  //*********************************
+  //* ********************************
 
   function LGraphShaderConstant() {
     this.addOutput('', 'float')
@@ -11728,13 +11724,13 @@ gl_FragColor = fragcolor;\n\
   }
 
   LGraphShaderConstant.prototype.onPropertyChanged = function (name, value) {
-    var that = this
+    const that = this
     if (name == 'type') {
       if (this.outputs[0].type != value) {
         this.disconnectOutput(0)
         this.outputs[0].type = value
       }
-      this.widgets.length = 1 //remove extra widgets
+      this.widgets.length = 1 // remove extra widgets
       this.updateWidgets()
     }
     if (name == 'value') {
@@ -11748,9 +11744,9 @@ gl_FragColor = fragcolor;\n\
   }
 
   LGraphShaderConstant.prototype.updateWidgets = function (old_value) {
-    var that = this
+    const that = this
     var old_value = this.properties.value
-    var options = { step: 0.01 }
+    const options = { step: 0.01 }
     switch (this.properties.type) {
       case 'float':
         this.properties.value = 0
@@ -11856,13 +11852,13 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderConstant.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var value = valueToGLSL(this.properties.value, this.properties.type)
-    var link_name = getOutputLinkID(this, 0)
+    const value = valueToGLSL(this.properties.value, this.properties.type)
+    const link_name = getOutputLinkID(this, 0)
     if (!link_name)
-      //not connected
+      // not connected
       return
 
-    var code = '	' + this.properties.type + ' ' + link_name + ' = ' + value + ';'
+    const code = `	${this.properties.type} ${link_name} = ${value};`
     context.addCode('code', code, this.shader_destination)
 
     this.setOutputData(0, this.properties.type)
@@ -11891,24 +11887,24 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderVec2.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var props = this.properties
+    const props = this.properties
 
-    var varname = getShaderNodeVarName(this)
-    var code = '	vec2 ' + varname + ' = ' + valueToGLSL([props.x, props.y]) + ';\n'
+    const varname = getShaderNodeVarName(this)
+    let code = `	vec2 ${varname} = ${valueToGLSL([props.x, props.y])};\n`
 
     for (var i = 0; i < LGraphShaderVec2.varmodes.length; ++i) {
       var varmode = LGraphShaderVec2.varmodes[i]
-      var inlink = getInputLinkID(this, i)
+      const inlink = getInputLinkID(this, i)
       if (!inlink) continue
-      code += '	' + varname + '.' + varmode + ' = ' + inlink + ';\n'
+      code += `	${varname}.${varmode} = ${inlink};\n`
     }
 
     for (var i = 0; i < LGraphShaderVec2.varmodes.length; ++i) {
       var varmode = LGraphShaderVec2.varmodes[i]
-      var outlink = getOutputLinkID(this, i)
+      const outlink = getOutputLinkID(this, i)
       if (!outlink) continue
-      var type = GLSL_types_const[varmode.length - 1]
-      code += '	' + type + ' ' + outlink + ' = ' + varname + '.' + varmode + ';\n'
+      const type = GLSL_types_const[varmode.length - 1]
+      code += `	${type} ${outlink} = ${varname}.${varmode};\n`
       this.setOutputData(i, type)
     }
 
@@ -11946,24 +11942,24 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderVec3.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var props = this.properties
+    const props = this.properties
 
-    var varname = getShaderNodeVarName(this)
-    var code = 'vec3 ' + varname + ' = ' + valueToGLSL([props.x, props.y, props.z]) + ';\n'
+    const varname = getShaderNodeVarName(this)
+    let code = `vec3 ${varname} = ${valueToGLSL([props.x, props.y, props.z])};\n`
 
     for (var i = 0; i < LGraphShaderVec3.varmodes.length; ++i) {
       var varmode = LGraphShaderVec3.varmodes[i]
-      var inlink = getInputLinkID(this, i)
+      const inlink = getInputLinkID(this, i)
       if (!inlink) continue
-      code += '	' + varname + '.' + varmode + ' = ' + inlink + ';\n'
+      code += `	${varname}.${varmode} = ${inlink};\n`
     }
 
     for (var i = 0; i < LGraphShaderVec3.varmodes.length; ++i) {
       var varmode = LGraphShaderVec3.varmodes[i]
-      var outlink = getOutputLinkID(this, i)
+      const outlink = getOutputLinkID(this, i)
       if (!outlink) continue
-      var type = GLSL_types_const[varmode.length - 1]
-      code += '	' + type + ' ' + outlink + ' = ' + varname + '.' + varmode + ';\n'
+      const type = GLSL_types_const[varmode.length - 1]
+      code += `	${type} ${outlink} = ${varname}.${varmode};\n`
       this.setOutputData(i, type)
     }
 
@@ -12004,24 +12000,24 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderVec4.prototype.onGetCode = function (context) {
     if (!this.shader_destination) return
 
-    var props = this.properties
+    const props = this.properties
 
-    var varname = getShaderNodeVarName(this)
-    var code = 'vec4 ' + varname + ' = ' + valueToGLSL([props.x, props.y, props.z, props.w]) + ';\n'
+    const varname = getShaderNodeVarName(this)
+    let code = `vec4 ${varname} = ${valueToGLSL([props.x, props.y, props.z, props.w])};\n`
 
     for (var i = 0; i < LGraphShaderVec4.varmodes.length; ++i) {
       var varmode = LGraphShaderVec4.varmodes[i]
-      var inlink = getInputLinkID(this, i)
+      const inlink = getInputLinkID(this, i)
       if (!inlink) continue
-      code += '	' + varname + '.' + varmode + ' = ' + inlink + ';\n'
+      code += `	${varname}.${varmode} = ${inlink};\n`
     }
 
     for (var i = 0; i < LGraphShaderVec4.varmodes.length; ++i) {
       var varmode = LGraphShaderVec4.varmodes[i]
-      var outlink = getOutputLinkID(this, i)
+      const outlink = getOutputLinkID(this, i)
       if (!outlink) continue
-      var type = GLSL_types_const[varmode.length - 1]
-      code += '	' + type + ' ' + outlink + ' = ' + varname + '.' + varmode + ';\n'
+      const type = GLSL_types_const[varmode.length - 1]
+      code += `	${type} ${outlink} = ${varname}.${varmode};\n`
       this.setOutputData(i, type)
     }
 
@@ -12030,7 +12026,7 @@ gl_FragColor = fragcolor;\n\
 
   registerShaderNode('const/vec4', LGraphShaderVec4)
 
-  //*********************************
+  //* ********************************
 
   function LGraphShaderFragColor() {
     this.addInput('color', LGShaders.ALL_TYPES)
@@ -12041,11 +12037,11 @@ gl_FragColor = fragcolor;\n\
   LGraphShaderFragColor.desc = 'Pixel final color'
 
   LGraphShaderFragColor.prototype.onGetCode = function (context) {
-    var link_name = getInputLinkID(this, 0)
+    const link_name = getInputLinkID(this, 0)
     if (!link_name) return
-    var type = this.getInputData(0)
-    var code = varToTypeGLSL(link_name, type, 'vec4')
-    context.addCode('fs_code', 'fragcolor = ' + code + ';')
+    const type = this.getInputData(0)
+    const code = varToTypeGLSL(link_name, type, 'vec4')
+    context.addCode('fs_code', `fragcolor = ${code};`)
   }
 
   registerShaderNode('output/fragcolor', LGraphShaderFragColor)
@@ -12097,7 +12093,7 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
   LGraphShaderOperation.operations = ['+', '-', '*', '/']
 
   LGraphShaderOperation.prototype.getTitle = function () {
-    if (this.flags.collapsed) return 'A' + this.properties.operation + 'B'
+    if (this.flags.collapsed) return `A${this.properties.operation}B`
     else return 'Operation'
   }
 
@@ -12106,32 +12102,32 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
 
     if (!this.isOutputConnected(0)) return
 
-    var inlinks = []
+    const inlinks = []
     for (var i = 0; i < 3; ++i) inlinks.push({ name: getInputLinkID(this, i), type: this.getInputData(i) || 'float' })
 
-    var outlink = getOutputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
     if (!outlink)
-      //not connected
+      // not connected
       return
 
-    //func_desc
-    var base_type = inlinks[0].type
-    var return_type = base_type
-    var op = this.properties.operation
+    // func_desc
+    const base_type = inlinks[0].type
+    const return_type = base_type
+    const op = this.properties.operation
 
-    var params = []
+    const params = []
     for (var i = 0; i < 2; ++i) {
-      var param_code = inlinks[i].name
+      let param_code = inlinks[i].name
       if (param_code == null) {
-        //not plugged
+        // not plugged
         param_code = p.value != null ? p.value : '(1.0)'
         inlinks[i].type = 'float'
       }
 
-      //convert
+      // convert
       if (inlinks[i].type != base_type) {
         if (inlinks[i].type == 'float' && (op == '*' || op == '/')) {
-          //I find hard to create the opposite condition now, so I prefeer an else
+          // I find hard to create the opposite condition now, so I prefeer an else
         } else param_code = convertVarToGLSLType(param_code, inlinks[i].type, base_type)
       }
       params.push(param_code)
@@ -12139,7 +12135,7 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
 
     context.addCode(
       'code',
-      return_type + ' ' + outlink + ' = ' + params[0] + op + params[1] + ';',
+      `${return_type} ${outlink} = ${params[0]}${op}${params[1]};`,
       this.shader_destination
     )
     this.setOutputData(0, return_type)
@@ -12164,16 +12160,16 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
     if (this.graph) this.graph._version++
 
     if (name == 'func') {
-      var func_desc = GLSL_functions[value]
+      const func_desc = GLSL_functions[value]
       if (!func_desc) return
 
-      //remove extra inputs
+      // remove extra inputs
       for (var i = func_desc.params.length; i < this.inputs.length; ++i) this.removeInput(i)
 
-      //add and update inputs
+      // add and update inputs
       for (var i = 0; i < func_desc.params.length; ++i) {
-        var p = func_desc.params[i]
-        if (this.inputs[i]) this.inputs[i].name = p.name + (p.value ? ' (' + p.value + ')' : '')
+        const p = func_desc.params[i]
+        if (this.inputs[i]) this.inputs[i].name = p.name + (p.value ? ` (${p.value})` : '')
         else this.addInput(p.name, LGShaders.ALL_TYPES)
       }
     }
@@ -12189,28 +12185,28 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
 
     if (!this.isOutputConnected(0)) return
 
-    var inlinks = []
+    const inlinks = []
     for (var i = 0; i < 3; ++i) inlinks.push({ name: getInputLinkID(this, i), type: this.getInputData(i) || 'float' })
 
-    var outlink = getOutputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
     if (!outlink)
-      //not connected
+      // not connected
       return
 
-    var func_desc = GLSL_functions[this.properties.func]
+    const func_desc = GLSL_functions[this.properties.func]
     if (!func_desc) return
 
-    //func_desc
-    var base_type = inlinks[0].type
-    var return_type = func_desc.return_type
+    // func_desc
+    const base_type = inlinks[0].type
+    let return_type = func_desc.return_type
     if (return_type == 'T') return_type = base_type
 
-    var params = []
+    const params = []
     for (var i = 0; i < func_desc.params.length; ++i) {
-      var p = func_desc.params[i]
-      var param_code = inlinks[i].name
+      const p = func_desc.params[i]
+      let param_code = inlinks[i].name
       if (param_code == null) {
-        //not plugged
+        // not plugged
         param_code = p.value != null ? p.value : '(1.0)'
         inlinks[i].type = 'float'
       }
@@ -12225,7 +12221,7 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
     )
     context.addCode(
       'code',
-      return_type + ' ' + outlink + ' = ' + func_desc.func + '(' + params.join(',') + ');',
+      `${return_type} ${outlink} = ${func_desc.func}(${params.join(',')});`,
       this.shader_destination
     )
 
@@ -12268,35 +12264,35 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
   LGraphShaderSnippet.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var inlinkA = getInputLinkID(this, 0)
+    let inlinkA = getInputLinkID(this, 0)
     if (!inlinkA) inlinkA = '1.0'
-    var inlinkB = getInputLinkID(this, 1)
+    let inlinkB = getInputLinkID(this, 1)
     if (!inlinkB) inlinkB = '1.0'
-    var outlink = getOutputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
     if (!outlink)
-      //not connected
+      // not connected
       return
 
-    var inA_type = this.getInputData(0) || 'float'
-    var inB_type = this.getInputData(1) || 'float'
-    var return_type = this.properties.type
+    const inA_type = this.getInputData(0) || 'float'
+    const inB_type = this.getInputData(1) || 'float'
+    const return_type = this.properties.type
 
-    //cannot resolve input
+    // cannot resolve input
     if (inA_type == 'T' || inB_type == 'T') {
       return null
     }
 
-    var funcname = 'funcSnippet' + this.id
+    const funcname = `funcSnippet${this.id}`
 
-    var func_code = '\n' + return_type + ' ' + funcname + '( ' + inA_type + ' A, ' + inB_type + ' B) {\n'
-    func_code += '	' + return_type + ' C = ' + return_type + '(0.0);\n'
-    func_code += '	' + this.properties.code + ';\n'
+    let func_code = `\n${return_type} ${funcname}( ${inA_type} A, ${inB_type} B) {\n`
+    func_code += `	${return_type} C = ${return_type}(0.0);\n`
+    func_code += `	${this.properties.code};\n`
     func_code += '	return C;\n}\n'
 
     context.addCode('functions', func_code, this.shader_destination)
     context.addCode(
       'code',
-      return_type + ' ' + outlink + ' = ' + funcname + '(' + inlinkA + ',' + inlinkB + ');',
+      `${return_type} ${outlink} = ${funcname}(${inlinkA},${inlinkB});`,
       this.shader_destination
     )
 
@@ -12305,7 +12301,7 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
 
   registerShaderNode('utils/snippet', LGraphShaderSnippet)
 
-  //************************************
+  //* ***********************************
 
   function LGraphShaderRand() {
     this.addOutput('out', 'float')
@@ -12316,19 +12312,19 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
   LGraphShaderRand.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var outlink = getOutputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
 
-    context.addUniform('u_rand' + this.id, 'float', function () {
+    context.addUniform(`u_rand${this.id}`, 'float', function () {
       return Math.random()
     })
-    context.addCode('code', 'float ' + outlink + ' = u_rand' + this.id + ';', this.shader_destination)
+    context.addCode('code', `float ${outlink} = u_rand${this.id};`, this.shader_destination)
     this.setOutputData(0, 'float')
   }
 
   registerShaderNode('input/rand', LGraphShaderRand)
 
-  //noise
-  //https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+  // noise
+  // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
   function LGraphShaderNoise() {
     this.addInput('out', LGShaders.ALL_TYPES)
     this.addInput('scale', 'float')
@@ -12348,33 +12344,33 @@ registerShaderNode( "output/discard", LGraphShaderDiscard );
   LGraphShaderNoise.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var inlink = getInputLinkID(this, 0)
-    var outlink = getOutputLinkID(this, 0)
+    let inlink = getInputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
 
-    var intype = this.getInputData(0)
+    let intype = this.getInputData(0)
     if (!inlink) {
       intype = 'vec2'
       inlink = context.buffer_names.uvs
     }
 
     context.addFunction('noise', LGraphShaderNoise.shader_functions)
-    context.addUniform('u_noise_scale' + this.id, 'float', this.properties.scale)
+    context.addUniform(`u_noise_scale${this.id}`, 'float', this.properties.scale)
     if (intype == 'float')
       context.addCode(
         'code',
-        'float ' + outlink + ' = snoise( vec2(' + inlink + ') * u_noise_scale' + this.id + ');',
+        `float ${outlink} = snoise( vec2(${inlink}) * u_noise_scale${this.id});`,
         this.shader_destination
       )
     else if (intype == 'vec2' || intype == 'vec3')
       context.addCode(
         'code',
-        'float ' + outlink + ' = snoise(' + inlink + ' * u_noise_scale' + this.id + ');',
+        `float ${outlink} = snoise(${inlink} * u_noise_scale${this.id});`,
         this.shader_destination
       )
     else if (intype == 'vec4')
       context.addCode(
         'code',
-        'float ' + outlink + ' = snoise(' + inlink + '.xyz * u_noise_scale' + this.id + ');',
+        `float ${outlink} = snoise(${inlink}.xyz * u_noise_scale${this.id});`,
         this.shader_destination
       )
     this.setOutputData(0, 'float')
@@ -12528,12 +12524,12 @@ float wt = 0.0;\n\
   LGraphShaderTime.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var outlink = getOutputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
 
-    context.addUniform('u_time' + this.id, 'float', function () {
+    context.addUniform(`u_time${this.id}`, 'float', function () {
       return getTime() * 0.001
     })
-    context.addCode('code', 'float ' + outlink + ' = u_time' + this.id + ';', this.shader_destination)
+    context.addCode('code', `float ${outlink} = u_time${this.id};`, this.shader_destination)
     this.setOutputData(0, 'float')
   }
 
@@ -12549,13 +12545,13 @@ float wt = 0.0;\n\
   LGraphShaderDither.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var inlink = getInputLinkID(this, 0)
-    var return_type = 'float'
-    var outlink = getOutputLinkID(this, 0)
-    var intype = this.getInputData(0)
+    let inlink = getInputLinkID(this, 0)
+    const return_type = 'float'
+    const outlink = getOutputLinkID(this, 0)
+    const intype = this.getInputData(0)
     inlink = varToTypeGLSL(inlink, intype, 'float')
     context.addFunction('dither8x8', LGraphShaderDither.dither_func)
-    context.addCode('code', return_type + ' ' + outlink + ' = dither8x8(' + inlink + ');', this.shader_destination)
+    context.addCode('code', `${return_type} ${outlink} = dither8x8(${inlink});`, this.shader_destination)
     this.setOutputData(0, return_type)
   }
 
@@ -12568,7 +12564,7 @@ float wt = 0.0;\n\
     0.34375
   ]
   ;(LGraphShaderDither.dither_func =
-    '\n\
+    `\n\
   float dither8x8(float brightness) {\n\
     vec2 position = vec2(0.0);\n\
     #ifdef FRAGMENT\n\
@@ -12580,17 +12576,17 @@ float wt = 0.0;\n\
     float limit = 0.0;\n\
     if (x < 8) {\n\
     if(index==0) limit = 0.015625;\n\
-    ' +
+    ${
     LGraphShaderDither.dither_values
       .map(function (v, i) {
-        return 'else if(index== ' + (i + 1) + ') limit = ' + v + ';'
+        return `else if(index== ${i + 1}) limit = ${v};`
       })
-      .join('\n') +
-    '\n\
+      .join('\n')
+    }\n\
     }\n\
     return brightness < limit ? 0.0 : 1.0;\n\
-  }\n'),
-    registerShaderNode('math/dither', LGraphShaderDither)
+  }\n`),
+  registerShaderNode('math/dither', LGraphShaderDither)
 
   function LGraphShaderRemap() {
     this.addInput('', LGShaders.ALL_TYPES)
@@ -12614,20 +12610,20 @@ float wt = 0.0;\n\
   }
 
   LGraphShaderRemap.prototype.onConnectionsChange = function () {
-    var return_type = this.getInputDataType(0)
+    const return_type = this.getInputDataType(0)
     this.outputs[0].type = return_type || 'T'
   }
 
   LGraphShaderRemap.prototype.onGetCode = function (context) {
     if (!this.shader_destination || !this.isOutputConnected(0)) return
 
-    var inlink = getInputLinkID(this, 0)
-    var outlink = getOutputLinkID(this, 0)
+    const inlink = getInputLinkID(this, 0)
+    const outlink = getOutputLinkID(this, 0)
     if (!inlink && !outlink)
-      //not connected
+      // not connected
       return
 
-    var return_type = this.getInputDataType(0)
+    const return_type = this.getInputDataType(0)
     this.outputs[0].type = return_type
     if (return_type == 'T') {
       console.warn('node type is T and cannot be resolved')
@@ -12635,35 +12631,35 @@ float wt = 0.0;\n\
     }
 
     if (!inlink) {
-      context.addCode('code', '	' + return_type + ' ' + outlink + ' = ' + return_type + '(0.0);\n')
+      context.addCode('code', `	${return_type} ${outlink} = ${return_type}(0.0);\n`)
       return
     }
 
-    var minv = valueToGLSL(this.properties.min_value)
-    var maxv = valueToGLSL(this.properties.max_value)
-    var minv2 = valueToGLSL(this.properties.min_value2)
-    var maxv2 = valueToGLSL(this.properties.max_value2)
+    const minv = valueToGLSL(this.properties.min_value)
+    const maxv = valueToGLSL(this.properties.max_value)
+    const minv2 = valueToGLSL(this.properties.min_value2)
+    const maxv2 = valueToGLSL(this.properties.max_value2)
 
     context.addCode(
       'code',
-      return_type +
-        ' ' +
-        outlink +
-        ' = ( (' +
-        inlink +
-        ' - ' +
-        minv +
-        ') / (' +
-        maxv +
-        ' - ' +
-        minv +
-        ') ) * (' +
-        maxv2 +
-        ' - ' +
-        minv2 +
-        ') + ' +
-        minv2 +
-        ';',
+      `${return_type
+      } ${
+        outlink
+      } = ( (${
+        inlink
+      } - ${
+        minv
+      }) / (${
+        maxv
+      } - ${
+        minv
+      }) ) * (${
+        maxv2
+      } - ${
+        minv2
+      }) + ${
+        minv2
+      };`,
       this.shader_destination
     )
     this.setOutputData(0, return_type)
@@ -12672,13 +12668,13 @@ float wt = 0.0;\n\
   registerShaderNode('math/remap', LGraphShaderRemap)
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
-  var view_matrix = new Float32Array(16)
-  var projection_matrix = new Float32Array(16)
-  var viewprojection_matrix = new Float32Array(16)
-  var model_matrix = new Float32Array(16)
-  var global_uniforms = {
+  const view_matrix = new Float32Array(16)
+  const projection_matrix = new Float32Array(16)
+  const viewprojection_matrix = new Float32Array(16)
+  const model_matrix = new Float32Array(16)
+  const global_uniforms = {
     u_view: view_matrix,
     u_projection: projection_matrix,
     u_viewprojection: viewprojection_matrix,
@@ -12686,7 +12682,7 @@ float wt = 0.0;\n\
   }
 
   LiteGraph.LGraphRender = {
-    onRequestCameraMatrices: null //overwrite with your 3D engine specifics, it will receive (view_matrix, projection_matrix,viewprojection_matrix) and must be filled
+    onRequestCameraMatrices: null // overwrite with your 3D engine specifics, it will receive (view_matrix, projection_matrix,viewprojection_matrix) and must be filled
   }
 
   function generateGeometryId() {
@@ -12713,7 +12709,7 @@ float wt = 0.0;\n\
     this.must_update = true
     this.version = 0
 
-    var that = this
+    const that = this
     this.addWidget('button', 'update', null, function () {
       that.must_update = true
     })
@@ -12765,13 +12761,13 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.prototype.onExecute = function () {
-    var obj = this.getInputData(0)
+    const obj = this.getInputData(0)
     if (obj != this._old_obj || (obj && obj._version != this._old_obj_version)) {
       this._old_obj = obj
       this.must_update = true
     }
 
-    var radius = this.getInputData(1)
+    let radius = this.getInputData(1)
     if (radius == null) radius = this.properties.radius
     if (this._last_radius != radius) {
       this._last_radius = radius
@@ -12791,7 +12787,7 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.prototype.updatePoints = function () {
-    var num_points = this.properties.num_points | 0
+    let num_points = this.properties.num_points | 0
     if (num_points < 1) num_points = 1
 
     if (!this.points || this.points.length != num_points * 3) this.points = new Float32Array(num_points * 3)
@@ -12801,10 +12797,10 @@ float wt = 0.0;\n\
         this.normals = new Float32Array(this.points.length)
     } else this.normals = null
 
-    var radius = this._last_radius || this.properties.radius
-    var mode = this.properties.mode
+    const radius = this._last_radius || this.properties.radius
+    const mode = this.properties.mode
 
-    var obj = this.getInputData(0)
+    const obj = this.getInputData(0)
     this._old_obj_version = obj ? obj._version : null
 
     this.points = LGraphPoints3D.generatePoints(
@@ -12820,12 +12816,12 @@ float wt = 0.0;\n\
     this.version++
   }
 
-  //global
+  // global
   LGraphPoints3D.generatePoints = function (radius, num_points, mode, points, normals, regular, obj) {
-    var size = num_points * 3
+    const size = num_points * 3
     if (!points || points.length != size) points = new Float32Array(size)
-    var temp = new Float32Array(3)
-    var UP = new Float32Array([0, 1, 0])
+    const temp = new Float32Array(3)
+    const UP = new Float32Array([0, 1, 0])
 
     if (regular) {
       if (mode == LGraphPoints3D.RECTANGLE) {
@@ -12855,7 +12851,7 @@ float wt = 0.0;\n\
         if (normals) LGraphPoints3D.generateSphericalNormals(points, normals)
       } else if (mode == LGraphPoints3D.CIRCLE) {
         for (var i = 0; i < size; i += 3) {
-          var angle = 2 * Math.PI * (i / size)
+          const angle = 2 * Math.PI * (i / size)
           points[i] = Math.cos(angle) * radius
           points[i + 1] = 0
           points[i + 2] = Math.sin(angle) * radius
@@ -12864,7 +12860,7 @@ float wt = 0.0;\n\
           for (var i = 0; i < normals.length; i += 3) normals.set(UP, i)
         }
       }
-    } //non regular
+    } // non regular
     else {
       if (mode == LGraphPoints3D.RECTANGLE) {
         for (var i = 0; i < size; i += 3) {
@@ -12902,7 +12898,7 @@ float wt = 0.0;\n\
         LGraphPoints3D.generateFromObject(points, normals, size, obj, true)
       } else if (mode == LGraphPoints3D.OBJECT_INSIDE) {
         LGraphPoints3D.generateFromInsideObject(points, size, obj)
-        //if(normals)
+        // if(normals)
         //	LGraphPoints3D.generateSphericalNormals( points, normals );
       } else console.warn('wrong mode in LGraphPoints3D')
     }
@@ -12911,8 +12907,8 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.generateSphericalNormals = function (points, normals) {
-    var temp = new Float32Array(3)
-    for (var i = 0; i < normals.length; i += 3) {
+    const temp = new Float32Array(3)
+    for (let i = 0; i < normals.length; i += 3) {
       temp[0] = points[i]
       temp[1] = points[i + 1]
       temp[2] = points[i + 2]
@@ -12922,12 +12918,12 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.generateSphere = function (points, size, radius) {
-    for (var i = 0; i < size; i += 3) {
-      var r1 = Math.random()
-      var r2 = Math.random()
-      var x = 2 * Math.cos(2 * Math.PI * r1) * Math.sqrt(r2 * (1 - r2))
-      var y = 1 - 2 * r2
-      var z = 2 * Math.sin(2 * Math.PI * r1) * Math.sqrt(r2 * (1 - r2))
+    for (let i = 0; i < size; i += 3) {
+      const r1 = Math.random()
+      const r2 = Math.random()
+      const x = 2 * Math.cos(2 * Math.PI * r1) * Math.sqrt(r2 * (1 - r2))
+      const y = 1 - 2 * r2
+      const z = 2 * Math.sin(2 * Math.PI * r1) * Math.sqrt(r2 * (1 - r2))
       points[i] = x * radius
       points[i + 1] = y * radius
       points[i + 2] = z * radius
@@ -12935,12 +12931,12 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.generateHemisphere = function (points, size, radius) {
-    for (var i = 0; i < size; i += 3) {
-      var r1 = Math.random()
-      var r2 = Math.random()
-      var x = Math.cos(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
-      var y = r2
-      var z = Math.sin(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
+    for (let i = 0; i < size; i += 3) {
+      const r1 = Math.random()
+      const r2 = Math.random()
+      const x = Math.cos(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
+      const y = r2
+      const z = Math.sin(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
       points[i] = x * radius
       points[i + 1] = y * radius
       points[i + 2] = z * radius
@@ -12948,12 +12944,12 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.generateInsideCircle = function (points, size, radius) {
-    for (var i = 0; i < size; i += 3) {
-      var r1 = Math.random()
-      var r2 = Math.random()
-      var x = Math.cos(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
-      var y = r2
-      var z = Math.sin(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
+    for (let i = 0; i < size; i += 3) {
+      const r1 = Math.random()
+      const r2 = Math.random()
+      const x = Math.cos(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
+      const y = r2
+      const z = Math.sin(2 * Math.PI * r1) * Math.sqrt(1 - r2 * r2)
       points[i] = x * radius
       points[i + 1] = 0
       points[i + 2] = z * radius
@@ -12961,16 +12957,16 @@ float wt = 0.0;\n\
   }
 
   LGraphPoints3D.generateInsideSphere = function (points, size, radius) {
-    for (var i = 0; i < size; i += 3) {
-      var u = Math.random()
-      var v = Math.random()
-      var theta = u * 2.0 * Math.PI
-      var phi = Math.acos(2.0 * v - 1.0)
-      var r = Math.cbrt(Math.random()) * radius
-      var sinTheta = Math.sin(theta)
-      var cosTheta = Math.cos(theta)
-      var sinPhi = Math.sin(phi)
-      var cosPhi = Math.cos(phi)
+    for (let i = 0; i < size; i += 3) {
+      const u = Math.random()
+      const v = Math.random()
+      const theta = u * 2.0 * Math.PI
+      const phi = Math.acos(2.0 * v - 1.0)
+      const r = Math.cbrt(Math.random()) * radius
+      const sinTheta = Math.sin(theta)
+      const cosTheta = Math.cos(theta)
+      const sinPhi = Math.sin(phi)
+      const cosPhi = Math.cos(phi)
       points[i] = r * sinPhi * cosTheta
       points[i + 1] = r * sinPhi * sinTheta
       points[i + 2] = r * cosPhi
@@ -12978,17 +12974,17 @@ float wt = 0.0;\n\
   }
 
   function findRandomTriangle(areas, f) {
-    var l = areas.length
-    var imin = 0
-    var imid = 0
-    var imax = l
+    const l = areas.length
+    let imin = 0
+    let imid = 0
+    let imax = l
 
     if (l == 0) return -1
     if (l == 1) return 0
-    //dichotomic search
+    // dichotomic search
     while (imax >= imin) {
       imid = ((imax + imin) * 0.5) | 0
-      var t = areas[imid]
+      const t = areas[imid]
       if (t == f) return imid
       if (imin == imax - 1) return imin
       if (t < f) imin = imid
@@ -13000,10 +12996,10 @@ float wt = 0.0;\n\
   LGraphPoints3D.generateFromObject = function (points, normals, size, obj, evenly) {
     if (!obj) return
 
-    var vertices = null
-    var mesh_normals = null
-    var indices = null
-    var areas = null
+    let vertices = null
+    let mesh_normals = null
+    let indices = null
+    let areas = null
     if (obj.constructor === GL.Mesh) {
       vertices = obj.vertexBuffers.vertices.data
       mesh_normals = obj.vertexBuffers.normals ? obj.vertexBuffers.normals.data : null
@@ -13011,11 +13007,11 @@ float wt = 0.0;\n\
       if (!indices) indices = obj.indexBuffers.triangles ? obj.indexBuffers.triangles.data : null
     }
     if (!vertices) return null
-    var num_triangles = indices ? indices.length / 3 : vertices.length / (3 * 3)
-    var total_area = 0 //sum of areas of all triangles
+    const num_triangles = indices ? indices.length / 3 : vertices.length / (3 * 3)
+    let total_area = 0 // sum of areas of all triangles
 
     if (evenly) {
-      areas = new Float32Array(num_triangles) //accum
+      areas = new Float32Array(num_triangles) // accum
       for (var i = 0; i < num_triangles; ++i) {
         if (indices) {
           a = indices[i * 3] * 3
@@ -13026,12 +13022,12 @@ float wt = 0.0;\n\
           b = i * 9 + 3
           c = i * 9 + 6
         }
-        var P1 = vertices.subarray(a, a + 3)
-        var P2 = vertices.subarray(b, b + 3)
-        var P3 = vertices.subarray(c, c + 3)
-        var aL = vec3.distance(P1, P2)
-        var bL = vec3.distance(P2, P3)
-        var cL = vec3.distance(P3, P1)
+        const P1 = vertices.subarray(a, a + 3)
+        const P2 = vertices.subarray(b, b + 3)
+        const P3 = vertices.subarray(c, c + 3)
+        const aL = vec3.distance(P1, P2)
+        const bL = vec3.distance(P2, P3)
+        const cL = vec3.distance(P3, P1)
         var s = (aL + bL + cL) / 2
         total_area += Math.sqrt(s * (s - aL) * (s - bL) * (s - cL))
         areas[i] = total_area
@@ -13039,15 +13035,15 @@ float wt = 0.0;\n\
       for (
         var i = 0;
         i < num_triangles;
-        ++i //normalize
+        ++i // normalize
       )
         areas[i] /= total_area
     }
 
     for (var i = 0; i < size; i += 3) {
-      var r = Math.random()
-      var index = evenly ? findRandomTriangle(areas, r) : Math.floor(r * num_triangles)
-      //get random triangle
+      const r = Math.random()
+      const index = evenly ? findRandomTriangle(areas, r) : Math.floor(r * num_triangles)
+      // get random triangle
       var a = 0
       var b = 0
       var c = 0
@@ -13061,11 +13057,11 @@ float wt = 0.0;\n\
         c = index * 9 + 6
       }
       var s = Math.random()
-      var t = Math.random()
-      var sqrt_s = Math.sqrt(s)
-      var af = 1 - sqrt_s
-      var bf = sqrt_s * (1 - t)
-      var cf = t * sqrt_s
+      const t = Math.random()
+      const sqrt_s = Math.sqrt(s)
+      const af = 1 - sqrt_s
+      const bf = sqrt_s * (1 - t)
+      const cf = t * sqrt_s
       points[i] = af * vertices[a] + bf * vertices[b] + cf * vertices[c]
       points[i + 1] = af * vertices[a + 1] + bf * vertices[b + 1] + cf * vertices[c + 1]
       points[i + 2] = af * vertices[a + 2] + bf * vertices[b + 2] + cf * vertices[c + 2]
@@ -13073,7 +13069,7 @@ float wt = 0.0;\n\
         normals[i] = af * mesh_normals[a] + bf * mesh_normals[b] + cf * mesh_normals[c]
         normals[i + 1] = af * mesh_normals[a + 1] + bf * mesh_normals[b + 1] + cf * mesh_normals[c + 1]
         normals[i + 2] = af * mesh_normals[a + 2] + bf * mesh_normals[b + 2] + cf * mesh_normals[c + 2]
-        var N = normals.subarray(i, i + 3)
+        const N = normals.subarray(i, i + 3)
         vec3.normalize(N, N)
       }
     }
@@ -13082,25 +13078,25 @@ float wt = 0.0;\n\
   LGraphPoints3D.generateFromInsideObject = function (points, size, mesh) {
     if (!mesh || mesh.constructor !== GL.Mesh) return
 
-    var aabb = mesh.getBoundingBox()
+    const aabb = mesh.getBoundingBox()
     if (!mesh.octree) mesh.octree = new GL.Octree(mesh)
-    var octree = mesh.octree
-    var origin = vec3.create()
-    var direction = vec3.fromValues(1, 0, 0)
-    var temp = vec3.create()
-    var i = 0
-    var tries = 0
+    const octree = mesh.octree
+    const origin = vec3.create()
+    const direction = vec3.fromValues(1, 0, 0)
+    const temp = vec3.create()
+    let i = 0
+    let tries = 0
     while (i < size && tries < points.length * 10) {
-      //limit to avoid problems
+      // limit to avoid problems
       tries += 1
-      var r = vec3.random(temp) //random point inside the aabb
+      const r = vec3.random(temp) // random point inside the aabb
       r[0] = (r[0] * 2 - 1) * aabb[3] + aabb[0]
       r[1] = (r[1] * 2 - 1) * aabb[4] + aabb[1]
       r[2] = (r[2] * 2 - 1) * aabb[5] + aabb[2]
       origin.set(r)
-      var hit = octree.testRay(origin, direction, 0, 10000, true, GL.Octree.ALL)
+      const hit = octree.testRay(origin, direction, 0, 10000, true, GL.Octree.ALL)
       if (!hit || hit.length % 2 == 0)
-        //not inside
+        // not inside
         continue
       points.set(r, i)
       i += 3
@@ -13136,7 +13132,7 @@ float wt = 0.0;\n\
   LGraphPointsToInstances.title = 'points to inst'
 
   LGraphPointsToInstances.prototype.onExecute = function () {
-    var geo = this.getInputData(0)
+    const geo = this.getInputData(0)
     if (!geo) {
       this.setOutputData(0, null)
       return
@@ -13144,7 +13140,7 @@ float wt = 0.0;\n\
 
     if (!this.isOutputConnected(0)) return
 
-    var has_changed = geo._version != this._version || geo._id != this._geometry_id
+    const has_changed = geo._version != this._version || geo._id != this._geometry_id
 
     if ((has_changed && this.properties.autoupdate) || this.first_time) {
       this.first_time = false
@@ -13155,37 +13151,37 @@ float wt = 0.0;\n\
   }
 
   LGraphPointsToInstances.prototype.updateInstances = function (geometry) {
-    var vertices = geometry.vertices
+    const vertices = geometry.vertices
     if (!vertices) return null
-    var normals = geometry.normals
+    const normals = geometry.normals
 
-    var matrices = this.matrices
-    var num_points = vertices.length / 3
+    const matrices = this.matrices
+    const num_points = vertices.length / 3
     if (matrices.length != num_points) matrices.length = num_points
-    var identity = mat4.create()
-    var temp = vec3.create()
-    var zero = vec3.create()
-    var UP = vec3.fromValues(0, 1, 0)
-    var FRONT = vec3.fromValues(0, 0, -1)
-    var RIGHT = vec3.fromValues(1, 0, 0)
-    var R = quat.create()
+    const identity = mat4.create()
+    const temp = vec3.create()
+    const zero = vec3.create()
+    const UP = vec3.fromValues(0, 1, 0)
+    const FRONT = vec3.fromValues(0, 0, -1)
+    const RIGHT = vec3.fromValues(1, 0, 0)
+    const R = quat.create()
 
-    var front = vec3.create()
-    var right = vec3.create()
-    var top = vec3.create()
+    const front = vec3.create()
+    const right = vec3.create()
+    const top = vec3.create()
 
-    for (var i = 0; i < vertices.length; i += 3) {
-      var index = i / 3
-      var m = matrices[index]
+    for (let i = 0; i < vertices.length; i += 3) {
+      const index = i / 3
+      let m = matrices[index]
       if (!m) m = matrices[index] = mat4.create()
       m.set(identity)
-      var point = vertices.subarray(i, i + 3)
+      const point = vertices.subarray(i, i + 3)
 
       switch (this.properties.mode) {
         case LGraphPointsToInstances.NORMAL:
           mat4.setTranslation(m, point)
           if (normals) {
-            var normal = normals.subarray(i, i + 3)
+            const normal = normals.subarray(i, i + 3)
             top.set(normal)
             vec3.normalize(top, top)
             vec3.cross(right, FRONT, top)
@@ -13259,12 +13255,12 @@ float wt = 0.0;\n\
   LGraphGeometryTransform.title = 'Transform'
 
   LGraphGeometryTransform.prototype.onExecute = function () {
-    var input = this.getInputData(0)
-    var model = this.getInputData(1)
+    const input = this.getInputData(0)
+    const model = this.getInputData(1)
 
     if (!input) return
 
-    //array of matrices
+    // array of matrices
     if (input.constructor === Array) {
       if (input.length == 0) return
       this.outputs[0].type = '[mat4]'
@@ -13275,10 +13271,10 @@ float wt = 0.0;\n\
         return
       }
 
-      if (!this._output) this._output = new Array()
+      if (!this._output) this._output = []
       if (this._output.length != input.length) this._output.length = input.length
-      for (var i = 0; i < input.length; ++i) {
-        var m = this._output[i]
+      for (let i = 0; i < input.length; ++i) {
+        let m = this._output[i]
         if (!m) m = this._output[i] = mat4.create()
         mat4.multiply(m, input[i], model)
       }
@@ -13286,9 +13282,9 @@ float wt = 0.0;\n\
       return
     }
 
-    //geometry
+    // geometry
     if (!input.vertices || !input.vertices.length) return
-    var geo = input
+    const geo = input
     this.outputs[0].type = 'geometry'
     if (!this.isOutputConnected(0)) return
     if (!model) {
@@ -13296,7 +13292,7 @@ float wt = 0.0;\n\
       return
     }
 
-    var key = typedArrayToArray(model).join(',')
+    const key = typedArrayToArray(model).join(',')
 
     if (
       this.must_update ||
@@ -13315,11 +13311,11 @@ float wt = 0.0;\n\
   }
 
   LGraphGeometryTransform.prototype.updateGeometry = function (geometry, model) {
-    var old_vertices = geometry.vertices
-    var vertices = this.geometry.vertices
+    const old_vertices = geometry.vertices
+    let vertices = this.geometry.vertices
     if (!vertices || vertices.length != old_vertices.length)
       vertices = this.geometry.vertices = new Float32Array(old_vertices.length)
-    var temp = vec3.create()
+    const temp = vec3.create()
 
     for (var i = 0, l = vertices.length; i < l; i += 3) {
       temp[0] = old_vertices[i]
@@ -13334,10 +13330,10 @@ float wt = 0.0;\n\
     if (geometry.normals) {
       if (!this.geometry.normals || this.geometry.normals.length != geometry.normals.length)
         this.geometry.normals = new Float32Array(geometry.normals.length)
-      var normals = this.geometry.normals
-      var normal_model = mat4.invert(mat4.create(), model)
+      const normals = this.geometry.normals
+      const normal_model = mat4.invert(mat4.create(), model)
       if (normal_model) mat4.transpose(normal_model, normal_model)
-      var old_normals = geometry.normals
+      const old_normals = geometry.normals
       for (var i = 0, l = normals.length; i < l; i += 3) {
         temp[0] = old_normals[i]
         temp[1] = old_normals[i + 1]
@@ -13378,31 +13374,31 @@ float wt = 0.0;\n\
   LGraphGeometryPolygon.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) return
 
-    var sides = this.getInputOrProperty('sides')
-    var radius = this.getInputOrProperty('radius')
+    let sides = this.getInputOrProperty('sides')
+    const radius = this.getInputOrProperty('radius')
     sides = Math.max(3, sides) | 0
 
-    //update
+    // update
     if (this.last_info.sides != sides || this.last_info.radius != radius) this.updateGeometry(sides, radius)
 
     this.setOutputData(0, this.geometry)
   }
 
   LGraphGeometryPolygon.prototype.updateGeometry = function (sides, radius) {
-    var num = 3 * sides
-    var vertices = this.geometry.vertices
+    const num = 3 * sides
+    let vertices = this.geometry.vertices
     if (!vertices || vertices.length != num) vertices = this.geometry.vertices = new Float32Array(3 * sides)
-    var delta = (Math.PI * 2) / sides
-    var gen_uvs = this.properties.uvs
+    const delta = (Math.PI * 2) / sides
+    const gen_uvs = this.properties.uvs
     if (gen_uvs) {
       uvs = this.geometry.coords = new Float32Array(3 * sides)
     }
 
-    for (var i = 0; i < sides; ++i) {
-      var angle = delta * -i
-      var x = Math.cos(angle) * radius
-      var y = 0
-      var z = Math.sin(angle) * radius
+    for (let i = 0; i < sides; ++i) {
+      const angle = delta * -i
+      const x = Math.cos(angle) * radius
+      const y = 0
+      const z = Math.sin(angle) * radius
       vertices[i * 3] = x
       vertices[i * 3 + 1] = y
       vertices[i * 3 + 2] = z
@@ -13435,7 +13431,7 @@ float wt = 0.0;\n\
   }
 
   LGraphGeometryExtrude.prototype.onExecute = function () {
-    var geo = this.getInputData(0)
+    const geo = this.getInputData(0)
     if (!geo || !this.isOutputConnected(0)) return
 
     if (geo.version != this._last_geo_version || this._must_update) {
@@ -13448,26 +13444,26 @@ float wt = 0.0;\n\
   }
 
   LGraphGeometryExtrude.prototype.extrudeGeometry = function (geo) {
-    //for every pair of vertices
-    var vertices = geo.vertices
-    var num_points = vertices.length / 3
+    // for every pair of vertices
+    const vertices = geo.vertices
+    const num_points = vertices.length / 3
 
-    var tempA = vec3.create()
-    var tempB = vec3.create()
-    var tempC = vec3.create()
-    var tempD = vec3.create()
-    var offset = new Float32Array(this.properties.offset)
+    const tempA = vec3.create()
+    const tempB = vec3.create()
+    const tempC = vec3.create()
+    const tempD = vec3.create()
+    const offset = new Float32Array(this.properties.offset)
 
     if (geo.type == 'line_loop') {
-      var new_vertices = new Float32Array(num_points * 6 * 3) //every points become 6 ( caps not included )
-      var npos = 0
-      for (var i = 0, l = vertices.length; i < l; i += 3) {
+      var new_vertices = new Float32Array(num_points * 6 * 3) // every points become 6 ( caps not included )
+      let npos = 0
+      for (let i = 0, l = vertices.length; i < l; i += 3) {
         tempA[0] = vertices[i]
         tempA[1] = vertices[i + 1]
         tempA[2] = vertices[i + 2]
 
         if (i + 3 < l) {
-          //loop
+          // loop
           tempB[0] = vertices[i + 3]
           tempB[1] = vertices[i + 4]
           tempB[2] = vertices[i + 5]
@@ -13496,7 +13492,7 @@ float wt = 0.0;\n\
       }
     }
 
-    var out_geo = {
+    const out_geo = {
       _id: generateGeometryId(),
       type: 'triangles',
       vertices: new_vertices
@@ -13556,7 +13552,7 @@ float wt = 0.0;\n\
   }
 
   LGraphGeometryEval.prototype.onExecute = function () {
-    var geometry = this.getInputData(0)
+    const geometry = this.getInputData(0)
     if (!geometry) return
 
     if (!this.func) {
@@ -13574,10 +13570,10 @@ float wt = 0.0;\n\
       this.geometry_id = geometry._id
       if (this.properties.execute_every_frame) this.version++
       else this.version = geometry._version
-      var func = this.func
-      var T = getTime()
+      const func = this.func
+      const T = getTime()
 
-      //clone
+      // clone
       if (!this.geometry) this.geometry = {}
       for (var i in geometry) {
         if (geometry[i] == null) continue
@@ -13588,8 +13584,8 @@ float wt = 0.0;\n\
       if (this.properties.execute_every_frame) this.geometry._version = this.version
       else this.geometry._version = geometry._version + 1
 
-      var V = vec3.create()
-      var vertices = this.vertices
+      const V = vec3.create()
+      let vertices = this.vertices
       if (!vertices || this.vertices.length != geometry.vertices.length)
         vertices = this.vertices = new Float32Array(geometry.vertices)
       else vertices.set(geometry.vertices)
@@ -13703,7 +13699,7 @@ float wt = 0.0;\n\
   }
 
   LGraphConnectPoints.prototype.onExecute = function () {
-    var geometry = this.getInputData(0)
+    const geometry = this.getInputData(0)
     if (!geometry) return
 
     if (this.geometry_id != geometry._id || this.version != geometry._version || this.must_update) {
@@ -13711,30 +13707,30 @@ float wt = 0.0;\n\
       this.geometry_id = geometry._id
       this.version = geometry._version
 
-      //copy
+      // copy
       this.geometry = {}
       for (var i in geometry) this.geometry[i] = geometry[i]
       this.geometry._id = generateGeometryId()
       this.geometry._version = this.my_version++
 
-      var vertices = geometry.vertices
-      var l = vertices.length
-      var min_dist = this.properties.min_dist
-      var max_dist = this.properties.max_dist
-      var probability = this.properties.probability
-      var max_connections = this.properties.max_connections
-      var indices = []
+      const vertices = geometry.vertices
+      const l = vertices.length
+      const min_dist = this.properties.min_dist
+      const max_dist = this.properties.max_dist
+      const probability = this.properties.probability
+      const max_connections = this.properties.max_connections
+      const indices = []
 
       for (var i = 0; i < l; i += 3) {
-        var x = vertices[i]
-        var y = vertices[i + 1]
-        var z = vertices[i + 2]
-        var connections = 0
-        for (var j = i + 3; j < l; j += 3) {
-          var x2 = vertices[j]
-          var y2 = vertices[j + 1]
-          var z2 = vertices[j + 2]
-          var dist = Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2) + (z - z2) * (z - z2))
+        const x = vertices[i]
+        const y = vertices[i + 1]
+        const z = vertices[i + 2]
+        let connections = 0
+        for (let j = i + 3; j < l; j += 3) {
+          const x2 = vertices[j]
+          const y2 = vertices[j + 1]
+          const z2 = vertices[j + 2]
+          const dist = Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2) + (z - z2) * (z - z2))
           if (dist > max_dist || dist < min_dist || (probability < 1 && probability < Math.random())) continue
           indices.push(i / 3, j / 3)
           connections += 1
@@ -13752,9 +13748,9 @@ float wt = 0.0;\n\
 
   LiteGraph.registerNodeType('geometry/connectPoints', LGraphConnectPoints)
 
-  //Works with Litegl.js to create WebGL nodes
+  // Works with Litegl.js to create WebGL nodes
   if (typeof GL == 'undefined')
-    //LiteGL RELATED **********************************************
+    // LiteGL RELATED **********************************************
     return
 
   function LGraphToGeometry() {
@@ -13769,13 +13765,13 @@ float wt = 0.0;\n\
   LGraphToGeometry.desc = 'converts a mesh to geometry'
 
   LGraphToGeometry.prototype.onExecute = function () {
-    var mesh = this.getInputData(0)
+    const mesh = this.getInputData(0)
     if (!mesh) return
 
     if (mesh != this.last_mesh) {
       this.last_mesh = mesh
       for (i in mesh.vertexBuffers) {
-        var buffer = mesh.vertexBuffers[i]
+        const buffer = mesh.vertexBuffers[i]
         this.geometry[i] = buffer.data
       }
       if (mesh.indexBuffers['triangles']) this.geometry.indices = mesh.indexBuffers['triangles'].data
@@ -13806,13 +13802,13 @@ float wt = 0.0;\n\
     for (var i in geometry) {
       if (i[0] == '_') continue
 
-      var buffer_data = geometry[i]
+      const buffer_data = geometry[i]
 
-      var info = GL.Mesh.common_buffers[i]
+      const info = GL.Mesh.common_buffers[i]
       if (!info && i != 'indices')
-        //unknown buffer
+        // unknown buffer
         continue
-      var spacing = info ? info.spacing : 3
+      const spacing = info ? info.spacing : 3
       var mesh_buffer = this.mesh.vertexBuffers[i]
 
       if (!mesh_buffer || mesh_buffer.data.length != buffer_data.length) {
@@ -13834,8 +13830,8 @@ float wt = 0.0;\n\
       this.mesh.vertexBuffers.normals &&
       this.mesh.vertexBuffers.normals.data.length != this.mesh.vertexBuffers.vertices.data.length
     ) {
-      var n = new Float32Array([0, 1, 0])
-      var normals = new Float32Array(this.mesh.vertexBuffers.vertices.data.length)
+      const n = new Float32Array([0, 1, 0])
+      const normals = new Float32Array(this.mesh.vertexBuffers.vertices.data.length)
       for (var i = 0; i < normals.length; i += 3) normals.set(n, i)
       mesh_buffer = new GL.Buffer(GL.ARRAY_BUFFER, normals, 3)
       this.mesh.addBuffer('normals', mesh_buffer)
@@ -13848,7 +13844,7 @@ float wt = 0.0;\n\
   }
 
   LGraphGeometryToMesh.prototype.onExecute = function () {
-    var geometry = this.getInputData(0)
+    const geometry = this.getInputData(0)
     if (!geometry) return
     if (this.version != geometry._version || this.geometry_id != geometry._id) this.updateMesh(geometry)
     this.setOutputData(0, this.mesh)
@@ -13898,7 +13894,7 @@ float wt = 0.0;\n\
   LGraphRenderMesh.prototype.onExecute = function () {
     if (!this.properties.enabled) return
 
-    var mesh = this.getInputData(0)
+    const mesh = this.getInputData(0)
     if (!mesh) return
 
     if (!LiteGraph.LGraphRender.onRequestCameraMatrices) {
@@ -13909,8 +13905,8 @@ float wt = 0.0;\n\
     }
 
     LiteGraph.LGraphRender.onRequestCameraMatrices(view_matrix, projection_matrix, viewprojection_matrix)
-    var shader = null
-    var texture = this.getInputData(2)
+    let shader = null
+    const texture = this.getInputData(2)
     if (texture) {
       shader = gl.shaders['textured']
       if (!shader)
@@ -13931,13 +13927,13 @@ float wt = 0.0;\n\
     this.color.set(this.properties.color)
     this.color[3] = this.properties.opacity
 
-    var model_matrix = this.model_matrix
-    var m = this.getInputData(1)
+    const model_matrix = this.model_matrix
+    const m = this.getInputData(1)
     if (m) model_matrix.set(m)
     else mat4.identity(model_matrix)
 
     this.uniforms.u_point_size = 1
-    var primitive = this.properties.primitive
+    const primitive = this.properties.primitive
 
     shader.uniforms(global_uniforms)
     shader.uniforms(this.uniforms)
@@ -13950,7 +13946,7 @@ float wt = 0.0;\n\
       gl.depthMask(false)
     } else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-    var indices = 'indices'
+    let indices = 'indices'
     if (mesh.indexBuffers.triangles) indices = 'triangles'
     shader.draw(mesh, primitive, indices)
     gl.disable(gl.BLEND)
@@ -13959,7 +13955,7 @@ float wt = 0.0;\n\
 
   LiteGraph.registerNodeType('geometry/render_mesh', LGraphRenderMesh)
 
-  //**************************
+  //* *************************
 
   function LGraphGeometryPrimitive() {
     this.addInput('size', 'number')
@@ -13990,9 +13986,9 @@ float wt = 0.0;\n\
   LGraphGeometryPrimitive.prototype.onExecute = function () {
     if (!this.isOutputConnected(0)) return
 
-    var size = this.getInputOrProperty('size')
+    const size = this.getInputOrProperty('size')
 
-    //update
+    // update
     if (
       this.last_info.type != this.properties.type ||
       this.last_info.size != size ||
@@ -14007,22 +14003,22 @@ float wt = 0.0;\n\
     subdivisions = Math.max(0, subdivisions) | 0
 
     switch (type) {
-      case 1: //CUBE:
+      case 1: // CUBE:
         this._mesh = GL.Mesh.cube({ size: size, normals: true, coords: true })
         break
-      case 2: //PLANE:
+      case 2: // PLANE:
         this._mesh = GL.Mesh.plane({ size: size, xz: true, detail: subdivisions, normals: true, coords: true })
         break
-      case 3: //CYLINDER:
+      case 3: // CYLINDER:
         this._mesh = GL.Mesh.cylinder({ size: size, subdivisions: subdivisions, normals: true, coords: true })
         break
-      case 4: //SPHERE:
+      case 4: // SPHERE:
         this._mesh = GL.Mesh.sphere({ size: size, long: subdivisions, lat: subdivisions, normals: true, coords: true })
         break
-      case 5: //CIRCLE:
+      case 5: // CIRCLE:
         this._mesh = GL.Mesh.circle({ size: size, slices: subdivisions, normals: true, coords: true })
         break
-      case 6: //HEMISPHERE:
+      case 6: // HEMISPHERE:
         this._mesh = GL.Mesh.sphere({
           size: size,
           long: subdivisions,
@@ -14032,13 +14028,13 @@ float wt = 0.0;\n\
           hemi: true
         })
         break
-      case 7: //ICOSAHEDRON:
+      case 7: // ICOSAHEDRON:
         this._mesh = GL.Mesh.icosahedron({ size: size, subdivisions: subdivisions })
         break
-      case 8: //CONE:
+      case 8: // CONE:
         this._mesh = GL.Mesh.cone({ radius: size, height: size, subdivisions: subdivisions })
         break
-      case 9: //QUAD:
+      case 9: // QUAD:
         this._mesh = GL.Mesh.plane({ size: size, xz: false, detail: subdivisions, normals: true, coords: true })
         break
     }
@@ -14086,7 +14082,7 @@ float wt = 0.0;\n\
   }
 
   LGraphRenderPoints.prototype.updateMesh = function (geometry) {
-    var buffer = this.buffer
+    const buffer = this.buffer
     if (!this.buffer || !this.buffer.data || this.buffer.data.length != geometry.vertices.length)
       this.buffer = new GL.Buffer(GL.ARRAY_BUFFER, geometry.vertices, 3, GL.DYNAMIC_DRAW)
     else {
@@ -14104,7 +14100,7 @@ float wt = 0.0;\n\
   LGraphRenderPoints.prototype.onExecute = function () {
     if (!this.properties.enabled) return
 
-    var geometry = this.getInputData(0)
+    const geometry = this.getInputData(0)
     if (!geometry) return
     if (this.version != geometry._version || this.geometry_id != geometry._id) this.updateMesh(geometry)
 
@@ -14116,9 +14112,9 @@ float wt = 0.0;\n\
     }
 
     LiteGraph.LGraphRender.onRequestCameraMatrices(view_matrix, projection_matrix, viewprojection_matrix)
-    var shader = null
+    let shader = null
 
-    var texture = this.getInputData(2)
+    const texture = this.getInputData(2)
 
     if (texture) {
       shader = gl.shaders['textured_points']
@@ -14141,7 +14137,7 @@ float wt = 0.0;\n\
     this.color.set(this.properties.color)
     this.color[3] = this.properties.opacity
 
-    var m = this.getInputData(1)
+    const m = this.getInputData(1)
     if (m) model_matrix.set(m)
     else mat4.identity(model_matrix)
 
@@ -14249,7 +14245,7 @@ float wt = 0.0;\n\
   }\
 '
 
-  //based on https://inconvergent.net/2019/depth-of-field/
+  // based on https://inconvergent.net/2019/depth-of-field/
   /*
 function LGraphRenderGeometryDOF() {
   this.addInput("in", "geometry");
@@ -14323,7 +14319,7 @@ LGraphRenderGeometryDOF.prototype.onExecute = function() {
   var shader = null;
 
   var texture = this.getInputData(2);
-  
+
   if(texture)
   {
     shader = gl.shaders["textured_points"];
@@ -14455,10 +14451,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       */
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
-  var LGraphTexture = global.LGraphTexture
+  const LiteGraph = global.LiteGraph
+  const LGraphTexture = global.LGraphTexture
 
-  //Works with Litegl.js to create WebGL nodes
+  // Works with Litegl.js to create WebGL nodes
   if (typeof GL != 'undefined') {
     // Texture Lens *****************************************
     function LGraphFXLens() {
@@ -14493,7 +14489,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     LGraphFXLens.prototype.onExecute = function () {
-      var tex = this.getInputData(0)
+      const tex = this.getInputData(0)
       if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
         this.setOutputData(0, tex)
         return
@@ -14505,19 +14501,19 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
       this._tex = LGraphTexture.getTargetTexture(tex, this._tex, this.properties.precision)
 
-      var aberration = this.properties.aberration
+      let aberration = this.properties.aberration
       if (this.isInputConnected(1)) {
         aberration = this.getInputData(1)
         this.properties.aberration = aberration
       }
 
-      var distortion = this.properties.distortion
+      let distortion = this.properties.distortion
       if (this.isInputConnected(2)) {
         distortion = this.getInputData(2)
         this.properties.distortion = distortion
       }
 
-      var blur = this.properties.blur
+      let blur = this.properties.blur
       if (this.isInputConnected(3)) {
         blur = this.getInputData(3)
         this.properties.blur = blur
@@ -14525,9 +14521,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
       gl.disable(gl.BLEND)
       gl.disable(gl.DEPTH_TEST)
-      var mesh = Mesh.getScreenQuad()
-      var shader = LGraphFXLens._shader
-      //var camera = LS.Renderer._current_camera;
+      const mesh = Mesh.getScreenQuad()
+      const shader = LGraphFXLens._shader
+      // var camera = LS.Renderer._current_camera;
 
       this._tex.drawTo(function () {
         tex.bind(0)
@@ -14599,7 +14595,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
           var depth = this.getInputData(1);
           var camera = this.getInputData(2);
 
-          if(!tex || !depth || !camera) 
+          if(!tex || !depth || !camera)
           {
             this.setOutputData(0, tex);
             return;
@@ -14607,7 +14603,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
           var precision = gl.UNSIGNED_BYTE;
           if(this.properties.high_precision)
-            precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT;			
+            precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT;
           if(!this._temp_texture || this._temp_texture.type != precision ||
             this._temp_texture.width != tex.width || this._temp_texture.height != tex.height)
             this._temp_texture = new GL.Texture( tex.width, tex.height, { type: precision, format: gl.RGBA, filter: gl.LINEAR });
@@ -14693,7 +14689,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         global.LGraphDepthOfField = LGraphDepthOfField;
         */
 
-    //*******************************************************
+    //* ******************************************************
 
     function LGraphFXBokeh() {
       this.addInput('Texture', 'Texture')
@@ -14716,9 +14712,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     LGraphFXBokeh.widgets_info = { shape: { widget: 'texture' } }
 
     LGraphFXBokeh.prototype.onExecute = function () {
-      var tex = this.getInputData(0)
-      var blurred_tex = this.getInputData(1)
-      var mask_tex = this.getInputData(2)
+      const tex = this.getInputData(0)
+      let blurred_tex = this.getInputData(1)
+      const mask_tex = this.getInputData(2)
       if (!tex || !mask_tex || !this.properties.shape) {
         this.setOutputData(0, tex)
         return
@@ -14728,18 +14724,18 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         blurred_tex = tex
       }
 
-      var shape_tex = LGraphTexture.getTexture(this.properties.shape)
+      const shape_tex = LGraphTexture.getTexture(this.properties.shape)
       if (!shape_tex) {
         return
       }
 
-      var threshold = this.properties.threshold
+      let threshold = this.properties.threshold
       if (this.isInputConnected(3)) {
         threshold = this.getInputData(3)
         this.properties.threshold = threshold
       }
 
-      var precision = gl.UNSIGNED_BYTE
+      let precision = gl.UNSIGNED_BYTE
       if (this.properties.high_precision) {
         precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT
       }
@@ -14756,10 +14752,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         })
       }
 
-      //iterations
-      var size = this.properties.size
+      // iterations
+      const size = this.properties.size
 
-      var first_shader = LGraphFXBokeh._first_shader
+      let first_shader = LGraphFXBokeh._first_shader
       if (!first_shader) {
         first_shader = LGraphFXBokeh._first_shader = new GL.Shader(
           Shader.SCREEN_VERTEX_SHADER,
@@ -14767,7 +14763,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         )
       }
 
-      var second_shader = LGraphFXBokeh._second_shader
+      let second_shader = LGraphFXBokeh._second_shader
       if (!second_shader) {
         second_shader = LGraphFXBokeh._second_shader = new GL.Shader(
           LGraphFXBokeh._second_vertex_shader,
@@ -14775,7 +14771,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         )
       }
 
-      var points_mesh = this._points_mesh
+      let points_mesh = this._points_mesh
       if (
         !points_mesh ||
         points_mesh._width != tex.width ||
@@ -14785,11 +14781,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         points_mesh = this.createPointsMesh(tex.width, tex.height, 2)
       }
 
-      var screen_mesh = Mesh.getScreenQuad()
+      const screen_mesh = Mesh.getScreenQuad()
 
-      var point_size = this.properties.size
-      var min_light = this.properties.min_light
-      var alpha = this.properties.alpha
+      const point_size = this.properties.size
+      const min_light = this.properties.min_light
+      const alpha = this.properties.alpha
 
       gl.disable(gl.DEPTH_TEST)
       gl.disable(gl.BLEND)
@@ -14809,9 +14805,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       })
 
       this._temp_texture.drawTo(function () {
-        //clear because we use blending
-        //gl.clearColor(0.0,0.0,0.0,1.0);
-        //gl.clear( gl.COLOR_BUFFER_BIT );
+        // clear because we use blending
+        // gl.clearColor(0.0,0.0,0.0,1.0);
+        // gl.clear( gl.COLOR_BUFFER_BIT );
         gl.enable(gl.BLEND)
         gl.blendFunc(gl.ONE, gl.ONE)
 
@@ -14834,18 +14830,18 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     LGraphFXBokeh.prototype.createPointsMesh = function (width, height, spacing) {
-      var nwidth = Math.round(width / spacing)
-      var nheight = Math.round(height / spacing)
+      const nwidth = Math.round(width / spacing)
+      const nheight = Math.round(height / spacing)
 
-      var vertices = new Float32Array(nwidth * nheight * 2)
+      const vertices = new Float32Array(nwidth * nheight * 2)
 
-      var ny = -1
-      var dx = (2 / width) * spacing
-      var dy = (2 / height) * spacing
-      for (var y = 0; y < nheight; ++y) {
-        var nx = -1
-        for (var x = 0; x < nwidth; ++x) {
-          var pos = y * nwidth * 2 + x * 2
+      let ny = -1
+      const dx = (2 / width) * spacing
+      const dy = (2 / height) * spacing
+      for (let y = 0; y < nheight; ++y) {
+        let nx = -1
+        for (let x = 0; x < nwidth; ++x) {
+          const pos = y * nwidth * 2 + x * 2
           vertices[pos] = nx
           vertices[pos + 1] = ny
           nx += dx
@@ -14935,7 +14931,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     LiteGraph.registerNodeType('fx/bokeh', LGraphFXBokeh)
     global.LGraphFXBokeh = LGraphFXBokeh
 
-    //************************************************
+    //* ***********************************************
 
     function LGraphFXGeneric() {
       this.addInput('Texture', 'Texture')
@@ -14965,9 +14961,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     LGraphFXGeneric.prototype.onExecute = function () {
       if (!this.isOutputConnected(0)) {
         return
-      } //saves work
+      } // saves work
 
-      var tex = this.getInputData(0)
+      const tex = this.getInputData(0)
       if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
         this.setOutputData(0, tex)
         return
@@ -14979,23 +14975,23 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
       this._tex = LGraphTexture.getTargetTexture(tex, this._tex, this.properties.precision)
 
-      //iterations
-      var value1 = this.properties.value1
+      // iterations
+      let value1 = this.properties.value1
       if (this.isInputConnected(1)) {
         value1 = this.getInputData(1)
         this.properties.value1 = value1
       }
 
-      var value2 = this.properties.value2
+      let value2 = this.properties.value2
       if (this.isInputConnected(2)) {
         value2 = this.getInputData(2)
         this.properties.value2 = value2
       }
 
-      var fx = this.properties.fx
-      var shader = LGraphFXGeneric.shaders[fx]
+      const fx = this.properties.fx
+      let shader = LGraphFXGeneric.shaders[fx]
       if (!shader) {
-        var pixel_shader_code = LGraphFXGeneric['pixel_shader_' + fx]
+        const pixel_shader_code = LGraphFXGeneric[`pixel_shader_${fx}`]
         if (!pixel_shader_code) {
           return
         }
@@ -15005,16 +15001,16 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
       gl.disable(gl.BLEND)
       gl.disable(gl.DEPTH_TEST)
-      var mesh = Mesh.getScreenQuad()
-      var camera = global.LS ? LS.Renderer._current_camera : null
-      var camera_planes
+      const mesh = Mesh.getScreenQuad()
+      const camera = global.LS ? LS.Renderer._current_camera : null
+      let camera_planes
       if (camera) {
         camera_planes = [LS.Renderer._current_camera.near, LS.Renderer._current_camera.far]
       } else {
         camera_planes = [1, 100]
       }
 
-      var noise = null
+      let noise = null
       if (fx == 'noise') {
         noise = LGraphTexture.getNoiseTexture()
       }
@@ -15151,7 +15147,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     LGraphFXVigneting.prototype.onExecute = function () {
-      var tex = this.getInputData(0)
+      const tex = this.getInputData(0)
 
       if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
         this.setOutputData(0, tex)
@@ -15164,7 +15160,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
       this._tex = LGraphTexture.getTargetTexture(tex, this._tex, this.properties.precision)
 
-      var intensity = this.properties.intensity
+      let intensity = this.properties.intensity
       if (this.isInputConnected(1)) {
         intensity = this.getInputData(1)
         this.properties.intensity = intensity
@@ -15173,9 +15169,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       gl.disable(gl.BLEND)
       gl.disable(gl.DEPTH_TEST)
 
-      var mesh = Mesh.getScreenQuad()
-      var shader = LGraphFXVigneting._shader
-      var invert = this.properties.invert
+      const mesh = Mesh.getScreenQuad()
+      const shader = LGraphFXVigneting._shader
+      const invert = this.properties.invert
 
       this._tex.drawTo(function () {
         tex.bind(0)
@@ -15215,8 +15211,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
-  var MIDI_COLOR = '#243'
+  const LiteGraph = global.LiteGraph
+  const MIDI_COLOR = '#243'
 
   function MIDIEvent(data) {
     this.channel = 0
@@ -15235,17 +15231,17 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIEvent.prototype.setup = function (data) {
-    var raw_data = data
+    let raw_data = data
     if (data.constructor === Object) {
       raw_data = data.data
     }
 
     this.data.set(raw_data)
 
-    var midiStatus = raw_data[0]
+    const midiStatus = raw_data[0]
     this.status = midiStatus
 
-    var midiCommand = midiStatus & 0xf0
+    const midiCommand = midiStatus & 0xf0
 
     if (midiStatus >= 0xf0) {
       this.cmd = midiStatus
@@ -15311,7 +15307,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       if (this.cmd != MIDIEvent.NOTEON) {
         return -1
       }
-      var octave = this.data[1] - 24
+      const octave = this.data[1] - 24
       return Math.floor(octave / 12 + 1)
     },
     set: function (v) {
@@ -15320,7 +15316,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     enumerable: true
   })
 
-  //returns HZs
+  // returns HZs
   MIDIEvent.prototype.getPitch = function () {
     return Math.pow(2, (this.data[1] - 69) / 12) * 440
   }
@@ -15337,7 +15333,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     return this.data[2]
   }
 
-  //not tested, there is a formula missing here
+  // not tested, there is a formula missing here
   MIDIEvent.prototype.getPitchBend = function () {
     return this.data[1] + (this.data[2] << 7) - 8192
   }
@@ -15396,15 +15392,15 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         return MIDIEvent.TIMETICK
         break
       default:
-        return Number(str) //assume its a hex code
+        return Number(str) // assume its a hex code
     }
   }
 
-  //transform from a pitch number to string like "C4"
+  // transform from a pitch number to string like "C4"
   MIDIEvent.toNoteString = function (d, skip_octave) {
-    d = Math.round(d) //in case it has decimals
-    var note = d - 21
-    var octave = Math.floor((d - 24) / 12 + 1)
+    d = Math.round(d) // in case it has decimals
+    let note = d - 21
+    const octave = Math.floor((d - 24) / 12 + 1)
     note = note % 12
     if (note < 0) {
       note = 12 + note
@@ -15414,8 +15410,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   MIDIEvent.NoteStringToPitch = function (str) {
     str = str.toUpperCase()
-    var note = str[0]
-    var octave = 4
+    let note = str[0]
+    let octave = 4
 
     if (str[1] == '#') {
       note += '#'
@@ -15427,7 +15423,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         octave = Number(str[1])
       }
     }
-    var pitch = MIDIEvent.note_to_index[note]
+    const pitch = MIDIEvent.note_to_index[note]
     if (pitch == null) {
       return null
     }
@@ -15435,25 +15431,25 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIEvent.prototype.toString = function () {
-    var str = '' + this.channel + '. '
+    let str = `${this.channel}. `
     switch (this.cmd) {
       case MIDIEvent.NOTEON:
-        str += 'NOTEON ' + MIDIEvent.toNoteString(this.data[1])
+        str += `NOTEON ${MIDIEvent.toNoteString(this.data[1])}`
         break
       case MIDIEvent.NOTEOFF:
-        str += 'NOTEOFF ' + MIDIEvent.toNoteString(this.data[1])
+        str += `NOTEOFF ${MIDIEvent.toNoteString(this.data[1])}`
         break
       case MIDIEvent.CONTROLLERCHANGE:
-        str += 'CC ' + this.data[1] + ' ' + this.data[2]
+        str += `CC ${this.data[1]} ${this.data[2]}`
         break
       case MIDIEvent.PROGRAMCHANGE:
-        str += 'PC ' + this.data[1]
+        str += `PC ${this.data[1]}`
         break
       case MIDIEvent.PITCHBEND:
-        str += 'PITCHBEND ' + this.getPitchBend()
+        str += `PITCHBEND ${this.getPitchBend()}`
         break
       case MIDIEvent.KEYPRESSURE:
-        str += 'KEYPRESS ' + this.data[1]
+        str += `KEYPRESS ${this.data[1]}`
         break
     }
 
@@ -15461,9 +15457,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIEvent.prototype.toHexString = function () {
-    var str = ''
-    for (var i = 0; i < this.data.length; i++) {
-      str += this.data[i].toString(16) + ' '
+    let str = ''
+    for (let i = 0; i < this.data.length; i++) {
+      str += `${this.data[i].toString(16)} `
     }
   }
 
@@ -15524,11 +15520,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIEvent.commands_reversed = {}
-  for (var i in MIDIEvent.commands) {
+  for (const i in MIDIEvent.commands) {
     MIDIEvent.commands_reversed[MIDIEvent.commands[i]] = i
   }
 
-  //MIDI wrapper, instantiate by MIDIIn and MIDIOut
+  // MIDI wrapper, instantiate by MIDIIn and MIDIOut
   function MIDIInterface(on_ready, on_error) {
     if (!navigator.requestMIDIAccess) {
       this.error = 'not suppoorted'
@@ -15571,13 +15567,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIInterface.prototype.updatePorts = function () {
-    var midi = this.midi
+    const midi = this.midi
     this.input_ports = midi.inputs
     this.input_ports_info = []
     this.output_ports = midi.outputs
     this.output_ports_info = []
 
-    var num = 0
+    let num = 0
 
     var it = this.input_ports.values()
     var it_value = it.next()
@@ -15585,17 +15581,17 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       var port_info = it_value.value
       this.input_ports_info.push(port_info)
       console.log(
-        "Input port [type:'" +
-          port_info.type +
-          "'] id:'" +
-          port_info.id +
-          "' manufacturer:'" +
-          port_info.manufacturer +
-          "' name:'" +
-          port_info.name +
-          "' version:'" +
-          port_info.version +
-          "'"
+        `Input port [type:'${
+          port_info.type
+        }'] id:'${
+          port_info.id
+        }' manufacturer:'${
+          port_info.manufacturer
+        }' name:'${
+          port_info.name
+        }' version:'${
+          port_info.version
+        }'`
       )
       num++
       it_value = it.next()
@@ -15609,17 +15605,17 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       var port_info = it_value.value
       this.output_ports_info.push(port_info)
       console.log(
-        "Output port [type:'" +
-          port_info.type +
-          "'] id:'" +
-          port_info.id +
-          "' manufacturer:'" +
-          port_info.manufacturer +
-          "' name:'" +
-          port_info.name +
-          "' version:'" +
-          port_info.version +
-          "'"
+        `Output port [type:'${
+          port_info.type
+        }'] id:'${
+          port_info.id
+        }' manufacturer:'${
+          port_info.manufacturer
+        }' name:'${
+          port_info.name
+        }' version:'${
+          port_info.version
+        }'`
       )
       num++
       it_value = it.next()
@@ -15628,19 +15624,19 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   MIDIInterface.prototype.onMIDIFailure = function (msg) {
-    console.error('Failed to get MIDI access - ' + msg)
+    console.error(`Failed to get MIDI access - ${msg}`)
   }
 
   MIDIInterface.prototype.openInputPort = function (port, callback) {
-    var input_port = this.input_ports.get('input-' + port)
+    const input_port = this.input_ports.get(`input-${port}`)
     if (!input_port) {
       return false
     }
     MIDIInterface.input = this
-    var that = this
+    const that = this
 
     input_port.onmidimessage = function (a) {
-      var midi_event = new MIDIEvent(a.data)
+      const midi_event = new MIDIEvent(a.data)
       that.updateState(midi_event)
       if (callback) {
         callback(a.data, midi_event)
@@ -15674,7 +15670,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var output_port = this.output_ports_info[port] //this.output_ports.get("output-" + port);
+    const output_port = this.output_ports_info[port] // this.output_ports.get("output-" + port);
     if (!output_port) {
       return
     }
@@ -15697,9 +15693,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.boxcolor = '#AAA'
     this._last_time = 0
 
-    var that = this
+    const that = this
     new MIDIInterface(function (midi) {
-      //open
+      // open
       that._midi = midi
       if (that._waiting) {
         that.onStart()
@@ -15720,10 +15716,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     if (name == 'port') {
-      var values = {}
-      for (var i = 0; i < this._midi.input_ports_info.length; ++i) {
-        var input = this._midi.input_ports_info[i]
-        values[i] = i + '.- ' + input.name + ' version:' + input.version
+      const values = {}
+      for (let i = 0; i < this._midi.input_ports_info.length; ++i) {
+        const input = this._midi.input_ports_info[i]
+        values[i] = `${i}.- ${input.name} version:${input.version}`
       }
       return { type: 'enum', values: values }
     }
@@ -15759,14 +15755,14 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.boxcolor = '#AAA'
     if (!this.flags.collapsed && this._last_midi_event) {
       ctx.fillStyle = 'white'
-      var now = LiteGraph.getTime()
-      var f = 1.0 - Math.max(0, (now - this._last_time) * 0.001)
+      const now = LiteGraph.getTime()
+      const f = 1.0 - Math.max(0, (now - this._last_time) * 0.001)
       if (f > 0) {
-        var t = ctx.globalAlpha
+        const t = ctx.globalAlpha
         ctx.globalAlpha *= f
         ctx.font = '12px Tahoma'
         ctx.fillText(this._last_midi_event.toString(), 2, this.size[1] * 0.5 + 3)
-        //ctx.fillRect(0,0,this.size[0],this.size[1]);
+        // ctx.fillRect(0,0,this.size[0],this.size[1]);
         ctx.globalAlpha = t
       }
     }
@@ -15774,10 +15770,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGMIDIIn.prototype.onExecute = function () {
     if (this.outputs) {
-      var last = this._last_midi_event
-      for (var i = 0; i < this.outputs.length; ++i) {
-        var output = this.outputs[i]
-        var v = null
+      const last = this._last_midi_event
+      for (let i = 0; i < this.outputs.length; ++i) {
+        const output = this.outputs[i]
+        let v = null
         switch (output.name) {
           case 'midi':
             v = this._midi
@@ -15811,7 +15807,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.addInput('send', LiteGraph.EVENT)
     this.properties = { port: 0 }
 
-    var that = this
+    const that = this
     new MIDIInterface(function (midi) {
       that._midi = midi
       that.widget.options.values = that.getMIDIOutputs()
@@ -15835,27 +15831,27 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     if (name == 'port') {
-      var values = this.getMIDIOutputs()
+      const values = this.getMIDIOutputs()
       return { type: 'enum', values: values }
     }
   }
   LGMIDIOut.default_ports = { 0: 'unknown' }
 
   LGMIDIOut.prototype.getMIDIOutputs = function () {
-    var values = {}
+    const values = {}
     if (!this._midi) return LGMIDIOut.default_ports
     if (this._midi.output_ports_info)
-      for (var i = 0; i < this._midi.output_ports_info.length; ++i) {
-        var output = this._midi.output_ports_info[i]
+      for (let i = 0; i < this._midi.output_ports_info.length; ++i) {
+        const output = this._midi.output_ports_info[i]
         if (!output) continue
-        var name = i + '.- ' + output.name + ' version:' + output.version
+        const name = `${i}.- ${output.name} version:${output.version}`
         values[i] = name
       }
     return values
   }
 
   LGMIDIOut.prototype.onAction = function (event, midi_event) {
-    //console.log(midi_event);
+    // console.log(midi_event);
     if (!this._midi) {
       return
     }
@@ -15930,7 +15926,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       max_value: -1
     }
 
-    var that = this
+    const that = this
     this._learning = false
     this.addWidget('button', 'Learn', '', function () {
       that._learning = true
@@ -15953,7 +15949,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIFilter.prototype.getTitle = function () {
-    var str = null
+    let str = null
     if (this.properties.cmd == -1) {
       str = 'Nothing'
     } else {
@@ -15962,18 +15958,16 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
     if (this.properties.min_value != -1 && this.properties.max_value != -1) {
       str +=
-        ' ' +
-        (this.properties.min_value == this.properties.max_value
-          ? this.properties.max_value
-          : this.properties.min_value + '..' + this.properties.max_value)
+        ` ${
+          this.properties.min_value == this.properties.max_value ? this.properties.max_value : `${this.properties.min_value}..${this.properties.max_value}`}`
     }
 
-    return 'Filter: ' + str
+    return `Filter: ${str}`
   }
 
   LGMIDIFilter.prototype.onPropertyChanged = function (name, value) {
     if (name == 'cmd') {
-      var num = Number(value)
+      let num = Number(value)
       if (isNaN(num)) {
         num = MIDIEvent.commands[value] || 0
       }
@@ -16015,7 +16009,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   function LGMIDIEvent() {
     this.properties = {
       channel: 0,
-      cmd: 144, //0x90
+      cmd: 144, // 0x90
       value1: 1,
       value2: 1
     }
@@ -16046,7 +16040,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    //send
+    // send
     var midi_event = this.midi_event
     midi_event.channel = this.properties.channel
     if (this.properties.cmd && this.properties.cmd.constructor === String) {
@@ -16062,11 +16056,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIEvent.prototype.onExecute = function () {
-    var props = this.properties
+    const props = this.properties
 
     if (this.inputs) {
       for (var i = 0; i < this.inputs.length; ++i) {
-        var input = this.inputs[i]
+        const input = this.inputs[i]
         if (input.link == -1) {
           continue
         }
@@ -16104,7 +16098,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
     if (this.outputs) {
       for (var i = 0; i < this.outputs.length; ++i) {
-        var output = this.outputs[i]
+        const output = this.outputs[i]
         var v = null
         switch (output.name) {
           case 'midi':
@@ -16193,7 +16187,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGMIDICC.color = MIDI_COLOR
 
   LGMIDICC.prototype.onExecute = function () {
-    var props = this.properties
+    const props = this.properties
     if (MIDIInterface.input) {
       this.properties.value = MIDIInterface.input.state.cc[this.properties.cc]
     }
@@ -16223,9 +16217,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGMIDIGenerator.color = MIDI_COLOR
 
   LGMIDIGenerator.processScale = function (scale) {
-    var notes = scale.split(',')
-    for (var i = 0; i < notes.length; ++i) {
-      var n = notes[i]
+    const notes = scale.split(',')
+    for (let i = 0; i < notes.length; ++i) {
+      const n = notes[i]
       if ((n.length == 2 && n[1] != '#') || n.length > 2) {
         notes[i] = -LiteGraph.MIDIEvent.NoteStringToPitch(n)
       } else {
@@ -16242,23 +16236,23 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIGenerator.prototype.onExecute = function () {
-    var octave = this.getInputData(2)
+    const octave = this.getInputData(2)
     if (octave != null) {
       this.properties.octave = octave
     }
 
-    var scale = this.getInputData(1)
+    const scale = this.getInputData(1)
     if (scale) {
       this.notes_pitches = LGMIDIGenerator.processScale(scale)
     }
   }
 
   LGMIDIGenerator.prototype.onAction = function (event, midi_event) {
-    //var range = this.properties.max - this.properties.min;
-    //var pitch = this.properties.min + ((Math.random() * range)|0);
-    var pitch = 0
-    var range = this.notes_pitches.length
-    var index = 0
+    // var range = this.properties.max - this.properties.min;
+    // var pitch = this.properties.min + ((Math.random() * range)|0);
+    let pitch = 0
+    const range = this.notes_pitches.length
+    let index = 0
 
     if (this.properties.mode == 'sequence') {
       index = this.sequence_index = (this.sequence_index + 1) % range
@@ -16266,7 +16260,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       index = Math.floor(Math.random() * range)
     }
 
-    var note = this.notes_pitches[index]
+    const note = this.notes_pitches[index]
     if (note >= 0) {
       pitch = note + (this.properties.octave - 1) * 12 + 33
     } else {
@@ -16275,13 +16269,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
     var midi_event = new MIDIEvent()
     midi_event.setup([MIDIEvent.NOTEON, pitch, 10])
-    var duration = this.properties.duration || 1
+    const duration = this.properties.duration || 1
     this.trigger('note', midi_event)
 
-    //noteoff
+    // noteoff
     setTimeout(
       function () {
-        var midi_event = new MIDIEvent()
+        const midi_event = new MIDIEvent()
         midi_event.setup([MIDIEvent.NOTEOFF, pitch, 0])
         this.trigger('note', midi_event)
       }.bind(this),
@@ -16322,7 +16316,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDITranspose.prototype.onExecute = function () {
-    var amount = this.getInputData(1)
+    const amount = this.getInputData(1)
     if (amount != null) {
       this.properties.amount = amount
     }
@@ -16364,7 +16358,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         this.offset_notes[i] = 0
         continue
       }
-      for (var j = 1; j < 12; ++j) {
+      for (let j = 1; j < 12; ++j) {
         if (this.valid_notes[(i - j) % 12]) {
           this.offset_notes[i] = -j
           break
@@ -16385,9 +16379,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (midi_event.data[0] == MIDIEvent.NOTEON || midi_event.data[0] == MIDIEvent.NOTEOFF) {
       this.midi_event = new MIDIEvent()
       this.midi_event.setup(midi_event.data)
-      var note = midi_event.note
-      var index = MIDIEvent.note_to_index[note]
-      var offset = this.offset_notes[index]
+      const note = midi_event.note
+      const index = MIDIEvent.note_to_index[note]
+      const offset = this.offset_notes[index]
       this.midi_event.data[1] += offset
       this.trigger('out', this.midi_event)
     } else {
@@ -16396,7 +16390,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIQuantize.prototype.onExecute = function () {
-    var scale = this.getInputData(1)
+    const scale = this.getInputData(1)
     if (scale != null && scale != this._current_scale) {
       this.processScale(scale)
     }
@@ -16444,23 +16438,23 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (!this._playing) return
 
     this._current_time += this.graph.elapsed_time
-    var current_time = this._current_time * 100
+    const current_time = this._current_time * 100
 
-    for (var i = 0; i < this._midi.tracks; ++i) {
-      var track = this._midi.track[i]
+    for (let i = 0; i < this._midi.tracks; ++i) {
+      const track = this._midi.track[i]
       if (!track._last_pos) {
         track._last_pos = 0
         track._time = 0
       }
 
-      var elem = track.event[track._last_pos]
+      const elem = track.event[track._last_pos]
       if (elem && track._time + elem.deltaTime <= current_time) {
         track._last_pos++
         track._time += elem.deltaTime
 
         if (elem.data) {
-          var midi_cmd = elem.type << (4 + elem.channel)
-          var midi_event = new MIDIEvent()
+          const midi_cmd = elem.type << (4 + elem.channel)
+          const midi_event = new MIDIEvent()
           midi_event.setup([midi_cmd, elem.data[0], elem.data[1]])
           this.trigger('note', midi_event)
         }
@@ -16473,15 +16467,15 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this._current_time = 0
     if (!this._midi) return
 
-    for (var i = 0; i < this._midi.tracks; ++i) {
-      var track = this._midi.track[i]
+    for (let i = 0; i < this._midi.tracks; ++i) {
+      const track = this._midi.track[i]
       track._last_pos = 0
       track._time = 0
     }
   }
 
   LGMIDIFromFile.prototype.loadMIDIFile = function (url) {
-    var that = this
+    const that = this
     LiteGraph.fetchFile(
       url,
       'arraybuffer',
@@ -16518,7 +16512,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       console.error('Audiosynth.js not included, LGMidiPlay requires that library')
       this.boxcolor = 'red'
     } else {
-      var Synth = (this.synth = new AudioSynth())
+      const Synth = (this.synth = new AudioSynth())
       this.instrument = Synth.createInstrument('piano')
     }
   }
@@ -16533,7 +16527,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     if (this.instrument && midi_event.data[0] == MIDIEvent.NOTEON) {
-      var note = midi_event.note //C#
+      const note = midi_event.note // C#
       if (!note || note == 'undefined' || note.constructor !== String) {
         return
       }
@@ -16543,12 +16537,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIPlay.prototype.onExecute = function () {
-    var volume = this.getInputData(1)
+    const volume = this.getInputData(1)
     if (volume != null) {
       this.properties.volume = volume
     }
 
-    var duration = this.getInputData(2)
+    const duration = this.getInputData(2)
     if (duration != null) {
       this.properties.duration = duration
     }
@@ -16593,25 +16587,25 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var num_keys = this.properties.num_octaves * 12
+    const num_keys = this.properties.num_octaves * 12
     this.keys.length = num_keys
-    var key_width = this.size[0] / (this.properties.num_octaves * 7)
-    var key_height = this.size[1]
+    const key_width = this.size[0] / (this.properties.num_octaves * 7)
+    const key_height = this.size[1]
 
     ctx.globalAlpha = 1
 
     for (
-      var k = 0;
+      let k = 0;
       k < 2;
-      k++ //draw first whites (0) then blacks (1)
+      k++ // draw first whites (0) then blacks (1)
     ) {
-      for (var i = 0; i < num_keys; ++i) {
-        var key_info = LGMIDIKeys.keys[i % 12]
+      for (let i = 0; i < num_keys; ++i) {
+        const key_info = LGMIDIKeys.keys[i % 12]
         if (key_info.t != k) {
           continue
         }
-        var octave = Math.floor(i / 12)
-        var x = octave * 7 * key_width + key_info.x * key_width
+        const octave = Math.floor(i / 12)
+        const x = octave * 7 * key_width + key_info.x * key_width
         if (k == 0) {
           ctx.fillStyle = this.keys[i] ? '#CCC' : 'white'
         } else {
@@ -16623,24 +16617,24 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGMIDIKeys.prototype.getKeyIndex = function (pos) {
-    var num_keys = this.properties.num_octaves * 12
-    var key_width = this.size[0] / (this.properties.num_octaves * 7)
-    var key_height = this.size[1]
+    const num_keys = this.properties.num_octaves * 12
+    const key_width = this.size[0] / (this.properties.num_octaves * 7)
+    const key_height = this.size[1]
 
     for (
-      var k = 1;
+      let k = 1;
       k >= 0;
-      k-- //test blacks first (1) then whites (0)
+      k-- // test blacks first (1) then whites (0)
     ) {
-      for (var i = 0; i < this.keys.length; ++i) {
-        var key_info = LGMIDIKeys.keys[i % 12]
+      for (let i = 0; i < this.keys.length; ++i) {
+        const key_info = LGMIDIKeys.keys[i % 12]
         if (key_info.t != k) {
           continue
         }
-        var octave = Math.floor(i / 12)
-        var x = octave * 7 * key_width + key_info.x * key_width
-        var w = key_width * key_info.w
-        var h = key_height * key_info.h
+        const octave = Math.floor(i / 12)
+        const x = octave * 7 * key_width + key_info.x * key_width
+        const w = key_width * key_info.w
+        const h = key_height * key_info.h
         if (pos[0] < x || pos[0] > x + w || pos[1] > h) {
           continue
         }
@@ -16652,7 +16646,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGMIDIKeys.prototype.onAction = function (event, params) {
     if (event == 'reset') {
-      for (var i = 0; i < this.keys.length; ++i) {
+      for (let i = 0; i < this.keys.length; ++i) {
         this.keys[i] = false
       }
       return
@@ -16661,9 +16655,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (!params || params.constructor !== MIDIEvent) {
       return
     }
-    var midi_event = params
-    var start_note = (this.properties.start_octave - 1) * 12 + 29
-    var index = midi_event.data[1] - start_note
+    const midi_event = params
+    const start_note = (this.properties.start_octave - 1) * 12 + 29
+    const index = midi_event.data[1] - start_note
     if (index >= 0 && index < this.keys.length) {
       if (midi_event.data[0] == MIDIEvent.NOTEON) {
         this.keys[index] = true
@@ -16679,11 +16673,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (pos[1] < 0) {
       return
     }
-    var index = this.getKeyIndex(pos)
+    const index = this.getKeyIndex(pos)
     this.keys[index] = true
     this._last_key = index
-    var pitch = (this.properties.start_octave - 1) * 12 + 29 + index
-    var midi_event = new MIDIEvent()
+    const pitch = (this.properties.start_octave - 1) * 12 + 29 + index
+    const midi_event = new MIDIEvent()
     midi_event.setup([MIDIEvent.NOTEON, pitch, 100])
     this.trigger('note', midi_event)
     return true
@@ -16694,7 +16688,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
     this.setDirtyCanvas(true)
-    var index = this.getKeyIndex(pos)
+    const index = this.getKeyIndex(pos)
     if (this._last_key == index) {
       return true
     }
@@ -16718,11 +16712,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (pos[1] < 0) {
       return
     }
-    var index = this.getKeyIndex(pos)
+    const index = this.getKeyIndex(pos)
     this.keys[index] = false
     this._last_key = -1
-    var pitch = (this.properties.start_octave - 1) * 12 + 29 + index
-    var midi_event = new MIDIEvent()
+    const pitch = (this.properties.start_octave - 1) * 12 + 29 + index
+    const midi_event = new MIDIEvent()
     midi_event.setup([MIDIEvent.NOTEOFF, pitch, 100])
     this.trigger('note', midi_event)
     return true
@@ -16735,9 +16729,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 })(this)
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
-  var LGAudio = {}
+  const LGAudio = {}
   global.LGAudio = LGAudio
 
   LGAudio.getAudioContext = function () {
@@ -16759,8 +16753,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       }
     }
 
-    //in case it crashes
-    //if(this._audio_context.state == "suspended")
+    // in case it crashes
+    // if(this._audio_context.state == "suspended")
     //	this._audio_context.resume();
     return this._audio_context
   }
@@ -16784,13 +16778,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudio.changeAllAudiosConnections = function (node, connect) {
     if (node.inputs) {
       for (var i = 0; i < node.inputs.length; ++i) {
-        var input = node.inputs[i]
+        const input = node.inputs[i]
         var link_info = node.graph.links[input.link]
         if (!link_info) {
           continue
         }
 
-        var origin_node = node.graph.getNodeById(link_info.origin_id)
+        const origin_node = node.graph.getNodeById(link_info.origin_id)
         var origin_audionode = null
         if (origin_node.getAudioNodeInOutputSlot) {
           origin_audionode = origin_node.getAudioNodeInOutputSlot(link_info.origin_slot)
@@ -16815,8 +16809,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
     if (node.outputs) {
       for (var i = 0; i < node.outputs.length; ++i) {
-        var output = node.outputs[i]
-        for (var j = 0; j < output.links.length; ++j) {
+        const output = node.outputs[i]
+        for (let j = 0; j < output.links.length; ++j) {
           var link_info = node.graph.links[output.links[j]]
           if (!link_info) {
             continue
@@ -16829,7 +16823,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
             origin_audionode = node.audionode
           }
 
-          var target_node = node.graph.getNodeById(link_info.target_id)
+          const target_node = node.graph.getNodeById(link_info.target_id)
           var target_audionode = null
           if (target_node.getAudioNodeInInputSlot) {
             target_audionode = target_node.getAudioNodeInInputSlot(link_info.target_slot)
@@ -16847,14 +16841,14 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
   }
 
-  //used by many nodes
+  // used by many nodes
   LGAudio.onConnectionsChange = function (connection, slot, connected, link_info) {
-    //only process the outputs events
+    // only process the outputs events
     if (connection != LiteGraph.OUTPUT) {
       return
     }
 
-    var target_node = null
+    let target_node = null
     if (link_info) {
       target_node = this.graph.getNodeById(link_info.target_id)
     }
@@ -16863,23 +16857,23 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    //get origin audionode
-    var local_audionode = null
+    // get origin audionode
+    let local_audionode = null
     if (this.getAudioNodeInOutputSlot) {
       local_audionode = this.getAudioNodeInOutputSlot(slot)
     } else {
       local_audionode = this.audionode
     }
 
-    //get target audionode
-    var target_audionode = null
+    // get target audionode
+    let target_audionode = null
     if (target_node.getAudioNodeInInputSlot) {
       target_audionode = target_node.getAudioNodeInInputSlot(link_info.target_slot)
     } else {
       target_audionode = target_node.audionode
     }
 
-    //do the connection/disconnection
+    // do the connection/disconnection
     if (connected) {
       LGAudio.connect(local_audionode, target_audionode)
     } else {
@@ -16887,9 +16881,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
   }
 
-  //this function helps creating wrappers to existing classes
+  // this function helps creating wrappers to existing classes
   LGAudio.createAudioNodeWrapper = function (class_object) {
-    var old_func = class_object.prototype.onPropertyChanged
+    const old_func = class_object.prototype.onPropertyChanged
 
     class_object.prototype.onPropertyChanged = function (name, value) {
       if (old_func) {
@@ -16914,7 +16908,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     class_object.prototype.onConnectionsChange = LGAudio.onConnectionsChange
   }
 
-  //contains the samples decoded of the loaded audios in AudioBuffer format
+  // contains the samples decoded of the loaded audios in AudioBuffer format
   LGAudio.cached_audios = {}
 
   LGAudio.loadSound = function (url, on_complete, on_error) {
@@ -16929,12 +16923,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       url = LGAudio.onProcessAudioURL(url)
     }
 
-    //load new sample
-    var request = new XMLHttpRequest()
+    // load new sample
+    const request = new XMLHttpRequest()
     request.open('GET', url, true)
     request.responseType = 'arraybuffer'
 
-    var context = LGAudio.getAudioContext()
+    const context = LGAudio.getAudioContext()
 
     // Decode asynchronously
     request.onload = function () {
@@ -16963,7 +16957,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     return request
   }
 
-  //****************************************************
+  //* ***************************************************
 
   function LGAudioSource() {
     this.properties = {
@@ -16975,22 +16969,22 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     this._loading_audio = false
-    this._audiobuffer = null //points to AudioBuffer with the audio samples decoded
+    this._audiobuffer = null // points to AudioBuffer with the audio samples decoded
     this._audionodes = []
-    this._last_sourcenode = null //the last AudioBufferSourceNode (there could be more if there are several sounds playing)
+    this._last_sourcenode = null // the last AudioBufferSourceNode (there could be more if there are several sounds playing)
 
     this.addOutput('out', 'audio')
     this.addInput('gain', 'number')
 
-    //init context
-    var context = LGAudio.getAudioContext()
+    // init context
+    const context = LGAudio.getAudioContext()
 
-    //create gain node to control volume
+    // create gain node to control volume
     this.audionode = context.createGain()
     this.audionode.graphnode = this
     this.audionode.gain.value = this.properties.gain
 
-    //debug
+    // debug
     if (this.properties.src) {
       this.loadSound(this.properties.src)
     }
@@ -17026,7 +17020,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGAudioSource.prototype.onUnpause = function () {
     this.unpauseAllSounds()
-    //this.onStart();
+    // this.onStart();
   }
 
   LGAudioSource.prototype.onRemoved = function () {
@@ -17037,13 +17031,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGAudioSource.prototype.stopAllSounds = function () {
-    //iterate and stop
-    for (var i = 0; i < this._audionodes.length; ++i) {
+    // iterate and stop
+    for (let i = 0; i < this._audionodes.length; ++i) {
       if (this._audionodes[i].started) {
         this._audionodes[i].started = false
         this._audionodes[i].stop()
       }
-      //this._audionodes[i].disconnect( this.audionode );
+      // this._audionodes[i].disconnect( this.audionode );
     }
     this._audionodes.length = 0
   }
@@ -17059,11 +17053,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioSource.prototype.onExecute = function () {
     if (this.inputs) {
       for (var i = 0; i < this.inputs.length; ++i) {
-        var input = this.inputs[i]
+        const input = this.inputs[i]
         if (input.link == null) {
           continue
         }
-        var v = this.getInputData(i)
+        const v = this.getInputData(i)
         if (v === undefined) {
           continue
         }
@@ -17072,7 +17066,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
           this.setProperty('src', v)
         } else if (input.name == 'playbackRate') {
           this.properties.playbackRate = v
-          for (var j = 0; j < this._audionodes.length; ++j) {
+          for (let j = 0; j < this._audionodes.length; ++j) {
             this._audionodes[j].playbackRate.value = v
           }
         }
@@ -17081,7 +17075,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
     if (this.outputs) {
       for (var i = 0; i < this.outputs.length; ++i) {
-        var output = this.outputs[i]
+        const output = this.outputs[i]
         if (output.name == 'buffer' && this._audiobuffer) {
           this.setOutputData(i, this._audiobuffer)
         }
@@ -17105,35 +17099,35 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     } else if (name == 'gain') {
       this.audionode.gain.value = value
     } else if (name == 'playbackRate') {
-      for (var j = 0; j < this._audionodes.length; ++j) {
+      for (let j = 0; j < this._audionodes.length; ++j) {
         this._audionodes[j].playbackRate.value = value
       }
     }
   }
 
   LGAudioSource.prototype.playBuffer = function (buffer) {
-    var that = this
-    var context = LGAudio.getAudioContext()
+    const that = this
+    const context = LGAudio.getAudioContext()
 
-    //create a new audionode (this is mandatory, AudioAPI doesnt like to reuse old ones)
-    var audionode = context.createBufferSource() //create a AudioBufferSourceNode
+    // create a new audionode (this is mandatory, AudioAPI doesnt like to reuse old ones)
+    const audionode = context.createBufferSource() // create a AudioBufferSourceNode
     this._last_sourcenode = audionode
     audionode.graphnode = this
     audionode.buffer = buffer
     audionode.loop = this.properties.loop
     audionode.playbackRate.value = this.properties.playbackRate
     this._audionodes.push(audionode)
-    audionode.connect(this.audionode) //connect to gain
+    audionode.connect(this.audionode) // connect to gain
 
     this._audionodes.push(audionode)
 
     this.trigger('start')
 
     audionode.onended = function () {
-      //console.log("ended!");
+      // console.log("ended!");
       that.trigger('ended')
-      //remove
-      var index = that._audionodes.indexOf(audionode)
+      // remove
+      const index = that._audionodes.indexOf(audionode)
       if (index != -1) {
         that._audionodes.splice(index, 1)
       }
@@ -17147,15 +17141,15 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGAudioSource.prototype.loadSound = function (url) {
-    var that = this
+    const that = this
 
-    //kill previous load
+    // kill previous load
     if (this._request) {
       this._request.abort()
       this._request = null
     }
 
-    this._audiobuffer = null //points to the audiobuffer once the audio is loaded
+    this._audiobuffer = null // points to the audiobuffer once the audio is loaded
     this._loading_audio = false
 
     if (!url) {
@@ -17171,14 +17165,14 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       this.boxcolor = LiteGraph.NODE_DEFAULT_BOXCOLOR
       that._audiobuffer = buffer
       that._loading_audio = false
-      //if is playing, then play it
+      // if is playing, then play it
       if (that.graph && that.graph.status === LGraph.STATUS_RUNNING) {
         that.onStart()
-      } //this controls the autoplay already
+      } // this controls the autoplay already
     }
   }
 
-  //Helps connect/disconnect AudioNodes when new connections are made in the node
+  // Helps connect/disconnect AudioNodes when new connections are made in the node
   LGAudioSource.prototype.onConnectionsChange = LGAudio.onConnectionsChange
 
   LGAudioSource.prototype.onGetInputs = function () {
@@ -17202,7 +17196,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (this._dropped_url) {
       URL.revokeObjectURL(this._dropped_url)
     }
-    var url = URL.createObjectURL(file)
+    const url = URL.createObjectURL(file)
     this.properties.src = url
     this.loadSound(url)
     this._dropped_url = url
@@ -17212,7 +17206,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioSource.desc = 'Plays audio'
   LiteGraph.registerNodeType('audio/source', LGAudioSource)
 
-  //****************************************************
+  //* ***************************************************
 
   function LGAudioMediaSource() {
     this.properties = {
@@ -17225,8 +17219,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.addOutput('out', 'audio')
     this.addInput('gain', 'number')
 
-    //create gain node to control volume
-    var context = LGAudio.getAudioContext()
+    // create gain node to control volume
+    const context = LGAudio.getAudioContext()
     this.audionode = context.createGain()
     this.audionode.graphnode = this
     this.audionode.gain.value = this.properties.gain
@@ -17263,7 +17257,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       this.audiosource_node = null
     }
     if (this._media_stream) {
-      var tracks = this._media_stream.getTracks()
+      const tracks = this._media_stream.getTracks()
       if (tracks.length) {
         tracks[0].stop()
       }
@@ -17284,7 +17278,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       .then(this.streamReady.bind(this))
       .catch(onFailSoHard)
 
-    var that = this
+    const that = this
     function onFailSoHard(err) {
       console.log('Media rejected', err)
       that._media_stream = false
@@ -17294,13 +17288,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGAudioMediaSource.prototype.streamReady = function (localMediaStream) {
     this._media_stream = localMediaStream
-    //this._waiting_confirmation = false;
+    // this._waiting_confirmation = false;
 
-    //init context
+    // init context
     if (this.audiosource_node) {
       this.audiosource_node.disconnect(this.audionode)
     }
-    var context = LGAudio.getAudioContext()
+    const context = LGAudio.getAudioContext()
     this.audiosource_node = context.createMediaStreamSource(localMediaStream)
     this.audiosource_node.graphnode = this
     this.audiosource_node.connect(this.audionode)
@@ -17313,12 +17307,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
 
     if (this.inputs) {
-      for (var i = 0; i < this.inputs.length; ++i) {
-        var input = this.inputs[i]
+      for (let i = 0; i < this.inputs.length; ++i) {
+        const input = this.inputs[i]
         if (input.link == null) {
           continue
         }
-        var v = this.getInputData(i)
+        const v = this.getInputData(i)
         if (v === undefined) {
           continue
         }
@@ -17343,7 +17337,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
   }
 
-  //Helps connect/disconnect AudioNodes when new connections are made in the node
+  // Helps connect/disconnect AudioNodes when new connections are made in the node
   LGAudioMediaSource.prototype.onConnectionsChange = LGAudio.onConnectionsChange
 
   LGAudioMediaSource.prototype.onGetInputs = function () {
@@ -17358,7 +17352,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioMediaSource.desc = 'Plays microphone'
   LiteGraph.registerNodeType('audio/media_source', LGAudioMediaSource)
 
-  //*****************************************************
+  //* ****************************************************
 
   function LGAudioAnalyser() {
     this.properties = {
@@ -17368,7 +17362,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       smoothingTimeConstant: 0.5
     }
 
-    var context = LGAudio.getAudioContext()
+    const context = LGAudio.getAudioContext()
 
     this.audionode = context.createAnalyser()
     this.audionode.graphnode = this
@@ -17391,7 +17385,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGAudioAnalyser.prototype.onExecute = function () {
     if (this.isOutputConnected(0)) {
-      //send FFT
+      // send FFT
       var bufferLength = this.audionode.frequencyBinCount
       if (!this._freq_bin || this._freq_bin.length != bufferLength) {
         this._freq_bin = new Uint8Array(bufferLength)
@@ -17400,9 +17394,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       this.setOutputData(0, this._freq_bin)
     }
 
-    //send analyzer
+    // send analyzer
     if (this.isOutputConnected(1)) {
-      //send Samples
+      // send Samples
       var bufferLength = this.audionode.frequencyBinCount
       if (!this._time_bin || this._time_bin.length != bufferLength) {
         this._time_bin = new Uint8Array(bufferLength)
@@ -17411,20 +17405,20 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       this.setOutputData(1, this._time_bin)
     }
 
-    //properties
-    for (var i = 1; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
+    // properties
+    for (let i = 1; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
       if (input.link == null) {
         continue
       }
-      var v = this.getInputData(i)
+      const v = this.getInputData(i)
       if (v !== undefined) {
         this.audionode[input.name].value = v
       }
     }
 
-    //time domain
-    //this.audionode.getFloatTimeDomainData( dataArray );
+    // time domain
+    // this.audionode.getFloatTimeDomainData( dataArray );
   }
 
   LGAudioAnalyser.prototype.onGetInputs = function () {
@@ -17446,10 +17440,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioAnalyser.desc = 'Audio Analyser'
   LiteGraph.registerNodeType('audio/analyser', LGAudioAnalyser)
 
-  //*****************************************************
+  //* ****************************************************
 
   function LGAudioGain() {
-    //default
+    // default
     this.properties = {
       gain: 1
     }
@@ -17465,9 +17459,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    for (var i = 1; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
-      var v = this.getInputData(i)
+    for (let i = 1; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
+      const v = this.getInputData(i)
       if (v !== undefined) {
         this.audionode[input.name].value = v
       }
@@ -17481,7 +17475,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/gain', LGAudioGain)
 
   function LGAudioConvolver() {
-    //default
+    // default
     this.properties = {
       impulse_src: '',
       normalize: true
@@ -17518,9 +17512,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGAudioConvolver.prototype.loadImpulse = function (url) {
-    var that = this
+    const that = this
 
-    //kill previous load
+    // kill previous load
     if (this._request) {
       this._request.abort()
       this._request = null
@@ -17533,7 +17527,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    //load new sample
+    // load new sample
     this._request = LGAudio.loadSound(url, inner)
     this._loading_impulse = true
 
@@ -17551,7 +17545,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/convolver', LGAudioConvolver)
 
   function LGAudioDynamicsCompressor() {
-    //default
+    // default
     this.properties = {
       threshold: -50,
       knee: 40,
@@ -17572,12 +17566,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (!this.inputs || !this.inputs.length) {
       return
     }
-    for (var i = 1; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
+    for (let i = 1; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
       if (input.link == null) {
         continue
       }
-      var v = this.getInputData(i)
+      const v = this.getInputData(i)
       if (v !== undefined) {
         this.audionode[input.name].value = v
       }
@@ -17600,7 +17594,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/dynamicsCompressor', LGAudioDynamicsCompressor)
 
   function LGAudioWaveShaper() {
-    //default
+    // default
     this.properties = {}
 
     this.audionode = LGAudio.getAudioContext().createWaveShaper()
@@ -17613,7 +17607,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (!this.inputs || !this.inputs.length) {
       return
     }
-    var v = this.getInputData(1)
+    const v = this.getInputData(1)
     if (v === undefined) {
       return
     }
@@ -17633,7 +17627,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     */
 
   function LGAudioMixer() {
-    //default
+    // default
     this.properties = {
       gain1: 0.5,
       gain2: 0.5
@@ -17678,14 +17672,14 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    for (var i = 1; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
+    for (let i = 1; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
 
       if (input.link == null || input.type == 'audio') {
         continue
       }
 
-      var v = this.getInputData(i)
+      const v = this.getInputData(i)
       if (v === undefined) {
         continue
       }
@@ -17705,7 +17699,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/mixer', LGAudioMixer)
 
   function LGAudioADSR() {
-    //default
+    // default
     this.properties = {
       A: 0.1,
       D: 0.1,
@@ -17722,16 +17716,16 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGAudioADSR.prototype.onExecute = function () {
-    var audioContext = LGAudio.getAudioContext()
-    var now = audioContext.currentTime
-    var node = this.audionode
-    var gain = node.gain
-    var current_gate = this.getInputData(1)
+    const audioContext = LGAudio.getAudioContext()
+    const now = audioContext.currentTime
+    const node = this.audionode
+    const gain = node.gain
+    const current_gate = this.getInputData(1)
 
-    var A = this.getInputOrProperty('A')
-    var D = this.getInputOrProperty('D')
-    var S = this.getInputOrProperty('S')
-    var R = this.getInputOrProperty('R')
+    const A = this.getInputOrProperty('A')
+    const D = this.getInputOrProperty('D')
+    const S = this.getInputOrProperty('S')
+    const R = this.getInputOrProperty('R')
 
     if (!this.gate && current_gate) {
       gain.cancelScheduledValues(0)
@@ -17763,7 +17757,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/adsr', LGAudioADSR)
 
   function LGAudioDelay() {
-    //default
+    // default
     this.properties = {
       delayTime: 0.5
     }
@@ -17778,7 +17772,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudio.createAudioNodeWrapper(LGAudioDelay)
 
   LGAudioDelay.prototype.onExecute = function () {
-    var v = this.getInputData(1)
+    const v = this.getInputData(1)
     if (v !== undefined) {
       this.audionode.delayTime.value = v
     }
@@ -17789,7 +17783,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/delay', LGAudioDelay)
 
   function LGAudioBiquadFilter() {
-    //default
+    // default
     this.properties = {
       frequency: 350,
       detune: 0,
@@ -17799,10 +17793,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       values: ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass']
     })
 
-    //create node
+    // create node
     this.audionode = LGAudio.getAudioContext().createBiquadFilter()
 
-    //slots
+    // slots
     this.addInput('in', 'audio')
     this.addOutput('out', 'audio')
   }
@@ -17812,12 +17806,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    for (var i = 1; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
+    for (let i = 1; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
       if (input.link == null) {
         continue
       }
-      var v = this.getInputData(i)
+      const v = this.getInputData(i)
       if (v !== undefined) {
         this.audionode[input.name].value = v
       }
@@ -17839,7 +17833,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/biquadfilter', LGAudioBiquadFilter)
 
   function LGAudioOscillatorNode() {
-    //default
+    // default
     this.properties = {
       frequency: 440,
       detune: 0,
@@ -17849,10 +17843,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       values: ['sine', 'square', 'sawtooth', 'triangle', 'custom']
     })
 
-    //create node
+    // create node
     this.audionode = LGAudio.getAudioContext().createOscillator()
 
-    //slots
+    // slots
     this.addOutput('out', 'audio')
   }
 
@@ -17885,12 +17879,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    for (var i = 0; i < this.inputs.length; ++i) {
-      var input = this.inputs[i]
+    for (let i = 0; i < this.inputs.length; ++i) {
+      const input = this.inputs[i]
       if (input.link == null) {
         continue
       }
-      var v = this.getInputData(i)
+      const v = this.getInputData(i)
       if (v !== undefined) {
         this.audionode[input.name].value = v
       }
@@ -17911,9 +17905,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioOscillatorNode.desc = 'Oscillator'
   LiteGraph.registerNodeType('audio/oscillator', LGAudioOscillatorNode)
 
-  //*****************************************************
+  //* ****************************************************
 
-  //EXTRA
+  // EXTRA
 
   function LGAudioVisualization() {
     this.properties = {
@@ -17929,7 +17923,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGAudioVisualization.prototype.onExecute = function () {
     this._last_buffer = this.getInputData(0)
-    var v = this.getInputData(1)
+    const v = this.getInputData(1)
     if (v !== undefined) {
       this.properties.mark = v
     }
@@ -17941,11 +17935,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var buffer = this._last_buffer
+    const buffer = this._last_buffer
 
-    //delta represents how many samples we advance per pixel
-    var delta = buffer.length / this.size[0]
-    var h = this.size[1]
+    // delta represents how many samples we advance per pixel
+    const delta = buffer.length / this.size[0]
+    const h = this.size[1]
 
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, this.size[0], this.size[1])
@@ -17969,8 +17963,8 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     ctx.stroke()
 
     if (this.properties.mark >= 0) {
-      var samplerate = LGAudio.getAudioContext().sampleRate
-      var binfreq = samplerate / buffer.length
+      const samplerate = LGAudio.getAudioContext().sampleRate
+      const binfreq = samplerate / buffer.length
       var x = (2 * (this.properties.mark / binfreq)) / delta
       if (x >= this.size[0]) {
         x = this.size[0] - 1
@@ -17988,7 +17982,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/visualization', LGAudioVisualization)
 
   function LGAudioBandSignal() {
-    //default
+    // default
     this.properties = {
       band: 440,
       amplitude: 1
@@ -18004,15 +17998,15 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var band = this.properties.band
+    let band = this.properties.band
     var v = this.getInputData(1)
     if (v !== undefined) {
       band = v
     }
 
-    var samplerate = LGAudio.getAudioContext().sampleRate
-    var binfreq = samplerate / this._freqs.length
-    var index = 2 * (band / binfreq)
+    const samplerate = LGAudio.getAudioContext().sampleRate
+    const binfreq = samplerate / this._freqs.length
+    const index = 2 * (band / binfreq)
     var v = 0
     if (index < 0) {
       v = this._freqs[0]
@@ -18020,10 +18014,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     if (index >= this._freqs.length) {
       v = this._freqs[this._freqs.length - 1]
     } else {
-      var pos = index | 0
-      var v0 = this._freqs[pos]
-      var v1 = this._freqs[pos + 1]
-      var f = index - pos
+      const pos = index | 0
+      const v0 = this._freqs[pos]
+      const v1 = this._freqs[pos + 1]
+      const f = index - pos
       v = v0 * (1 - f) + v1 * f
     }
 
@@ -18040,26 +18034,26 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   function LGAudioScript() {
     if (!LGAudioScript.default_code) {
-      var code = LGAudioScript.default_function.toString()
-      var index = code.indexOf('{') + 1
-      var index2 = code.lastIndexOf('}')
+      const code = LGAudioScript.default_function.toString()
+      const index = code.indexOf('{') + 1
+      const index2 = code.lastIndexOf('}')
       LGAudioScript.default_code = code.substr(index, index2 - index)
     }
 
-    //default
+    // default
     this.properties = {
       code: LGAudioScript.default_code
     }
 
-    //create node
-    var ctx = LGAudio.getAudioContext()
+    // create node
+    const ctx = LGAudio.getAudioContext()
     if (ctx.createScriptProcessor) {
       this.audionode = ctx.createScriptProcessor(4096, 1, 1)
     }
-    //buffer size, input channels, output channels
+    // buffer size, input channels, output channels
     else {
       console.warn('ScriptProcessorNode deprecated')
-      this.audionode = ctx.createGain() //bypass audio
+      this.audionode = ctx.createGain() // bypass audio
     }
 
     this.processCode()
@@ -18067,7 +18061,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       LGAudioScript._bypass_function = this.audionode.onaudioprocess
     }
 
-    //slots
+    // slots
     this.addInput('in', 'audio')
     this.addOutput('out', 'audio')
   }
@@ -18097,7 +18091,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGAudioScript.prototype.onExecute = function () {
-    //nothing! because we need an onExecute to receive onStart... fix that
+    // nothing! because we need an onExecute to receive onStart... fix that
   }
 
   LGAudioScript.prototype.onRemoved = function () {
@@ -18106,7 +18100,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LGAudioScript.prototype.processCode = function () {
     try {
-      var func = new Function('properties', this.properties.code)
+      const func = new Function('properties', this.properties.code)
       this._script = new func(this.properties)
       this._old_code = this.properties.code
       this._callback = this._script.onaudioprocess
@@ -18130,18 +18124,18 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LGAudioScript.default_function = function () {
     this.onaudioprocess = function (audioProcessingEvent) {
       // The input buffer is the song we loaded earlier
-      var inputBuffer = audioProcessingEvent.inputBuffer
+      const inputBuffer = audioProcessingEvent.inputBuffer
 
       // The output buffer contains the samples that will be modified and played
-      var outputBuffer = audioProcessingEvent.outputBuffer
+      const outputBuffer = audioProcessingEvent.outputBuffer
 
       // Loop through the output channels (in this case there is only one)
-      for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-        var inputData = inputBuffer.getChannelData(channel)
-        var outputData = outputBuffer.getChannelData(channel)
+      for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        const inputData = inputBuffer.getChannelData(channel)
+        const outputData = outputBuffer.getChannelData(channel)
 
         // Loop through the 4096 samples
-        for (var sample = 0; sample < inputBuffer.length; sample++) {
+        for (let sample = 0; sample < inputBuffer.length; sample++) {
           // make output equal to the same as the input
           outputData[sample] = inputData[sample]
         }
@@ -18165,9 +18159,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   LiteGraph.registerNodeType('audio/destination', LGAudioDestination)
 })(this)
 
-//event related nodes
+// event related nodes
 ;(function (global) {
-  var LiteGraph = global.LiteGraph
+  const LiteGraph = global.LiteGraph
 
   function LGWebSocket() {
     this.size = [60, 20]
@@ -18177,7 +18171,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.addOutput('out', 0)
     this.properties = {
       url: '',
-      room: 'lgraph', //allows to filter messages,
+      room: 'lgraph', // allows to filter messages,
       only_send_changes: true
     }
     this._ws = null
@@ -18203,11 +18197,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var room = this.properties.room
-    var only_changes = this.properties.only_send_changes
+    const room = this.properties.room
+    const only_changes = this.properties.only_send_changes
 
     for (var i = 1; i < this.inputs.length; ++i) {
-      var data = this.getInputData(i)
+      const data = this.getInputData(i)
       if (data == null) {
         continue
       }
@@ -18240,10 +18234,10 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGWebSocket.prototype.connectSocket = function () {
-    var that = this
-    var url = this.properties.url
+    const that = this
+    let url = this.properties.url
     if (url.substr(0, 2) != 'ws') {
-      url = 'ws://' + url
+      url = `ws://${url}`
     }
     this._ws = new WebSocket(url)
     this._ws.onopen = function () {
@@ -18252,13 +18246,13 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     }
     this._ws.onmessage = function (e) {
       that.boxcolor = '#AFA'
-      var data = JSON.parse(e.data)
+      const data = JSON.parse(e.data)
       if (data.room && data.room != that.properties.room) {
         return
       }
       if (data.type == 1) {
         if (data.data.object_class && LiteGraph[data.data.object_class]) {
-          var obj = null
+          let obj = null
           try {
             obj = new LiteGraph[data.data.object_class](data.data)
             that.triggerSlot(0, obj)
@@ -18311,11 +18305,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LiteGraph.registerNodeType('network/websocket', LGWebSocket)
 
-  //It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
-  //For more information: https://github.com/jagenjo/SillyServer.js
+  // It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
+  // For more information: https://github.com/jagenjo/SillyServer.js
 
   function LGSillyClient() {
-    //this.size = [60,20];
+    // this.size = [60,20];
     this.room_widget = this.addWidget('text', 'Room', 'lgraph', this.setRoom.bind(this))
     this.addWidget('button', 'Reconnect', null, this.connectSocket.bind(this))
 
@@ -18356,15 +18350,15 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
     this.connectSocket()
   }
 
-  //force label names
+  // force label names
   LGSillyClient.prototype.onDrawForeground = function () {
     for (var i = 1; i < this.inputs.length; ++i) {
       var slot = this.inputs[i]
-      slot.label = 'in_' + i
+      slot.label = `in_${i}`
     }
     for (var i = 1; i < this.outputs.length; ++i) {
       var slot = this.outputs[i]
-      slot.label = 'out_' + i
+      slot.label = `out_${i}`
     }
   }
 
@@ -18373,14 +18367,14 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       return
     }
 
-    var only_send_changes = this.properties.only_send_changes
+    const only_send_changes = this.properties.only_send_changes
 
     for (var i = 1; i < this.inputs.length; ++i) {
-      var data = this.getInputData(i)
-      var prev_data = this._last_sent_data[i]
+      const data = this.getInputData(i)
+      const prev_data = this._last_sent_data[i]
       if (data != null) {
         if (only_send_changes) {
-          var is_equal = true
+          let is_equal = true
           if (data && data.length && prev_data && prev_data.length == data.length && data.constructor !== String) {
             for (var j = 0; j < data.length; ++j)
               if (prev_data[j] != data[j]) {
@@ -18395,12 +18389,12 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
           if (this._last_sent_data[i]) {
             this._last_sent_data[i].length = data.length
             for (var j = 0; j < data.length; ++j) this._last_sent_data[i][j] = data[j]
-          } //create
+          } // create
           else {
             if (data.constructor === Array) this._last_sent_data[i] = data.concat()
             else this._last_sent_data[i] = new data.constructor(data)
           }
-        } else this._last_sent_data[i] = data //should be cloned
+        } else this._last_sent_data[i] = data // should be cloned
       }
     }
 
@@ -18414,7 +18408,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   }
 
   LGSillyClient.prototype.connectSocket = function () {
-    var that = this
+    const that = this
     if (typeof SillyClient == 'undefined') {
       if (!this._error) {
         console.error('SillyClient node cannot be used, you must include SillyServer.js')
@@ -18429,7 +18423,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       that.boxcolor = '#6C6'
     }
     this._server.on_message = function (id, msg) {
-      var data = null
+      let data = null
       try {
         data = JSON.parse(msg)
       } catch (err) {
@@ -18437,9 +18431,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       }
 
       if (data.type == 1) {
-        //EVENT slot
+        // EVENT slot
         if (data.data.object_class && LiteGraph[data.data.object_class]) {
-          var obj = null
+          let obj = null
           try {
             obj = new LiteGraph[data.data.object_class](data.data)
             that.triggerSlot(0, obj)
@@ -18449,7 +18443,7 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
         } else {
           that.triggerSlot(0, data.data)
         }
-      } //for FLOW slots
+      } // for FLOW slots
       else {
         that._last_received_data[data.channel || 0] = data.data
       }
@@ -18468,11 +18462,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
       try {
         this._server.connect(this.properties.url, this.properties.room)
       } catch (err) {
-        console.error('SillyServer error: ' + err)
+        console.error(`SillyServer error: ${err}`)
         this._server = null
         return
       }
-      this._final_url = this.properties.url + '/' + this.properties.room
+      this._final_url = `${this.properties.url}/${this.properties.room}`
     }
   }
 
@@ -18500,9 +18494,9 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
 
   LiteGraph.registerNodeType('network/sillyclient', LGSillyClient)
 
-  //HTTP Request
+  // HTTP Request
   function HTTPRequestNode() {
-    var that = this
+    const that = this
     this.addInput('request', LiteGraph.ACTION)
     this.addInput('url', 'string')
     this.addProperty('url', '')
@@ -18517,11 +18511,11 @@ LGraphRenderGeometryDOF.fragment_shader_code = '\
   HTTPRequestNode.desc = 'Fetch data through HTTP'
 
   HTTPRequestNode.prototype.fetch = function () {
-    var url = this.properties.url
+    const url = this.properties.url
     if (!url) return
 
     this.boxcolor = '#FF0'
-    var that = this
+    const that = this
     this._fetching = fetch(url)
       .then(resp => {
         if (!resp.ok) {

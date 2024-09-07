@@ -1,5 +1,6 @@
 export { unstable_now as now, unstable_IdlePriority as idlePriority, unstable_runWithPriority as run } from 'scheduler'
 import { DefaultEventPriority } from 'react-reconciler/constants.js'
+
 import { TextNode, ViewNode } from '../rmst-render'
 import { NodeType } from '../rmst-render/constant'
 

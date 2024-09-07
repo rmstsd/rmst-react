@@ -1,10 +1,12 @@
-import ReactFiberReconciler from 'react-reconciler'
+import type { PropsWithChildren } from 'react'
 
-import * as HostConfig from './hostConfig'
-import React, { PropsWithChildren, useLayoutEffect, useRef } from 'react'
 import { useContextBridge, FiberProvider } from 'its-fine'
-import { Stage } from '../rmst-render'
+import React, { useLayoutEffect, useRef } from 'react'
+import ReactFiberReconciler from 'react-reconciler'
 import { LegacyRoot } from 'react-reconciler/constants'
+
+import { Stage } from '../rmst-render'
+import * as HostConfig from './hostConfig'
 
 export const RmstRenderer = ReactFiberReconciler(HostConfig as any)
 

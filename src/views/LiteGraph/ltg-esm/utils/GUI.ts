@@ -4,12 +4,12 @@ import { LiteGraph } from '..'
 export function closeAllContextMenus(ref_window) {
   ref_window = ref_window || window
 
-  var elements = ref_window.document.querySelectorAll('.litecontextmenu')
+  const elements = ref_window.document.querySelectorAll('.litecontextmenu')
   if (!elements.length) {
     return
   }
 
-  var result = []
+  const result = []
   for (var i = 0; i < elements.length; i++) {
     result.push(elements[i])
   }
@@ -25,7 +25,7 @@ export function closeAllContextMenus(ref_window) {
 
 export function extendClass(target, origin) {
   for (var i in origin) {
-    //copy class properties
+    // copy class properties
     if (target.hasOwnProperty(i)) {
       continue
     }
@@ -33,26 +33,26 @@ export function extendClass(target, origin) {
   }
 
   if (origin.prototype) {
-    //copy prototype properties
+    // copy prototype properties
     for (var i in origin.prototype) {
-      //only enumerable
+      // only enumerable
       if (!origin.prototype.hasOwnProperty(i)) {
         continue
       }
 
       if (target.prototype.hasOwnProperty(i)) {
-        //avoid overwriting existing ones
+        // avoid overwriting existing ones
         continue
       }
 
-      //copy getters
+      // copy getters
       if (origin.prototype.__lookupGetter__(i)) {
         target.prototype.__defineGetter__(i, origin.prototype.__lookupGetter__(i))
       } else {
         target.prototype[i] = origin.prototype[i]
       }
 
-      //and setters
+      // and setters
       if (origin.prototype.__lookupSetter__(i)) {
         target.prototype.__defineSetter__(i, origin.prototype.__lookupSetter__(i))
       }
@@ -60,9 +60,9 @@ export function extendClass(target, origin) {
   }
 }
 
-//used to create nodes from wrapping functions
+// used to create nodes from wrapping functions
 export function getParameterNames(func) {
-  return (func + '')
+  return (`${func}`)
     .replace(/[/][/].*$/gm, '') // strip single-line comments
     .replace(/\s+/g, '') // strip white space
     .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments  /**/
@@ -73,22 +73,22 @@ export function getParameterNames(func) {
     .filter(Boolean) // split & filter [""]
 }
 
-/* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu*/
+/* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu */
 export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
   if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== 'function') {
-    //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
+    // console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
     return // -- break --
   }
 
-  var sMethod = LiteGraph.pointerevents_method
-  var sEvent = sEvIn
+  let sMethod = LiteGraph.pointerevents_method
+  let sEvent = sEvIn
 
   // UNDER CONSTRUCTION
   // convert pointerevents to touch event when not available
   if (sMethod == 'pointer' && !window.PointerEvent) {
-    console.warn("sMethod=='pointer' && !window.PointerEvent")
+    console.warn('sMethod==\'pointer\' && !window.PointerEvent')
     console.log(
-      'Converting pointer[' + sEvent + '] : down move up cancel enter TO touchstart touchmove touchend, etc ..'
+      `Converting pointer[${sEvent}] : down move up cancel enter TO touchstart touchmove touchend, etc ..`
     )
     switch (sEvent) {
       case 'down': {
@@ -98,7 +98,7 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
       }
       case 'move': {
         sMethod = 'touch'
-        //sEvent = "move";
+        // sEvent = "move";
         break
       }
       case 'up': {
@@ -108,7 +108,7 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
       }
       case 'cancel': {
         sMethod = 'touch'
-        //sEvent = "cancel";
+        // sEvent = "cancel";
         break
       }
       case 'enter': {
@@ -117,13 +117,13 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
       }
       // case "over": case "out": not used at now
       default: {
-        console.warn('PointerEvent not available in this browser ? The event ' + sEvent + ' would not be called')
+        console.warn(`PointerEvent not available in this browser ? The event ${sEvent} would not be called`)
       }
     }
   }
 
   switch (sEvent) {
-    //both pointer and move events
+    // both pointer and move events
     case 'down':
     case 'up':
     case 'move':
@@ -148,11 +148,11 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
 }
 export function pointerListenerRemove(oDOM, sEvent, fCall, capture = false) {
   if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall !== 'function') {
-    //console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
+    // console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
     return // -- break --
   }
   switch (sEvent) {
-    //both pointer and move events
+    // both pointer and move events
     case 'down':
     case 'up':
     case 'move':

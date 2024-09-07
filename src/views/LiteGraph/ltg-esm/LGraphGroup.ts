@@ -1,6 +1,5 @@
 import LGraphCanvas from './LGraphCanvas'
 import LGraphNode from './LGraphNode'
-
 import { overlapBounding } from './utils/utils'
 
 class LGraphGroup {
@@ -86,7 +85,7 @@ class LGraphGroup {
       node.getBounding(node_bounding)
       if (!overlapBounding(this._bounding, node_bounding)) {
         continue
-      } //out of the visible area
+      } // out of the visible area
       this._nodes.push(node)
     }
   }

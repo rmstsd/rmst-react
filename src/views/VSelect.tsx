@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { Virtuoso } from 'react-virtuoso'
 
-const data = Array.from({ length: 100 }, (_, idx) => ({ id: 'asd' + idx, idx }))
+const data = Array.from({ length: 100 }, (_, idx) => ({ id: `asd${idx}`, idx }))
 
 const VSelect = () => {
   const ref = useRef(null)

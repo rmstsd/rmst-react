@@ -1,4 +1,5 @@
 import { useContext, useLayoutEffect, useRef } from 'react'
+
 import { PortalContext } from './Host'
 
 interface PortalProps {

@@ -52,21 +52,27 @@ export class CartClass {
   getTotalChoose() {
     return this.goods.reduce((acc, item) => acc + item.choose, 0)
   }
+
   getTotalPrice() {
     return this.goods.reduce((acc, item) => acc + item.getTotalPrice(), 0)
   }
+
   increase(index: number) {
     this.goods[index].increase()
   }
+
   decrease(index: number) {
     this.goods[index].decrease()
   }
+
   hasGoodsInCar() {
     return this.getTotalChoose() > 0
   }
+
   isCanDelivery() {
     return this.getTotalPrice() >= this.deliveryThreshold
   }
+
   isChoose(index: number) {
     return this.goods[index].isChoose()
   }

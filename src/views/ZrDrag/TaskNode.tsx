@@ -1,5 +1,7 @@
 import cn from '@/utils/cn'
-import { NodeItem } from './oriData'
+
+import type { NodeItem } from './oriData'
+
 import { store, useStore } from './store'
 import { contains, findNode, findParentNode, isDescendant } from './utils'
 

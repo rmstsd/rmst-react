@@ -1,6 +1,8 @@
 import { proxy, useSnapshot } from 'valtio'
 
-import { NodeItem, rootNode } from './oriData'
+import type { NodeItem } from './oriData'
+
+import { rootNode } from './oriData'
 
 export const store = proxy({
   rootNode,

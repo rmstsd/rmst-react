@@ -1,5 +1,8 @@
-import { Edge, FlexDirection, Gutter, Node } from 'yoga-layout'
+import type { Node } from 'yoga-layout'
+
 import camelCase from 'camelcase'
+import { Edge, FlexDirection, Gutter } from 'yoga-layout'
+
 import { applyStyle } from './FlexStyle'
 
 export enum NodeType {

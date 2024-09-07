@@ -1,14 +1,13 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useScroll } from '@/App'
+import viteSvg from '@/assets/vite.svg'
+import { useEventListener } from 'ahooks'
 import gsap from 'gsap'
+import { useLayoutEffect, useRef } from 'react'
 
 import { mapRange } from '../../animation'
-import viteSvg from '@/assets/vite.svg'
-
 import Features from './Frame2Com/Features'
 import Investors from './Frame2Com/Investors'
 import TeamCredits from './Frame2Com/TeamCredits'
-import { useEventListener } from 'ahooks'
-import { useScroll } from '@/App'
 
 export default function Frame2() {
   const container = useRef<HTMLDivElement>()

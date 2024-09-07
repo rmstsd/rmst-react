@@ -1,9 +1,13 @@
-import Yoga, { Edge, Node } from 'yoga-layout'
-import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
+import type React from 'react'
+import type { Node } from 'yoga-layout'
 
-import React from 'react'
+import Yoga, { Edge } from 'yoga-layout'
+
+import type { Layout } from './constant'
+import type { ParsedTextStyleProps } from './TextService/inteface'
+
+import { NodeType, setYogaNodeLayoutStyle } from './constant'
 import { TextService } from './TextService'
-import { ParsedTextStyleProps } from './TextService/inteface'
 
 function measureText(ctx, text) {
   const metrics = ctx.measureText(text)

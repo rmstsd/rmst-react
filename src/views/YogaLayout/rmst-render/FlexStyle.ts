@@ -7,6 +7,10 @@
  * @format
  */
 
+import type {
+  Node as YogaNode
+} from 'yoga-layout'
+
 import {
   Align,
   Direction,
@@ -17,8 +21,7 @@ import {
   Justify,
   Overflow,
   PositionType,
-  Wrap,
-  Node as YogaNode
+  Wrap
 } from 'yoga-layout'
 
 export type AlignContent =

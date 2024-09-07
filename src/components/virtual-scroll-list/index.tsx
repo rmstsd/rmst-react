@@ -1,9 +1,11 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import clsx from 'clsx'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
+import type { CustomScrollbarRef } from '../CustomScrollbar/CustomScrollbar'
+
+import CustomScrollbar from '../CustomScrollbar/CustomScrollbar'
 import Item, { Slot } from './Item'
 import Virtual from './virtual'
-import CustomScrollbar, { CustomScrollbarRef } from '../CustomScrollbar/CustomScrollbar'
 
 export function getMouseCoordInContainer(clientX: number, clientY: number, outerContainer: HTMLElement) {
   const containerRect = outerContainer.getBoundingClientRect()

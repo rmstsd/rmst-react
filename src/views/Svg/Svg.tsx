@@ -13,7 +13,7 @@ function getGap(zoom: number) {
   return gaps[i - 1] || 10000
 }
 
-type Matrix = { tx: number; ty: number; scaleX: number; scaleY: number }
+type Matrix = { tx: number, ty: number, scaleX: number, scaleY: number }
 function offsetToSvg(ox: number, oy: number, matrix: Matrix) {
   const x = (ox - matrix.tx) / matrix.scaleX
   const y = (oy - matrix.ty) / matrix.scaleY

@@ -30,6 +30,7 @@ class MyNode {
     // console.log(visible_rect)
     // ctx.fillRect(0, 0, 10, 10)
   }
+
   onDrawBackground(ctx: CanvasRenderingContext2D, visible_area) {
     // ctx.fillRect(0, 0, 10, 10)
   }
@@ -67,7 +68,7 @@ export default function LgDemo() {
 
   return (
     <div>
-      <canvas className="canvas" width={1000} height={800}></canvas>
+      <canvas className="canvas" width={1000} height={800} />
     </div>
   )
 }

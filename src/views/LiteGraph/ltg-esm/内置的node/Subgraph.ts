@@ -1,18 +1,18 @@
-//Subgraph: a node that contains a graph
+// Subgraph: a node that contains a graph
 function Subgraph() {
-  var that = this
+  const that = this
   this.size = [140, 80]
   this.properties = { enabled: true }
   this.enabled = true
 
-  //create inner graph
+  // create inner graph
   this.subgraph = new LiteGraph.LGraph()
   this.subgraph._subgraph_node = this
   this.subgraph._is_subgraph = true
 
   this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this)
 
-  //nodes input node added inside
+  // nodes input node added inside
   this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this)
   this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this)
   this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this)
@@ -52,7 +52,7 @@ Subgraph.prototype.onGetInputs = function () {
   */
 
 Subgraph.prototype.onDblClick = function (e, pos, graphcanvas) {
-  var that = this
+  const that = this
   setTimeout(function () {
     graphcanvas.openSubgraph(that.subgraph)
   }, 10)
@@ -83,22 +83,22 @@ Subgraph.prototype.onExecute = function () {
     return
   }
 
-  //send inputs to subgraph global inputs
+  // send inputs to subgraph global inputs
   if (this.inputs) {
     for (var i = 0; i < this.inputs.length; i++) {
-      var input = this.inputs[i]
+      const input = this.inputs[i]
       var value = this.getInputData(i)
       this.subgraph.setInputData(input.name, value)
     }
   }
 
-  //execute
+  // execute
   this.subgraph.runStep()
 
-  //send subgraph global outputs to outputs
+  // send subgraph global outputs to outputs
   if (this.outputs) {
     for (var i = 0; i < this.outputs.length; i++) {
-      var output = this.outputs[i]
+      const output = this.outputs[i]
       var value = this.subgraph.getOutputData(output.name)
       this.setOutputData(i, value)
     }
@@ -113,9 +113,9 @@ Subgraph.prototype.sendEventToAllNodes = function (eventname, param, mode) {
 
 Subgraph.prototype.onDrawBackground = function (ctx, graphcanvas, canvas, pos) {
   if (this.flags.collapsed) return
-  var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
+  const y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
   // button
-  var over = LiteGraph.isInsideRectangle(
+  const over = LiteGraph.isInsideRectangle(
     pos[0],
     pos[1],
     this.pos[0],
@@ -123,7 +123,7 @@ Subgraph.prototype.onDrawBackground = function (ctx, graphcanvas, canvas, pos) {
     this.size[0],
     LiteGraph.NODE_TITLE_HEIGHT
   )
-  let overleft = LiteGraph.isInsideRectangle(
+  const overleft = LiteGraph.isInsideRectangle(
     pos[0],
     pos[1],
     this.pos[0],
@@ -168,7 +168,7 @@ Subgraph.prototype.onDrawBackground = function (ctx, graphcanvas, canvas, pos) {
 // 	}
 // }
 Subgraph.prototype.onMouseDown = function (e, localpos, graphcanvas) {
-  var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
+  const y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
   console.log(0)
   if (localpos[1] > y) {
     if (localpos[0] < this.size[0] / 2) {
@@ -181,81 +181,81 @@ Subgraph.prototype.onMouseDown = function (e, localpos, graphcanvas) {
   }
 }
 Subgraph.prototype.computeSize = function () {
-  var num_inputs = this.inputs ? this.inputs.length : 0
-  var num_outputs = this.outputs ? this.outputs.length : 0
+  const num_inputs = this.inputs ? this.inputs.length : 0
+  const num_outputs = this.outputs ? this.outputs.length : 0
   return [200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT]
 }
 
-//**** INPUTS ***********************************
+//* *** INPUTS ***********************************
 Subgraph.prototype.onSubgraphTrigger = function (event, param) {
-  var slot = this.findOutputSlot(event)
+  const slot = this.findOutputSlot(event)
   if (slot != -1) {
     this.triggerSlot(slot)
   }
 }
 
 Subgraph.prototype.onSubgraphNewInput = function (name, type) {
-  var slot = this.findInputSlot(name)
+  const slot = this.findInputSlot(name)
   if (slot == -1) {
-    //add input to the node
+    // add input to the node
     this.addInput(name, type)
   }
 }
 
 Subgraph.prototype.onSubgraphRenamedInput = function (oldname, name) {
-  var slot = this.findInputSlot(oldname)
+  const slot = this.findInputSlot(oldname)
   if (slot == -1) {
     return
   }
-  var info = this.getInputInfo(slot)
+  const info = this.getInputInfo(slot)
   info.name = name
 }
 
 Subgraph.prototype.onSubgraphTypeChangeInput = function (name, type) {
-  var slot = this.findInputSlot(name)
+  const slot = this.findInputSlot(name)
   if (slot == -1) {
     return
   }
-  var info = this.getInputInfo(slot)
+  const info = this.getInputInfo(slot)
   info.type = type
 }
 
 Subgraph.prototype.onSubgraphRemovedInput = function (name) {
-  var slot = this.findInputSlot(name)
+  const slot = this.findInputSlot(name)
   if (slot == -1) {
     return
   }
   this.removeInput(slot)
 }
 
-//**** OUTPUTS ***********************************
+//* *** OUTPUTS ***********************************
 Subgraph.prototype.onSubgraphNewOutput = function (name, type) {
-  var slot = this.findOutputSlot(name)
+  const slot = this.findOutputSlot(name)
   if (slot == -1) {
     this.addOutput(name, type)
   }
 }
 
 Subgraph.prototype.onSubgraphRenamedOutput = function (oldname, name) {
-  var slot = this.findOutputSlot(oldname)
+  const slot = this.findOutputSlot(oldname)
   if (slot == -1) {
     return
   }
-  var info = this.getOutputInfo(slot)
+  const info = this.getOutputInfo(slot)
   info.name = name
 }
 
 Subgraph.prototype.onSubgraphTypeChangeOutput = function (name, type) {
-  var slot = this.findOutputSlot(name)
+  const slot = this.findOutputSlot(name)
   if (slot == -1) {
     return
   }
-  var info = this.getOutputInfo(slot)
+  const info = this.getOutputInfo(slot)
   info.type = type
 }
 
 Subgraph.prototype.onSubgraphRemovedOutput = function (name) {
-  var slot = this.findOutputSlot(name)
+  const slot = this.findOutputSlot(name)
   if (slot == -1) {
     return
   }
@@ -264,7 +264,7 @@ Subgraph.prototype.onSubgraphRemovedOutput = function (name) {
 // *****************************************************
 
 Subgraph.prototype.getExtraMenuOptions = function (graphcanvas) {
-  var that = this
+  const that = this
   return [
     {
       content: 'Open',
@@ -280,11 +280,11 @@ Subgraph.prototype.onResize = function (size) {
 }
 
 Subgraph.prototype.serialize = function () {
-  var data = LiteGraph.LGraphNode.prototype.serialize.call(this)
+  const data = LiteGraph.LGraphNode.prototype.serialize.call(this)
   data.subgraph = this.subgraph.serialize()
   return data
 }
-//no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
+// no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
 
 Subgraph.prototype.reassignSubgraphUUIDs = function (graph) {
   const idMap = { nodeIDs: {}, linkIDs: {} }
@@ -359,8 +359,8 @@ Subgraph.prototype.reassignSubgraphUUIDs = function (graph) {
 }
 
 Subgraph.prototype.clone = function () {
-  var node = LiteGraph.createNode(this.type)
-  var data = this.serialize()
+  const node = LiteGraph.createNode(this.type)
+  const data = this.serialize()
 
   if (LiteGraph.use_uuids) {
     // LGraph.serialize() seems to reuse objects in the original graph. But we
@@ -380,17 +380,17 @@ Subgraph.prototype.clone = function () {
 }
 
 Subgraph.prototype.buildFromNodes = function (nodes) {
-  //clear all?
-  //TODO
+  // clear all?
+  // TODO
 
-  //nodes that connect data between parent graph and subgraph
-  var subgraph_inputs = []
-  var subgraph_outputs = []
+  // nodes that connect data between parent graph and subgraph
+  const subgraph_inputs = []
+  const subgraph_outputs = []
 
-  //mark inner nodes
-  var ids = {}
-  var min_x = 0
-  var max_x = 0
+  // mark inner nodes
+  const ids = {}
+  let min_x = 0
+  let max_x = 0
   for (var i = 0; i < nodes.length; ++i) {
     var node = nodes[i]
     ids[node.id] = node
@@ -398,20 +398,20 @@ Subgraph.prototype.buildFromNodes = function (nodes) {
     max_x = Math.max(node.pos[0], min_x)
   }
 
-  var last_input_y = 0
-  var last_output_y = 0
+  const last_input_y = 0
+  const last_output_y = 0
 
   for (var i = 0; i < nodes.length; ++i) {
     var node = nodes[i]
-    //check inputs
+    // check inputs
     if (node.inputs)
       for (var j = 0; j < node.inputs.length; ++j) {
-        var input = node.inputs[j]
+        const input = node.inputs[j]
         if (!input || !input.link) continue
         var link = node.graph.links[input.link]
         if (!link) continue
         if (ids[link.origin_id]) continue
-        //this.addInput(input.name,link.type);
+        // this.addInput(input.name,link.type);
         this.subgraph.addInput(input.name, link.type)
         /*
         var input_node = LiteGraph.createNode("graph/input");
@@ -421,13 +421,13 @@ Subgraph.prototype.buildFromNodes = function (nodes) {
         */
       }
 
-    //check outputs
+    // check outputs
     if (node.outputs)
       for (var j = 0; j < node.outputs.length; ++j) {
-        var output = node.outputs[j]
+        const output = node.outputs[j]
         if (!output || !output.links || !output.links.length) continue
-        var is_external = false
-        for (var k = 0; k < output.links.length; ++k) {
+        let is_external = false
+        for (let k = 0; k < output.links.length; ++k) {
           var link = node.graph.links[output.links[k]]
           if (!link) continue
           if (ids[link.target_id]) continue
@@ -435,7 +435,7 @@ Subgraph.prototype.buildFromNodes = function (nodes) {
           break
         }
         if (!is_external) continue
-        //this.addOutput(output.name,output.type);
+        // this.addOutput(output.name,output.type);
         /*
         var output_node = LiteGraph.createNode("graph/output");
         this.subgraph.add( output_node );
@@ -445,14 +445,14 @@ Subgraph.prototype.buildFromNodes = function (nodes) {
       }
   }
 
-  //detect inputs and outputs
-  //split every connection in two data_connection nodes
-  //keep track of internal connections
-  //connect external connections
+  // detect inputs and outputs
+  // split every connection in two data_connection nodes
+  // keep track of internal connections
+  // connect external connections
 
-  //clone nodes inside subgraph and try to reconnect them
+  // clone nodes inside subgraph and try to reconnect them
 
-  //connect edge subgraph nodes to extarnal connections nodes
+  // connect edge subgraph nodes to extarnal connections nodes
 }
 
 // LiteGraph.registerNodeType('graph/subgraph', Subgraph)

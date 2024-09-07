@@ -1,5 +1,5 @@
 export function compareObjects(a, b) {
-  for (var i in a) {
+  for (const i in a) {
     if (a[i] != b[i]) {
       return false
     }
@@ -13,15 +13,15 @@ export function distance(a, b) {
 
 export function colorToString(c) {
   return (
-    'rgba(' +
-    Math.round(c[0] * 255).toFixed() +
-    ',' +
-    Math.round(c[1] * 255).toFixed() +
-    ',' +
-    Math.round(c[2] * 255).toFixed() +
-    ',' +
-    (c.length == 4 ? c[3].toFixed(2) : '1.0') +
-    ')'
+    `rgba(${
+      Math.round(c[0] * 255).toFixed()
+    },${
+      Math.round(c[1] * 255).toFixed()
+    },${
+      Math.round(c[2] * 255).toFixed()
+    },${
+      c.length == 4 ? c[3].toFixed(2) : '1.0'
+    })`
   )
 }
 
@@ -32,7 +32,7 @@ export function isInsideRectangle(x, y, left, top, width, height) {
   return false
 }
 
-//[minx,miny,maxx,maxy]
+// [minx,miny,maxx,maxy]
 export function growBounding(bounding, x, y) {
   if (x < bounding[0]) {
     bounding[0] = x
@@ -47,7 +47,7 @@ export function growBounding(bounding, x, y) {
   }
 }
 
-//point inside bounding box
+// point inside bounding box
 export function isInsideBounding(p, bb) {
   if (p[0] < bb[0][0] || p[1] < bb[0][1] || p[0] > bb[1][0] || p[1] > bb[1][1]) {
     return false
@@ -55,12 +55,12 @@ export function isInsideBounding(p, bb) {
   return true
 }
 
-//bounding overlap, format: [ startx, starty, width, height ]
+// bounding overlap, format: [ startx, starty, width, height ]
 export function overlapBounding(a, b) {
-  var A_end_x = a[0] + a[2]
-  var A_end_y = a[1] + a[3]
-  var B_end_x = b[0] + b[2]
-  var B_end_y = b[1] + b[3]
+  const A_end_x = a[0] + a[2]
+  const A_end_y = a[1] + a[3]
+  const B_end_x = b[0] + b[2]
+  const B_end_y = b[1] + b[3]
 
   if (a[0] > B_end_x || a[1] > B_end_y || A_end_x < b[0] || A_end_y < b[1]) {
     return false
@@ -68,20 +68,20 @@ export function overlapBounding(a, b) {
   return true
 }
 
-//Convert a hex value to its decimal value - the inputted hex must be in the
+// Convert a hex value to its decimal value - the inputted hex must be in the
 //	format of a hex triplet - the kind we use for HTML colours. The function
 //	will return an array with three values.
 
 export function hex2num(hex) {
   if (hex.charAt(0) == '#') {
     hex = hex.slice(1)
-  } //Remove the '#' char - if there is one.
+  } // Remove the '#' char - if there is one.
   hex = hex.toUpperCase()
-  var hex_alphabets = '0123456789ABCDEF'
-  var value = new Array(3)
-  var k = 0
-  var int1, int2
-  for (var i = 0; i < 6; i += 2) {
+  const hex_alphabets = '0123456789ABCDEF'
+  const value = new Array(3)
+  let k = 0
+  let int1, int2
+  for (let i = 0; i < 6; i += 2) {
     int1 = hex_alphabets.indexOf(hex.charAt(i))
     int2 = hex_alphabets.indexOf(hex.charAt(i + 1))
     value[k] = int1 * 16 + int2
@@ -90,12 +90,12 @@ export function hex2num(hex) {
   return value
 }
 
-//Give a array with three values as the argument and the function will return the corresponding hex triplet.
+// Give a array with three values as the argument and the function will return the corresponding hex triplet.
 export function num2hex(triplet) {
-  var hex_alphabets = '0123456789ABCDEF'
-  var hex = '#'
-  var int1, int2
-  for (var i = 0; i < 3; i++) {
+  const hex_alphabets = '0123456789ABCDEF'
+  let hex = '#'
+  let int1, int2
+  for (let i = 0; i < 3; i++) {
     int1 = triplet[i] / 16
     int2 = triplet[i] % 16
 

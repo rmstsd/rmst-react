@@ -1,6 +1,11 @@
-import Yoga, { Node } from 'yoga-layout'
-import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
-import { TextNode } from './TextNode'
+import type { Node } from 'yoga-layout'
+
+import Yoga from 'yoga-layout'
+
+import type { Layout } from './constant'
+import type { TextNode } from './TextNode'
+
+import { NodeType, setYogaNodeLayoutStyle } from './constant'
 
 export class ViewNode {
   constructor(style?: React.CSSProperties) {

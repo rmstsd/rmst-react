@@ -1,9 +1,9 @@
 import { useCallback, useRef, useState } from 'react'
-import ResizeObserver from 'resize-observer-polyfill'
 import { useMemo } from 'react'
+import ResizeObserver from 'resize-observer-polyfill'
 
-export const useDebounce = (cb: any, delay: number = 500) => {
-  const debounceRef = useRef<{ timer: number; cb: () => void }>({
+export const useDebounce = (cb: any, delay = 500) => {
+  const debounceRef = useRef<{ timer: number, cb: () => void }>({
     timer: null,
     cb
   })

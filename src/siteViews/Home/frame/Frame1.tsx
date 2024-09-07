@@ -1,9 +1,10 @@
 import cn from '@/utils/cn'
-import SingleWord from '../../components/SingleWord/SingleWord'
-import MeTransition from '../../components/MeTransition'
-import FloatCircle from '../../components/FloatCircle'
 import gsap from 'gsap'
 import { useRef } from 'react'
+
+import FloatCircle from '../../components/FloatCircle'
+import MeTransition from '../../components/MeTransition'
+import SingleWord from '../../components/SingleWord/SingleWord'
 
 export default function Frame1({ isEnterTv, onClick }) {
   const leftTextRef = useRef()

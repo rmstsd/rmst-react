@@ -1,4 +1,6 @@
-import React, { PropsWithChildren, useRef } from 'react'
+import type { PropsWithChildren } from 'react'
+
+import React, { useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 type MeTransitionProps = PropsWithChildren<{ visible: boolean }>

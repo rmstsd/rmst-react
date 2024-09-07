@@ -1,8 +1,13 @@
-import React from 'react'
-import Yoga, { Edge, Node } from 'yoga-layout'
-import { Layout, NodeType, setYogaNodeLayoutStyle } from './constant'
-import { ViewNode } from './ViewNode'
-import { TextNode } from './TextNode'
+import type React from 'react'
+import type { Node } from 'yoga-layout'
+
+import Yoga, { Edge } from 'yoga-layout'
+
+import type { Layout } from './constant'
+import type { TextNode } from './TextNode'
+import type { ViewNode } from './ViewNode'
+
+import { NodeType, setYogaNodeLayoutStyle } from './constant'
 import { isTextNode } from './is'
 
 export * from './TextNode'

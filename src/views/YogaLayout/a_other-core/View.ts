@@ -1,13 +1,14 @@
+import type { IViewLayout, IViewStyle } from './interface'
 import type Layer from './Layer'
 import type Text from './Text'
+
 import Node from './Node'
-import type { IViewLayout, IViewStyle } from './interface'
 
 export default class View extends Node {
   layer!: Layer
   layout = {} as IViewLayout
-  type = 'View' as 'View'
-  children: Array<View | Text> = []
+  type = 'View' as const
+  children: (View | Text)[] = []
 
   constructor(protected style: IViewStyle) {
     super(style)

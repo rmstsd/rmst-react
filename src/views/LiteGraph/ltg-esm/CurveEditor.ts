@@ -1,12 +1,12 @@
 import { clamp, distance } from './utils/utils'
 
-//used by some widgets to render a curve editor
+// used by some widgets to render a curve editor
 class CurveEditor {
   constructor(points) {
     this.points = points
     this.selected = -1
     this.nearest = -1
-    this.size = null //stores last size used
+    this.size = null // stores last size used
     this.must_update = true
     this.margin = 5
   }
@@ -65,22 +65,22 @@ class CurveEditor {
     ctx.restore()
   }
 
-  //localpos is mouse in curve editor space
+  // localpos is mouse in curve editor space
   onMouseDown(localpos, { ds }) {
     const points = this.points
     if (!points) return
     if (localpos[1] < 0) return
 
-    //this.captureInput(true);
+    // this.captureInput(true);
     const w = this.size[0] - this.margin * 2
     const h = this.size[1] - this.margin * 2
     const x = localpos[0] - this.margin
     const y = localpos[1] - this.margin
     const pos = [x, y]
     const max_dist = 30 / ds.scale
-    //search closer one
+    // search closer one
     this.selected = this.getCloserPoint(pos, max_dist)
-    //create one
+    // create one
     if (this.selected == -1) {
       const point = [x / w, 1 - y / h]
       points.push(point)
@@ -117,7 +117,7 @@ class CurveEditor {
         return
       }
       if (!is_edge_point) {
-        //not edges
+        // not edges
         point[0] = clamp(x, 0, 1)
       } else {
         point[0] = s == 0 ? 0 : 1

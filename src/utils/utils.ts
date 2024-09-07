@@ -112,7 +112,7 @@ function propsParser(propsStr: string) {
 }
 
 export function sleep(ms: number) {
-  let t = Date.now()
+  const t = Date.now()
   while (Date.now() - t < ms) {}
 }
 

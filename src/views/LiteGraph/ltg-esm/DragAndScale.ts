@@ -1,7 +1,7 @@
 import LiteGraph from './LiteGraph'
 import { pointerListenerAdd, pointerListenerRemove } from './utils/GUI'
 
-//Scale and Offset
+// Scale and Offset
 class DragAndScale {
   constructor(element, skip_events) {
     this.offset = new Float32Array([0, 0])
@@ -79,7 +79,7 @@ class DragAndScale {
         y >= this.viewport[1] &&
         y < this.viewport[1] + this.viewport[3])
 
-    //console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
+    // console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
 
     let ignore = false
     if (this.onmouse) {
@@ -112,7 +112,7 @@ class DragAndScale {
         e.wheel = e.wheelDeltaY != null ? e.wheelDeltaY : e.detail * -60
       }
 
-      //from stack overflow
+      // from stack overflow
       e.delta = e.wheelDelta ? e.wheelDelta / 40 : e.deltaY ? -e.deltaY / 3 : 0
       this.changeDeltaScale(1.0 + e.delta * 0.05)
     }
@@ -133,7 +133,7 @@ class DragAndScale {
   }
 
   convertOffsetToCanvas(pos) {
-    //return [pos[0] / this.scale - this.offset[0], pos[1] / this.scale - this.offset[1]];
+    // return [pos[0] / this.scale - this.offset[0], pos[1] / this.scale - this.offset[1]];
     return [(pos[0] + this.offset[0]) * this.scale, (pos[1] + this.offset[1]) * this.scale]
   }
 

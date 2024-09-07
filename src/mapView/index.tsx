@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react'
 import { Group, Image, Leafer, Path, Rect, Text } from 'leafer-ui'
-import { AreaMapViewStore } from './store'
+import { useEffect, useMemo, useRef } from 'react'
 
 import mapData from './mapData.json'
+import { AreaMapViewStore } from './store'
 
 const baseMmPerPx = 25
 
@@ -55,9 +55,7 @@ export default function MapView() {
         const daShortSite = 1
         const daLongSite = 2.4
 
-        const directionData = pathParams.dual
-          ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}`
-          : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
+        const directionData = pathParams.dual ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}` : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
            M${-daStart},${-daShortSite} L${-daStart},${daShortSite} L${-daLongSite},0 L${-daStart},${-daShortSite}`
 
         let directionTransform = ''
@@ -137,5 +135,5 @@ export default function MapView() {
     canvas.addMany(rootGroup)
   }, [])
 
-  return <div className="h-full" ref={containerRef}></div>
+  return <div className="h-full" ref={containerRef} />
 }

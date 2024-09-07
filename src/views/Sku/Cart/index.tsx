@@ -1,9 +1,12 @@
-import { Button } from '@arco-design/web-react'
-import { CartClass, Good } from './Cart'
-import { memo, useCallback, useEffect, useState } from 'react'
-import { goodData } from './goodData'
 import cn from '@/utils/cn'
 import { useUpdate } from '@/utils/hooks'
+import { Button } from '@arco-design/web-react'
+import { memo, useCallback, useEffect, useState } from 'react'
+
+import type { Good } from './Cart'
+
+import { CartClass } from './Cart'
+import { goodData } from './goodData'
 
 export default function Cart() {
   const [cartIns, setCartIns] = useState<CartClass>()

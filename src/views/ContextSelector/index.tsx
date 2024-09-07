@@ -38,13 +38,13 @@ export const useContextSelector = (context, selector) => {
 }
 
 type User = Partial<{
-  name: string;
-  age: number;
-  love: string[];
+  name: string
+  age: number
+  love: string[]
   eat: Partial<{
-    fruit: Partial<{ apple: string; banana: string }>;
-    water: Partial<{ 外星人: string; 红牛: string }>;
-  }>;
+    fruit: Partial<{ apple: string, banana: string }>
+    water: Partial<{ 外星人: string, 红牛: string }>
+  }>
 }>
 
 const Context = createContext<User>(null)

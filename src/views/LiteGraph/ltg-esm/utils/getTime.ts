@@ -1,4 +1,4 @@
-//timer that works everywhere
+// timer that works everywhere
 let getTime: () => number
 if (typeof performance != 'undefined') {
   getTime = performance.now.bind(performance)
@@ -8,7 +8,7 @@ if (typeof performance != 'undefined') {
 } else if (typeof process != 'undefined') {
   getTime = function () {
     // @ts-ignore
-    var t = process.hrtime()
+    const t = process.hrtime()
     return t[0] * 0.001 + t[1] * 1e-6
   }
 } else {

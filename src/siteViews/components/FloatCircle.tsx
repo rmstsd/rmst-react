@@ -1,10 +1,10 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useEventListener } from 'ahooks'
+import gsap from 'gsap'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+
+import type { SingleWordClass } from '../components/SingleWord/SingleWordClass'
 
 import SingleWord from '../components/SingleWord/SingleWord'
-import { SingleWordClass } from '../components/SingleWord/SingleWordClass'
-
-import gsap from 'gsap'
 
 export default function FloatCircle({ onClick }) {
   const singleWordRef = useRef<SingleWordClass>()

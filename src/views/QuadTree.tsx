@@ -3,6 +3,7 @@
 import { Input } from '@arco-design/web-react'
 import Quadtree from '@timohausmann/quadtree-js'
 import { memo, useEffect, useRef, useState, useTransition } from 'react'
+
 import { sleep } from '../utils/utils'
 
 const QuadTree = () => {

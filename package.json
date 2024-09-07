@@ -7,7 +7,9 @@
     "build": "rsbuild build",
     "preview": "rsbuild preview",
     "release": "release-it patch --ci",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
@@ -53,6 +55,7 @@
     "@types/react-reconciler": "^0.28.8",
     "@types/react-transition-group": "^4.4.10",
     "eslint": "8",
+    "eslint-plugin-perfectionist": "^3.4.0",
     "gh-pages": "^6.1.1",
     "its-fine": "^1.2.5",
     "prettier": "3.3.3",

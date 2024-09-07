@@ -1,12 +1,15 @@
 import Yoga from 'yoga-layout'
-import type Layer from './Layer'
-import type View from './View'
-import {
+
+import type {
   IBaseStyle,
   IViewStyle,
   ITextStyle,
   IViewLayout,
-  ITextLayout,
+  ITextLayout } from './interface'
+import type Layer from './Layer'
+import type View from './View'
+
+import {
   FlexDirection,
   FlexAlignItems,
   FlexJustifyContent,

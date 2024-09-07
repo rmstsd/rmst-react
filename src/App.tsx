@@ -1,12 +1,12 @@
-import { useRoutes } from 'react-router-dom'
-import { createContext, useContext, useEffect, useState } from 'react'
-import Lenis from 'lenis'
+import type Lenis from 'lenis'
 
-import { siteRoutes } from './routes/siteRoutes'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { useRoutes } from 'react-router-dom'
 
 import './initThirdPkg'
-import Svg from './views/Svg/Svg'
 import routes from './routes'
+import { siteRoutes } from './routes/siteRoutes'
+import Svg from './views/Svg/Svg'
 
 export const useScroll = (callback: Function, deps = []) => {
   const lenis = useContext(LenisContext)

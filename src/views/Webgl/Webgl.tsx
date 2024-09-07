@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { initBuffers } from './gl/init-buffers'
+
 import { drawScene } from './gl/draw-scene'
+import { initBuffers } from './gl/init-buffers'
 
 export default function Webgl() {
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function Webgl() {
 
       // 如果创建失败，alert
       if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram))
+        console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(shaderProgram)}`)
         return null
       }
 
@@ -94,7 +95,7 @@ export default function Webgl() {
       // See if it compiled successfully
 
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader))
+        console.error(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`)
         gl.deleteShader(shader)
         return null
       }
@@ -107,7 +108,7 @@ export default function Webgl() {
 
   return (
     <div className="h-full border">
-      <canvas></canvas>
+      <canvas />
     </div>
   )
 }

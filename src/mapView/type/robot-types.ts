@@ -1,6 +1,6 @@
-import { SceneRobot } from "./scene-types"
-import { Point2D, Rect } from "./geo-types"
-import { MapToTyped } from "../type"
+import type { MapToTyped } from '../type'
+import type { Point2D, Rect } from './geo-types'
+import type { SceneRobot } from './scene-types'
 
 /**
  * 机器人自身上报的信息
@@ -20,7 +20,7 @@ export interface RobotSelfReportMain {
   battery: number | null // 电池电量 0..1
   x: number | null // 机器人位置 x
   y: number | null // 机器人位置 y
-  direction: number | null  // 机器人车头朝向（角度）
+  direction: number | null // 机器人车头朝向（角度）
   currentMap: string | null // 当前地图名
   currentMapMd5: string | null // 当前地图 MD5
   currentPoint: string | null // 当前站点（MrSite.id）
@@ -38,7 +38,7 @@ export interface RobotSelfReportMain {
  * 机器人告警
  */
 export interface RobotAlarm {
-  level: RobotAlarmLevel;
+  level: RobotAlarmLevel
   code: string | null
   message: string
   times: number
@@ -48,19 +48,19 @@ export interface RobotAlarm {
 /**
  * 机器人告警级别
  */
-export type RobotAlarmLevel = "Info" | "Warning" | "Error" | "Fatal"
+export type RobotAlarmLevel = 'Info' | 'Warning' | 'Error' | 'Fatal'
 
 /**
  * 一个机器人的信息，给前端用，汇总所有信息
  */
 export interface RobotUiReport {
-  robotName: string;
-  config: SceneRobot;
-  groupId: number,
+  robotName: string
+  config: SceneRobot
+  groupId: number
   groupName: string
-  online: boolean;
-  selfReport?: RobotSelfReport | null;
-  orderRecord?: RobotOrderRecord | null;
+  online: boolean
+  selfReport?: RobotSelfReport | null
+  orderRecord?: RobotOrderRecord | null
   // 前端设置
   color?: string
 }
@@ -68,7 +68,7 @@ export interface RobotUiReport {
 /**
  * 机器人执行运单的状态
  */
-export type RobotCmdStatus = "Idle" | "Moving" | "Interrupted" | "Failed"
+export type RobotCmdStatus = 'Idle' | 'Moving' | 'Interrupted' | 'Failed'
 
 /**
  * 机器人身上库位状态
@@ -82,7 +82,7 @@ export interface RobotBin {
 /**
  * 机器人身上库位状态
  */
-export type RobotBinStatus = "Empty" | "Reserved" | "Filled" | "Cancelled"
+export type RobotBinStatus = 'Empty' | 'Reserved' | 'Filled' | 'Cancelled'
 
 /**
  * 选择要执行的运单步骤
@@ -127,7 +127,7 @@ export interface MapResourceItem {
   rect: Rect | null // 允许旋转
 }
 
-export type MapResourceItemShape = "RotatedRect" // 带旋转的矩形
+export type MapResourceItemShape = 'RotatedRect' // 带旋转的矩形
 
 /**
  * 已占用资源 robot name -> unit id -> unit

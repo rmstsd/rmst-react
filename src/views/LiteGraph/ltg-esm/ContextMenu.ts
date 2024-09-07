@@ -18,7 +18,7 @@ class ContextMenu {
     this.options = options
     const that = this
 
-    //to link a menu with its parent
+    // to link a menu with its parent
     if (options.parentMenu) {
       if (options.parentMenu.constructor !== this.constructor) {
         console.error('parentMenu must be of class ContextMenu, ignoring it')
@@ -32,7 +32,7 @@ class ContextMenu {
 
     let eventClass = null
     if (options.event)
-      //use strings because comparing classes between windows doesnt work
+      // use strings because comparing classes between windows doesnt work
       eventClass = options.event.constructor.name
     if (eventClass !== 'MouseEvent' && eventClass !== 'CustomEvent' && eventClass !== 'PointerEvent') {
       console.error(
@@ -51,14 +51,14 @@ class ContextMenu {
     root.style.pointerEvents = 'none'
     setTimeout(() => {
       root.style.pointerEvents = 'auto'
-    }, 100) //delay so the mouse up event is not caught by this element
+    }, 100) // delay so the mouse up event is not caught by this element
 
-    //this prevents the default context browser menu to open in case this menu was created when pressing right button
+    // this prevents the default context browser menu to open in case this menu was created when pressing right button
     pointerListenerAdd(
       root,
       'up',
       e => {
-        //console.log("pointerevents: ContextMenu up root prevent");
+        // console.log("pointerevents: ContextMenu up root prevent");
         e.preventDefault()
         return true
       },
@@ -68,7 +68,7 @@ class ContextMenu {
       'contextmenu',
       e => {
         if (e.button != 2) {
-          //right button
+          // right button
           return false
         }
         e.preventDefault()
@@ -81,7 +81,7 @@ class ContextMenu {
       root,
       'down',
       e => {
-        //console.log("pointerevents: ContextMenu down");
+        // console.log("pointerevents: ContextMenu down");
         if (e.button == 2) {
           that.close()
           e.preventDefault()
@@ -107,7 +107,7 @@ class ContextMenu {
 
     this.root = root
 
-    //title
+    // title
     if (options.title) {
       const element = document.createElement('div')
       element.className = 'litemenu-title'
@@ -115,7 +115,7 @@ class ContextMenu {
       root.appendChild(element)
     }
 
-    //entries
+    // entries
     let num = 0
     for (let i = 0; i < values.length; i++) {
       let name = values.constructor == Array ? values[i] : i
@@ -127,8 +127,8 @@ class ContextMenu {
       num++
     }
 
-    //close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
-    /*LiteGraph.pointerListenerAdd(root,"leave", function(e) {
+    // close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
+    /* LiteGraph.pointerListenerAdd(root,"leave", function(e) {
         console.log("pointerevents: ContextMenu leave");
             if (that.lock) {
                 return;
@@ -138,10 +138,10 @@ class ContextMenu {
             }
             root.closing_timer = setTimeout(that.close.bind(that, e), 500);
             //that.close(e);
-        });*/
+        }); */
 
     pointerListenerAdd(root, 'enter', e => {
-      //console.log("pointerevents: ContextMenu enter");
+      // console.log("pointerevents: ContextMenu enter");
       // @ts-ignore
       if (root.closing_timer) {
         // @ts-ignore
@@ -149,7 +149,7 @@ class ContextMenu {
       }
     })
 
-    //insert before checking position
+    // insert before checking position
     let root_document = document
     if (options.event) {
       root_document = options.event.target.ownerDocument
@@ -162,7 +162,7 @@ class ContextMenu {
     if (root_document.fullscreenElement) root_document.fullscreenElement.appendChild(root)
     else root_document.body.appendChild(root)
 
-    //compute best position
+    // compute best position
     let left = options.left || 0
     let top = options.top || 0
     if (options.event) {
@@ -209,8 +209,8 @@ class ContextMenu {
 
     if (value === null) {
       element.classList.add('separator')
-      //element.innerHTML = "<hr/>"
-      //continue;
+      // element.innerHTML = "<hr/>"
+      // continue;
     } else {
       element.innerHTML = value && value.title ? value.title : name
       element.value = value
@@ -250,11 +250,11 @@ class ContextMenu {
       if (!value || !value.has_submenu) {
         return
       }
-      //if it is a submenu, autoopen like the item was clicked
+      // if it is a submenu, autoopen like the item was clicked
       inner_onclick.call(this, e)
     }
 
-    //menu option clicked
+    // menu option clicked
     function inner_onclick(e) {
       const value = this.value
       let close_parent = true
@@ -263,7 +263,7 @@ class ContextMenu {
         that.current_submenu.close(e)
       }
 
-      //global callback
+      // global callback
       if (options.callback) {
         var r = options.callback.call(this, value, options, e, that, options.node)
         if (r === true) {
@@ -271,10 +271,10 @@ class ContextMenu {
         }
       }
 
-      //special cases
+      // special cases
       if (value) {
         if (value.callback && !options.ignore_item_callbacks && value.disabled !== true) {
-          //item callback
+          // item callback
           var r = value.callback.call(this, value, options, e, that, options.extra)
           if (r === true) {
             close_parent = false
@@ -330,10 +330,10 @@ class ContextMenu {
     // on key press, allow filtering/selecting the context menu elements
   }
 
-  //this code is used to trigger events easily (used in the context menu mouseleave
+  // this code is used to trigger events easily (used in the context menu mouseleave
   static trigger(element, event_name, params, origin) {
     const evt = document.createEvent('CustomEvent')
-    evt.initCustomEvent(event_name, true, true, params) //canBubble, cancelable, detail
+    evt.initCustomEvent(event_name, true, true, params) // canBubble, cancelable, detail
     // @ts-ignore
     evt.srcElement = origin
     if (element.dispatchEvent) {
@@ -341,11 +341,11 @@ class ContextMenu {
     } else if (element.__events) {
       element.__events.dispatchEvent(evt)
     }
-    //else nothing seems binded here so nothing to do
+    // else nothing seems binded here so nothing to do
     return evt
   }
 
-  //returns the top most menu
+  // returns the top most menu
   getTopMenu() {
     if (this.options.parentMenu) {
       return this.options.parentMenu.getTopMenu()

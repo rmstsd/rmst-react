@@ -1,9 +1,10 @@
+import { useUpdate } from '@/utils/hooks/hooks'
+import { Button, Input } from '@arco-design/web-react'
+import { useBoolean } from 'ahooks'
 import { useLayoutEffect, useRef, useState } from 'react'
+
 import Host from './components/Host'
 import Portal from './components/Portal'
-import { Button, Input } from '@arco-design/web-react'
-import { useUpdate } from '@/utils/hooks/hooks'
-import { useBoolean } from 'ahooks'
 
 const MyPortalTest = () => {
   console.log('MyPortalTest render')
