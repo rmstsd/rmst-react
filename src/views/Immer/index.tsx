@@ -1,5 +1,5 @@
 import cn from '@/utils/cn'
-import { Tooltip } from '@arco-design/web-react'
+import { Select, Tooltip, Trigger } from '@arco-design/web-react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { clsx } from 'clsx'
 import React, { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState, ReactNode } from 'react'
@@ -67,10 +67,33 @@ function Home() {
 
 export default function Tt() {
   return (
-    <div className="tt">
-      <Tooltip content="123" trigger="click">
-        <Com />
-      </Tooltip>
+    <div className="tt relative h-[600px] overflow-auto">
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <Trigger trigger="click" popup={() => <div>asdasd</div>}>
+        <button>w</button>
+      </Trigger>
+
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
     </div>
   )
 }
