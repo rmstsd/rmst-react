@@ -29,6 +29,7 @@
     "leafer-ui": "^1.0.2",
     "lenis": "^1.1.9",
     "litegraph.js": "^0.7.18",
+    "rc-trigger": "^5.3.4",
     "react": "^18.3.1",
     "react-canvaskit": "0.0.1-alpha.8",
     "react-dom": "^18.3.1",
@@ -45,6 +46,7 @@
     "yoga-layout": "^3.0.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
     "@rsbuild/core": "1.0.1-rc.3",
     "@rsbuild/plugin-less": "1.0.1-rc.3",
     "@rsbuild/plugin-react": "^0.6.9",
@@ -54,9 +56,11 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-reconciler": "^0.28.8",
     "@types/react-transition-group": "^4.4.10",
-    "eslint": "8",
+    "eslint": "^9.10.0",
     "eslint-plugin-perfectionist": "^3.4.0",
+    "eslint-plugin-react": "^7.35.2",
     "gh-pages": "^6.1.1",
+    "globals": "^15.9.0",
     "its-fine": "^1.2.5",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.5",

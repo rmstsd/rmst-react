@@ -41,7 +41,7 @@ const App = () => {
   //   // return lenisIns
   // })
 
-  return <LenisContext.Provider value={null}>{element}</LenisContext.Provider>
+  return <LenisContext.Provider value={null}> {element}</LenisContext.Provider>
 }
 
 export default App

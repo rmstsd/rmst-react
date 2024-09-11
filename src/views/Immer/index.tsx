@@ -1,7 +1,8 @@
 import cn from '@/utils/cn'
-import { Select, Tooltip, Trigger } from '@arco-design/web-react'
+import { Button, Select, Tooltip } from '@arco-design/web-react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { clsx } from 'clsx'
+import Trigger from 'rc-trigger'
 import React, { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -28,19 +29,6 @@ type ButtonProps = VariantProps<typeof button> & {
   className?: string
 }
 
-const Button = forwardRef(function Button(props: ButtonProps, ref) {
-  props = { type: 'primary', size: 'medium', ...props }
-  console.log(props)
-
-  const { type, size, onClick, className } = props
-
-  return (
-    <button ref={ref} className={button({ type, size, className })} onClick={onClick}>
-      Default Button
-    </button>
-  )
-})
-
 function Home() {
   const [type, setType] = useState<ButtonProps['type']>('primary')
   const [size, setSize] = useState<ButtonProps['size']>('medium')
@@ -53,8 +41,6 @@ function Home() {
       <button className={cn('border p-2')} onClick={() => setSize(size === 'medium' ? 'small' : 'medium')}>
         {size}
       </button>
-
-      <Button type={type} size={size} />
 
       <br />
       <br />
@@ -74,17 +60,16 @@ export default function Tt() {
       <h1 className="h-[100px]">asd</h1>
       <h1 className="h-[100px]">asd</h1>
       <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <h1 className="h-[100px]">asd</h1>
-      <Trigger trigger="click" popup={() => <div>asdasd</div>}>
-        <button>w</button>
+
+      <Trigger
+        action={['click']}
+        popup={<span>popup</span>}
+        popupAlign={{
+          points: ['tl', 'bl'],
+          offset: [0, 3]
+        }}
+      >
+        <button className="border">w</button>
       </Trigger>
 
       <h1 className="h-[100px]">asd</h1>
@@ -94,21 +79,15 @@ export default function Tt() {
       <h1 className="h-[100px]">asd</h1>
       <h1 className="h-[100px]">asd</h1>
       <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
+      <h1 className="h-[100px]">asd</h1>
     </div>
   )
-}
-
-const Com = props => {
-  return <div onClick={() => props.onClick?.()}>000</div>
-}
-
-function Popup(props: React.PropsWithChildren) {
-  const ref = useRef()
-
-  useEffect(() => {
-    console.log(ref.current)
-  }, [])
-  const node = cloneElement(props.children, { ref })
-
-  return <>{node}</>
 }

@@ -38,7 +38,7 @@ const SingleWord = forwardRef<SingleWordClass, SingleWordProps>((props, ref) => 
     >
       {wordList.map((item, index) => (
         <span key={index} className={cn(!item.visible && 'invisible')}>
-          {item.char}
+          { item.char }
         </span>
       ))}
     </div>

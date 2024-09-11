@@ -1,10 +1,9 @@
-import axios from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 
 import { refreshToken } from './user'
-
 const Base_Url = 'https://enterprise.naturobot.com'
 
-const axiosRequest = axios.create({
+const axiosRequest: AxiosInstance = axios.create({
   baseURL: Base_Url
 })
 

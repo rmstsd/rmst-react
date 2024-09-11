@@ -1,3 +1,5 @@
+import type { Node } from 'yoga-layout'
+
 import Yoga from 'yoga-layout'
 
 import type { ILayerProps } from './interface'
@@ -10,7 +12,7 @@ export default class Layer {
   parent?: Stage
   canvas!: HTMLCanvasElement
   context!: CanvasRenderingContext2D
-  node!: Yoga.YogaNode
+  node!: Node
   isBatching = false
   layout = { x: 0, y: 0 }
 
@@ -23,7 +25,7 @@ export default class Layer {
   // 初始化 canvas
   initDOM() {
     this.canvas = document.createElement('canvas')
-    this.context = this.canvas.getContext('2d')!
+    this.context = this.canvas.getContext('2d')
     this.canvas.width = this.style.width
     this.canvas.height = this.style.height
   }

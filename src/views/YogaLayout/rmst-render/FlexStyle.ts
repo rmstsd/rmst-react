@@ -7,9 +7,7 @@
  * @format
  */
 
-import type {
-  Node as YogaNode
-} from 'yoga-layout'
+import type { Node as YogaNode } from 'yoga-layout'
 
 import {
   Align,

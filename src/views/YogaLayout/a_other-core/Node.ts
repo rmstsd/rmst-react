@@ -1,20 +1,10 @@
 import Yoga from 'yoga-layout'
 
-import type {
-  IBaseStyle,
-  IViewStyle,
-  ITextStyle,
-  IViewLayout,
-  ITextLayout } from './interface'
+import type { IBaseStyle, IViewStyle, ITextStyle, IViewLayout, ITextLayout } from './interface'
 import type Layer from './Layer'
 import type View from './View'
 
-import {
-  FlexDirection,
-  FlexAlignItems,
-  FlexJustifyContent,
-  FlexDisplay
-} from './interface'
+import { FlexDirection, FlexAlignItems, FlexJustifyContent, FlexDisplay } from './interface'
 
 const isUndefined = (v: unknown) => v === undefined
 
@@ -31,39 +21,39 @@ export default class Node {
     const { display, width, height, padding, margin, flex, flexDirection, alignItems, justifyContent } = this
       .style as IViewStyle & ITextStyle
     if (!isUndefined(display)) {
-      this.node.setDisplay(+FlexDisplay[display!] as Yoga.YogaDisplay)
+      this.node.setDisplay(+FlexDisplay[display])
     }
     if (!isUndefined(width)) {
-      this.node.setWidth(width!)
+      this.node.setWidth(width)
     }
     if (!isUndefined(height)) {
-      this.node.setHeight(height!)
+      this.node.setHeight(height)
     }
     if (!isUndefined(padding)) {
-      const paddings = this.getPaddings(padding!)
+      const paddings = this.getPaddings(padding)
       this.node.setPadding(Yoga.EDGE_TOP, paddings[0])
       this.node.setPadding(Yoga.EDGE_RIGHT, paddings[1])
       this.node.setPadding(Yoga.EDGE_BOTTOM, paddings[2])
       this.node.setPadding(Yoga.EDGE_LEFT, paddings[3])
     }
     if (!isUndefined(margin)) {
-      const margins = this.getPaddings(margin!)
+      const margins = this.getPaddings(margin)
       this.node.setMargin(Yoga.EDGE_TOP, margins[0])
       this.node.setMargin(Yoga.EDGE_RIGHT, margins[1])
       this.node.setMargin(Yoga.EDGE_BOTTOM, margins[2])
       this.node.setMargin(Yoga.EDGE_LEFT, margins[3])
     }
     if (!isUndefined(flex)) {
-      this.node.setFlex(flex!)
+      this.node.setFlex(flex)
     }
     if (!isUndefined(flexDirection)) {
-      this.node.setFlexDirection(FlexDirection[flexDirection!] as Yoga.YogaFlexDirection)
+      this.node.setFlexDirection(FlexDirection[flexDirection])
     }
     if (!isUndefined(alignItems)) {
-      this.node.setAlignItems(FlexAlignItems[alignItems!] as Yoga.YogaAlign)
+      this.node.setAlignItems(FlexAlignItems[alignItems])
     }
     if (!isUndefined(justifyContent)) {
-      this.node.setJustifyContent(FlexJustifyContent[justifyContent!] as Yoga.YogaJustifyContent)
+      this.node.setJustifyContent(FlexJustifyContent[justifyContent])
     }
   }
 

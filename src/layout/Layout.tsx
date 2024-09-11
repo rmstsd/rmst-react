@@ -1,11 +1,11 @@
 import { Menu, Button } from '@arco-design/web-react'
 import { useLocalStorageState } from 'ahooks'
-import React, { useEffect, useState } from 'react'
-import { Outlet, useLocation, useMatch, useNavigate, useNavigation } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom'
 
 import routes from '../routes'
 
-const LayoutView: React.FC = props => {
+const LayoutView: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 

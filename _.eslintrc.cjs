@@ -58,6 +58,7 @@ module.exports = {
 
     'prefer-template': 'error',
 
-    'perfectionist/sort-imports': ['error']
+    'perfectionist/sort-imports': ['error'],
+    '@typescript-eslint/prefer-literal-enum-member': ['off']
   }
 }
