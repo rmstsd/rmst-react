@@ -65,12 +65,12 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     }
 
     const onDocumentMouseup = () => {
-      document.removeEventListener('mousemove', onDocumentMousemove)
-      document.removeEventListener('mouseup', onDocumentMouseup)
+      document.removeEventListener('pointermove', onDocumentMousemove)
+      document.removeEventListener('pointerup', onDocumentMouseup)
     }
 
-    document.addEventListener('mousemove', onDocumentMousemove)
-    document.addEventListener('mouseup', onDocumentMouseup)
+    document.addEventListener('pointermove', onDocumentMousemove)
+    document.addEventListener('pointerup', onDocumentMouseup)
   }
 
   return (
@@ -98,9 +98,9 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
       <div className="absolute right-0 top-[100px] h-[100px] bg-gray-200 w-[30px]" ref={trackDomRef}>
         <div
           ref={thumbDomRef}
-          className="w-full bg-purple-400 h-[20px]"
+          className="w-full bg-purple-400 h-[20px] touch-none"
           style={{ height: thumbHeight }}
-          onMouseDown={onThumbMouseDown}
+          onPointerDown={onThumbMouseDown}
         />
       </div>
     </main>

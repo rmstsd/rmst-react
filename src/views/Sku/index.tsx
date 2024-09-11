@@ -1,7 +1,7 @@
 import type { TableColumnProps } from '@arco-design/web-react'
 
 import { Button, Input, Table } from '@arco-design/web-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import type { SkuBase } from './backTrack'
 
@@ -14,10 +14,12 @@ const attr_name_value = {
   状态: ['a', 'b', 'c']
 }
 
+type ff = SkuBase []
+
 const attrs = Object.keys(attr_name_value)
 
-const Sku = () => {
-  const [selected, setSelected] = useState<SkuBase[]>([])
+function Sku() {
+  const [selected, setSelected] = useState< SkuBase [] >([]) // asdas
 
   const [data, setData] = useState([])
   console.log('data', data)
@@ -81,7 +83,7 @@ const Sku = () => {
         <div key={item.attr} className="mt-3">
           <Input value={item.attr} className="w-[130px]" />
 
-          <div className="flex gap-[10px] mt-2">
+          <div className="mt-2 flex gap-[10px]">
             {item.values.map(o => (
               <Input key={o} value={o} className="w-[100px]" />
             ))}

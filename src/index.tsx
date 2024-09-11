@@ -13,3 +13,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </ConfigProvider>
   </HashRouter>
 )
+
+const Func = <T,>(p: T) => {
+  console.log(p)
+}
+
+Func(1)

@@ -1,9 +1,12 @@
-import stylistic from '@stylistic/eslint-plugin'
-import react from 'eslint-plugin-react'
-import globals from 'globals'
+import antfu from '@antfu/eslint-config'
 import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import stylistic from '@stylistic/eslint-plugin'
 import perfectionist from 'eslint-plugin-perfectionist'
+// import react from 'eslint-plugin-react'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+
+// export default antfu({})
 
 const customized = stylistic.configs.customize({ indent: 2, quotes: 'single', semi: false, jsx: true })
 
@@ -11,16 +14,16 @@ const cusss = {
   files: ['src/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
   languageOptions: {
     parserOptions: {
-      ecmaFeatures: { jsx: true }
+      ecmaFeatures: { jsx: true },
     },
     globals: {
-      ...globals.browser
-    }
+      ...globals.browser,
+    },
   },
   plugins: {
     '@stylistic': stylistic,
     perfectionist,
-    react
+    // react
   },
   rules: {
     ...customized.rules,
@@ -36,12 +39,12 @@ const cusss = {
       'error',
       {
         multiline: { delimiter: 'none', requireLast: false },
-        singleline: { delimiter: 'comma', requireLast: false }
-      }
+        singleline: { delimiter: 'comma', requireLast: false },
+      },
     ],
     '@stylistic/jsx-curly-newline': 'off',
     '@stylistic/template-curly-spacing': 'error',
-    '@stylistic/no-multi-spaces': 'error',
+    '@stylistic/no-multi-spaces': ['error', { ignoreEOLComments: false, includeTabs: true }],
 
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',
@@ -49,8 +52,8 @@ const cusss = {
     '@typescript-eslint/consistent-type-imports': 'error',
 
     'perfectionist/sort-imports': 'error',
-    'prefer-template': 'error'
-  }
+    'prefer-template': 'error',
+  },
 }
 
 export default tseslint.config(eslint.configs.recommended, ...tseslint.configs.recommended, cusss)
