@@ -71,7 +71,7 @@ function Tr1() {
 
 const Child = memo<{ dvalue }>(function Child({ dvalue }) {
   console.log('child')
-  sleep(20)
+  // sleep(20)
 
   return <li>child {dvalue}</li>
 })
