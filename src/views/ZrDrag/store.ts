@@ -9,6 +9,7 @@ export const store = proxy({
   dragItem: null as NodeItem,
   insertBeforeId: '',
   appendAfterId: ''
+
 })
 
 export const useStore = () => useSnapshot(store)

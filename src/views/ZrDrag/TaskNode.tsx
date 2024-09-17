@@ -3,7 +3,7 @@ import cn from '@/utils/cn'
 import type { NodeItem } from './oriData'
 
 import { store, useStore } from './store'
-import { contains, findNode, findParentNode, isDescendant } from './utils'
+import { contains, findNode, findParentNode } from './utils'
 
 interface TaskNodeProps {
   parentNode?: NodeItem
@@ -17,6 +17,9 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
   const isRootNode = node.type === 'root'
 
   const onDropInsertBefore = () => {
+    if (!snap.dragItem) {
+      return
+    }
     console.log('onDropInsertBefore')
     if (!store.dragItem.id || !store.insertBeforeId) {
       return
@@ -48,6 +51,10 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
   }
 
   const onDropAppendAfter = () => {
+    if (!snap.dragItem) {
+      return
+    }
+
     console.log(store.appendAfterId)
     if (!store.dragItem.id || !store.appendAfterId) {
       return
@@ -69,10 +76,12 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
       {!isRootNode && (
         <div
           id="insert-before"
-          draggable={false}
-          className={cn('h-[10px]', snap.insertBeforeId === node.id && 'bg-purple-500')}
-          onDrop={onDropInsertBefore}
-          onDragEnter={() => {
+          className={cn('h-[10px] bg-purple-200', snap.insertBeforeId === node.id && 'bg-purple-500')}
+          onPointerUp={onDropInsertBefore}
+          onPointerEnter={() => {
+            if (!snap.dragItem) {
+              return
+            }
             const isDesc = contains(store.dragItem, node)
             if (isDesc) {
               return
@@ -80,15 +89,13 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
 
             store.insertBeforeId = node.id
           }}
-          onDragLeave={() => (store.insertBeforeId = null)}
-          onDragOver={evt => evt.preventDefault()}
+          onPointerLeave={() => (store.insertBeforeId = null)}
         />
       )}
 
       <div
         className="border p-6"
-        draggable={!isRootNode}
-        onDragStart={evt => {
+        onPointerDown={evt => {
           if (isRootNode) {
             return
           }
@@ -122,13 +129,14 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
             ))}
             <div
               id="append-after"
-              draggable={false}
-              className={cn('h-[10px]', snap.appendAfterId === node.id && 'bg-pink-400')}
-              onDrop={onDropAppendAfter}
-              onDragEnter={() => {
-                // if (store.dragItem.id === node.id) {
-                //   return
-                // }
+              className={cn('h-[10px] bg-pink-200', snap.appendAfterId === node.id && 'bg-pink-400')}
+              onPointerUp={onDropAppendAfter}
+              onPointerEnter={() => {
+                if (!snap.dragItem) {
+                  return
+                }
+                console.log('enter')
+
                 const isDesc = contains(store.dragItem, node)
                 if (isDesc) {
                   return
@@ -136,8 +144,7 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
 
                 store.appendAfterId = node.id
               }}
-              onDragLeave={() => (store.appendAfterId = null)}
-              onDragOver={evt => evt.preventDefault()}
+              onPointerLeave={() => (store.appendAfterId = null)}
             />
           </div>
         )}
