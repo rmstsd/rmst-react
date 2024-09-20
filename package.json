@@ -1,7 +1,7 @@
 {
   "name": "rmst-react-rs",
-  "private": true,
   "version": "1.0.16",
+  "private": true,
   "scripts": {
     "dev": "rsbuild dev --port 3600",
     "build": "rsbuild build",
@@ -29,6 +29,8 @@
     "leafer-ui": "^1.0.2",
     "lenis": "^1.1.9",
     "litegraph.js": "^0.7.18",
+    "mobx": "^6.13.2",
+    "mobx-react-lite": "^4.0.7",
     "rc-trigger": "^5.3.4",
     "react": "^18.3.1",
     "react-canvaskit": "0.0.1-alpha.8",

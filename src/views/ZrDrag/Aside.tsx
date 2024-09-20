@@ -1,7 +1,8 @@
+import { observer } from 'mobx-react-lite'
 import { genNodeItem, oriData } from './oriData'
 import { store } from './store'
 
-export default function Aside() {
+function Aside() {
   return (
     <aside className="select-none border-r">
       {oriData.map(item => (
@@ -19,3 +20,5 @@ export default function Aside() {
     </aside>
   )
 }
+
+export default observer(Aside)

@@ -1,13 +1,13 @@
 import { defineConfig } from '@rsbuild/core'
-import { pluginReact } from '@rsbuild/plugin-react'
 import { pluginLess } from '@rsbuild/plugin-less'
 import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
+import { pluginReact } from '@rsbuild/plugin-react'
 
 export default defineConfig({
   plugins: [pluginNodePolyfill(), pluginLess(), pluginReact()],
   dev: {
-    assetPrefix: './',
-    hmr: false
+    assetPrefix: './'
+    // hmr: false
   },
   html: {
     template: './index.html'

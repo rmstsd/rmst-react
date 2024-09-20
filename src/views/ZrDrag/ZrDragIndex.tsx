@@ -1,11 +1,12 @@
+import { runInAction } from 'mobx'
+import { observer } from 'mobx-react-lite'
+import React from 'react'
 import Aside from './Aside'
 import Flow from './Flow'
-import { useStore } from './store'
+import { store } from './store'
 
-export default function ZrDragIndex() {
-  const snap = useStore()
-
-  const text = JSON.stringify(snap.rootNode, null, 2)
+function ZrDragIndex() {
+  const text = JSON.stringify(store.rootNode, null, 2)
 
   return (
     <div className="flex h-full">
@@ -15,11 +16,13 @@ export default function ZrDragIndex() {
 
       <div className="w-[300px]">
         <button
-          onClick={() =>
+          onClick={() => {
+            store.up()
+
             navigator.clipboard.writeText(text).then(() => {
               console.log('copy success')
             })
-          }
+          }}
         >
           copy
         </button>
@@ -28,3 +31,5 @@ export default function ZrDragIndex() {
     </div>
   )
 }
+
+export default observer(ZrDragIndex)

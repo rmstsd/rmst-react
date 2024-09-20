@@ -6,23 +6,32 @@ import perfectionist from 'eslint-plugin-perfectionist'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-// export default antfu({})
-
 const customized = stylistic.configs.customize({ indent: 2, quotes: 'single', semi: false, jsx: true })
+
+export default antfu({
+  rules: {
+    'style/jsx-curly-newline': 'off',
+
+    '@stylistic/comma-dangle': ['error', 'never'],
+    '@stylistic/brace-style': ['error', '1tbs'],
+    '@stylistic/arrow-parens': ['error', 'as-needed'],
+    '@stylistic/jsx-one-expression-per-line': ['off']
+  }
+})
 
 const cusss = {
   files: ['src/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
   languageOptions: {
     parserOptions: {
-      ecmaFeatures: { jsx: true },
+      ecmaFeatures: { jsx: true }
     },
     globals: {
-      ...globals.browser,
-    },
+      ...globals.browser
+    }
   },
   plugins: {
     '@stylistic': stylistic,
-    perfectionist,
+    perfectionist
     // react
   },
   rules: {
@@ -39,8 +48,8 @@ const cusss = {
       'error',
       {
         multiline: { delimiter: 'none', requireLast: false },
-        singleline: { delimiter: 'comma', requireLast: false },
-      },
+        singleline: { delimiter: 'comma', requireLast: false }
+      }
     ],
     '@stylistic/jsx-curly-newline': 'off',
     '@stylistic/template-curly-spacing': 'error',
@@ -52,8 +61,8 @@ const cusss = {
     '@typescript-eslint/consistent-type-imports': 'error',
 
     'perfectionist/sort-imports': 'error',
-    'prefer-template': 'error',
-  },
+    'prefer-template': 'error'
+  }
 }
 
-export default tseslint.config(eslint.configs.recommended, ...tseslint.configs.recommended, cusss)
+// export default tseslint.config(eslint.configs.recommended, ...tseslint.configs.recommended, cusss)

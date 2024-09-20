@@ -1,15 +1,22 @@
-import { proxy, useSnapshot } from 'valtio'
+import { makeAutoObservable } from 'mobx'
+import { rootNode } from './oriData'
 
 import type { NodeItem } from './oriData'
 
-import { rootNode } from './oriData'
+class Store {
+  constructor() {
+    makeAutoObservable(this)
+  }
 
-export const store = proxy({
-  rootNode,
-  dragItem: null as NodeItem,
-  insertBeforeId: '',
-  appendAfterId: ''
+  rootNode = rootNode
 
-})
+  dragItem = null as NodeItem
+  insertBeforeId = ''
+  appendAfterId = ''
 
-export const useStore = () => useSnapshot(store)
+  up() {
+    this.rootNode.id = 'asdgg'
+  }
+}
+
+export const store = new Store()

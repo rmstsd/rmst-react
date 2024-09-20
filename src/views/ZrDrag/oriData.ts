@@ -45,13 +45,13 @@ export const rootNode: NodeItem = testData
 
 // {
 //   id: 'root',
-// oriId: 0,
+//   oriId: 0,
 //   title: '根节点',
 //   type: 'root',
 //   children: []
 // }
 
-export type NodeItem = {
+export interface NodeItem {
   id: string
   title: string
   type: string

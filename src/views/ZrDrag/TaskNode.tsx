@@ -1,9 +1,9 @@
 import cn from '@/utils/cn'
-
-import type { NodeItem } from './oriData'
-
-import { store, useStore } from './store'
+import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
+import { store } from './store'
 import { contains, findNode, findParentNode } from './utils'
+import type { NodeItem } from './oriData'
 
 interface TaskNodeProps {
   parentNode?: NodeItem
@@ -11,13 +11,11 @@ interface TaskNodeProps {
   index?: number
 }
 
-const TaskNode = ({ node, index }: TaskNodeProps) => {
-  const snap = useStore()
-
+function TaskNode({ node, index }: TaskNodeProps) {
   const isRootNode = node.type === 'root'
 
   const onDropInsertBefore = () => {
-    if (!snap.dragItem) {
+    if (!store.dragItem) {
       return
     }
     console.log('onDropInsertBefore')
@@ -51,7 +49,7 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
   }
 
   const onDropAppendAfter = () => {
-    if (!snap.dragItem) {
+    if (!store.dragItem) {
       return
     }
 
@@ -71,15 +69,38 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
     store.appendAfterId = null
   }
 
+  useEffect(() => {
+    document.onpointermove = evt => {
+      const target = evt.target as HTMLElement
+
+      const insertBeforeElement = target.closest('#insert-before')
+      if (insertBeforeElement) {
+        // insertBeforeElement.dispatchEvent(new PointerEvent('pointerenter'))
+        return
+      }
+      const appendAfterElement = target.closest('append-after')
+
+      if (appendAfterElement) {
+      }
+    }
+
+    document.onpointerup = () => {
+      store.dragItem = null
+      store.insertBeforeId = null
+      store.appendAfterId = null
+    }
+  }, [])
+
   return (
-    <div key={node.id} className={cn('task-node flow-root', isRootNode && 'root-node')}>
+    <div key={node.id} className={cn('task-node-item mt-2 flow-root', isRootNode && 'root-node')}>
       {!isRootNode && (
         <div
           id="insert-before"
-          className={cn('h-[10px] bg-purple-200', snap.insertBeforeId === node.id && 'bg-purple-500')}
+          className={cn('min-h-[10px] bg-purple-200', store.insertBeforeId === node.id && 'bg-purple-500')}
           onPointerUp={onDropInsertBefore}
           onPointerEnter={() => {
-            if (!snap.dragItem) {
+            console.log(store.dragItem)
+            if (!store.dragItem) {
               return
             }
             const isDesc = contains(store.dragItem, node)
@@ -90,17 +111,19 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
             store.insertBeforeId = node.id
           }}
           onPointerLeave={() => (store.insertBeforeId = null)}
-        />
+        >
+          insert-before
+        </div>
       )}
 
       <div
-        className="border p-6"
+        className="drag-node border p-6"
         onPointerDown={evt => {
           if (isRootNode) {
             return
           }
 
-          console.log('onDragStart', node)
+          console.log('onPointerDown', node)
 
           evt.stopPropagation()
           store.dragItem = node
@@ -109,7 +132,7 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
         {!isRootNode && (
           <div className="node-title flex justify-between">
             <div>
-              {node.id} - {node.oriId} {node.title}
+              {node.id}-{node.oriId}-{node.title}
             </div>
 
             <button
@@ -129,10 +152,10 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
             ))}
             <div
               id="append-after"
-              className={cn('h-[10px] bg-pink-200', snap.appendAfterId === node.id && 'bg-pink-400')}
+              className={cn('min-h-[10px] bg-pink-200', store.appendAfterId === node.id && 'bg-pink-400')}
               onPointerUp={onDropAppendAfter}
               onPointerEnter={() => {
-                if (!snap.dragItem) {
+                if (!store.dragItem) {
                   return
                 }
                 console.log('enter')
@@ -145,7 +168,9 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
                 store.appendAfterId = node.id
               }}
               onPointerLeave={() => (store.appendAfterId = null)}
-            />
+            >
+              append-after
+            </div>
           </div>
         )}
       </div>
@@ -153,4 +178,4 @@ const TaskNode = ({ node, index }: TaskNodeProps) => {
   )
 }
 
-export default TaskNode
+export default observer(TaskNode)
