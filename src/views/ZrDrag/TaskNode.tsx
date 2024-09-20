@@ -1,4 +1,5 @@
 import cn from '@/utils/cn'
+import { runInAction, toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { store } from './store'
@@ -11,7 +12,7 @@ interface TaskNodeProps {
   index?: number
 }
 
-function TaskNode({ node, index }: TaskNodeProps) {
+const TaskNode = observer(({ parentNode, node, index }: TaskNodeProps) => {
   const isRootNode = node.type === 'root'
 
   const onDropInsertBefore = () => {
@@ -31,21 +32,21 @@ function TaskNode({ node, index }: TaskNodeProps) {
     const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
     const insertIndex = insertedParentNode.children.findIndex(o => o.id === store.insertBeforeId)
 
-    console.log(movedIndex, insertIndex)
+    runInAction(() => {
+      const [moved] = draggedParentNode.children.splice(movedIndex, 1)
 
-    const [moved] = draggedParentNode.children.splice(movedIndex, 1)
+      let spIndex
 
-    let spIndex
+      if (isSameArray) {
+        spIndex = insertIndex > movedIndex ? insertIndex - 1 : insertIndex
+      } else {
+        spIndex = insertIndex
+      }
 
-    if (isSameArray) {
-      spIndex = insertIndex > movedIndex ? insertIndex - 1 : insertIndex
-    } else {
-      spIndex = insertIndex
-    }
+      insertedParentNode.children.splice(spIndex, 0, moved)
 
-    insertedParentNode.children.splice(spIndex, 0, moved)
-
-    store.insertBeforeId = null
+      store.insertBeforeId = null
+    })
   }
 
   const onDropAppendAfter = () => {
@@ -53,20 +54,19 @@ function TaskNode({ node, index }: TaskNodeProps) {
       return
     }
 
-    console.log(store.appendAfterId)
     if (!store.dragItem.id || !store.appendAfterId) {
       return
     }
 
-    console.log(`onDropAppendAfter${window.location.href}`, `a    ${store.dragItem.id}`)
     const draggedParentNode = findParentNode(store.dragItem.id)
     const appendedParentNode = findNode(store.appendAfterId)
 
-    const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
-    const [moved] = draggedParentNode.children.splice(movedIndex, 1)
-    appendedParentNode.children.push(moved)
-
-    store.appendAfterId = null
+    runInAction(() => {
+      const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
+      const [moved] = draggedParentNode.children.splice(movedIndex, 1)
+      appendedParentNode.children.push(moved)
+      store.appendAfterId = null
+    })
   }
 
   useEffect(() => {
@@ -85,9 +85,11 @@ function TaskNode({ node, index }: TaskNodeProps) {
     }
 
     document.onpointerup = () => {
-      store.dragItem = null
-      store.insertBeforeId = null
-      store.appendAfterId = null
+      runInAction(() => {
+        store.dragItem = null
+        store.insertBeforeId = null
+        store.appendAfterId = null
+      })
     }
   }, [])
 
@@ -99,18 +101,19 @@ function TaskNode({ node, index }: TaskNodeProps) {
           className={cn('min-h-[10px] bg-purple-200', store.insertBeforeId === node.id && 'bg-purple-500')}
           onPointerUp={onDropInsertBefore}
           onPointerEnter={() => {
-            console.log(store.dragItem)
             if (!store.dragItem) {
               return
             }
-            const isDesc = contains(store.dragItem, node)
-            if (isDesc) {
-              return
-            }
 
-            store.insertBeforeId = node.id
+            runInAction(() => {
+              store.insertBeforeId = node.id
+            })
           }}
-          onPointerLeave={() => (store.insertBeforeId = null)}
+          onPointerLeave={() => {
+            runInAction(() => {
+              store.insertBeforeId = null
+            })
+          }}
         >
           insert-before
         </div>
@@ -123,21 +126,23 @@ function TaskNode({ node, index }: TaskNodeProps) {
             return
           }
 
-          console.log('onPointerDown', node)
-
           evt.stopPropagation()
-          store.dragItem = node
+          runInAction(() => {
+            store.dragItem = node
+          })
         }}
       >
         {!isRootNode && (
           <div className="node-title flex justify-between">
             <div>
-              {node.id}-{node.oriId}-{node.title}
+              {node.id} - {node.oriId} - {node.title}
             </div>
 
             <button
               onClick={() => {
-                findParentNode(node.id).children.splice(index, 1)
+                runInAction(() => {
+                  parentNode.children.splice(index, 1)
+                })
               }}
             >
               删除
@@ -148,8 +153,9 @@ function TaskNode({ node, index }: TaskNodeProps) {
         {(isRootNode || node.type === 'if') && (
           <div className="node-body">
             {node.children.map((item, index) => (
-              <TaskNode node={item} index={index} key={item.id} />
+              <TaskNode parentNode={node} node={item} index={index} key={item.id} />
             ))}
+
             <div
               id="append-after"
               className={cn('min-h-[10px] bg-pink-200', store.appendAfterId === node.id && 'bg-pink-400')}
@@ -158,16 +164,16 @@ function TaskNode({ node, index }: TaskNodeProps) {
                 if (!store.dragItem) {
                   return
                 }
-                console.log('enter')
 
-                const isDesc = contains(store.dragItem, node)
-                if (isDesc) {
-                  return
-                }
-
-                store.appendAfterId = node.id
+                runInAction(() => {
+                  store.appendAfterId = node.id
+                })
               }}
-              onPointerLeave={() => (store.appendAfterId = null)}
+              onPointerLeave={() => {
+                runInAction(() => {
+                  store.appendAfterId = null
+                })
+              }}
             >
               append-after
             </div>
@@ -176,6 +182,6 @@ function TaskNode({ node, index }: TaskNodeProps) {
       </div>
     </div>
   )
-}
+})
 
-export default observer(TaskNode)
+export default TaskNode

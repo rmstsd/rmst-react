@@ -12,4 +12,5 @@ function Flow() {
   )
 }
 
-export default observer(Flow)
+const Ui = observer(Flow)
+export default Ui

@@ -1,8 +1,8 @@
-import type { NodeItem } from './oriData'
-
 import { store } from './store'
 
-export const findParentNode = (id: NodeItem['id']): NodeItem => {
+import type { NodeItem } from './oriData'
+
+export function findParentNode(id: NodeItem['id']): NodeItem {
   return dfs(store.rootNode)
 
   function dfs(node: NodeItem, parent = null) {
@@ -19,7 +19,7 @@ export const findParentNode = (id: NodeItem['id']): NodeItem => {
   }
 }
 
-export const findNode = (id: NodeItem['id']): NodeItem => {
+export function findNode(id: NodeItem['id']): NodeItem {
   return dfs(store.rootNode)
 
   function dfs(node: NodeItem) {
@@ -37,7 +37,7 @@ export const findNode = (id: NodeItem['id']): NodeItem => {
 }
 
 // 判断 bNode 是否是 aNode 的后代
-export const isDescendant = (aNode: NodeItem, bNode: NodeItem) => {
+export function isDescendant(aNode: NodeItem, bNode: NodeItem) {
   if (aNode.id === bNode.id) {
     return false
   }
@@ -58,7 +58,7 @@ export const isDescendant = (aNode: NodeItem, bNode: NodeItem) => {
   }
 }
 
-export const contains = (aNode: NodeItem, bNode: NodeItem) => {
+export function contains(aNode: NodeItem, bNode: NodeItem) {
   return dfs(aNode)
 
   function dfs(_node: NodeItem) {
