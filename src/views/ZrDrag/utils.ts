@@ -58,6 +58,7 @@ export function isDescendant(aNode: NodeItem, bNode: NodeItem) {
   }
 }
 
+// 判断 bNode 是否是 aNode 的子孙, 包含相等
 export function contains(aNode: NodeItem, bNode: NodeItem) {
   return dfs(aNode)
 

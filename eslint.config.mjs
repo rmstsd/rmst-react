@@ -8,14 +8,15 @@ import tseslint from 'typescript-eslint'
 
 const customized = stylistic.configs.customize({ indent: 2, quotes: 'single', semi: false, jsx: true })
 
-export default antfu({
+antfu({
   rules: {
     'style/jsx-curly-newline': 'off',
 
     '@stylistic/comma-dangle': ['error', 'never'],
     '@stylistic/brace-style': ['error', '1tbs'],
     '@stylistic/arrow-parens': ['error', 'as-needed'],
-    '@stylistic/jsx-one-expression-per-line': ['off']
+    '@stylistic/jsx-one-expression-per-line': ['off'],
+    'antfu/top-level-function': 'off'
   }
 })
 

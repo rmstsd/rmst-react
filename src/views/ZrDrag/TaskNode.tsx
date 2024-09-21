@@ -1,135 +1,55 @@
 import cn from '@/utils/cn'
-import { runInAction, toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { store } from './store'
-import { contains, findNode, findParentNode } from './utils'
-import type { NodeItem } from './oriData'
+import { rootNode, type NodeItem } from './oriData'
+import { Button } from '@arco-design/web-react'
 
 interface TaskNodeProps {
   parentNode?: NodeItem
   node: NodeItem
-  index?: number
 }
 
-const TaskNode = observer(({ parentNode, node, index }: TaskNodeProps) => {
+const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
+  console.log('render TaskNode')
   const isRootNode = node.type === 'root'
 
-  const onDropInsertBefore = () => {
-    if (!store.dragItem) {
-      return
-    }
-    console.log('onDropInsertBefore')
-    if (!store.dragItem.id || !store.insertBeforeId) {
-      return
-    }
-
-    const draggedParentNode = findParentNode(store.dragItem.id)
-    const insertedParentNode = findParentNode(store.insertBeforeId)
-
-    const isSameArray = draggedParentNode.children === insertedParentNode.children
-
-    const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
-    const insertIndex = insertedParentNode.children.findIndex(o => o.id === store.insertBeforeId)
-
-    runInAction(() => {
-      const [moved] = draggedParentNode.children.splice(movedIndex, 1)
-
-      let spIndex
-
-      if (isSameArray) {
-        spIndex = insertIndex > movedIndex ? insertIndex - 1 : insertIndex
-      } else {
-        spIndex = insertIndex
-      }
-
-      insertedParentNode.children.splice(spIndex, 0, moved)
-
-      store.insertBeforeId = null
-    })
-  }
-
-  const onDropAppendAfter = () => {
-    if (!store.dragItem) {
-      return
-    }
-
-    if (!store.dragItem.id || !store.appendAfterId) {
-      return
-    }
-
-    const draggedParentNode = findParentNode(store.dragItem.id)
-    const appendedParentNode = findNode(store.appendAfterId)
-
-    runInAction(() => {
-      const movedIndex = draggedParentNode.children.findIndex(o => o.id === store.dragItem.id)
-      const [moved] = draggedParentNode.children.splice(movedIndex, 1)
-      appendedParentNode.children.push(moved)
-      store.appendAfterId = null
-    })
-  }
-
   useEffect(() => {
-    document.onpointermove = evt => {
-      const target = evt.target as HTMLElement
-
-      const insertBeforeElement = target.closest('#insert-before')
-      if (insertBeforeElement) {
-        // insertBeforeElement.dispatchEvent(new PointerEvent('pointerenter'))
-        return
-      }
-      const appendAfterElement = target.closest('append-after')
-
-      if (appendAfterElement) {
-      }
-    }
-
     document.onpointerup = () => {
-      runInAction(() => {
-        store.dragItem = null
-        store.insertBeforeId = null
-        store.appendAfterId = null
-      })
+      store.clear()
     }
   }, [])
 
   return (
-    <div key={node.id} className={cn('task-node-item mt-2 flow-root', isRootNode && 'root-node')}>
+    <div className={cn('task-node-item flow-root', isRootNode && 'root-node')}>
       {!isRootNode && (
         <div
           id="insert-before"
-          className={cn('min-h-[10px] bg-purple-200', store.insertBeforeId === node.id && 'bg-purple-500')}
-          onPointerUp={onDropInsertBefore}
+          className={cn('min-h-[10px]', store.insertBeforeNode?.id === node.id && 'bg-purple-500')}
+          onPointerUp={() => store.onDropInsertBefore()}
           onPointerEnter={() => {
-            if (!store.dragItem) {
+            if (!store.draggedNode) {
               return
             }
-
-            runInAction(() => {
-              store.insertBeforeId = node.id
-            })
+            store.insertBeforeNode = node
+            store.insertedParentNode = parentNode
           }}
           onPointerLeave={() => {
-            runInAction(() => {
-              store.insertBeforeId = null
-            })
+            store.insertBeforeNode = null
+            store.insertedParentNode = null
           }}
-        >
-          insert-before
-        </div>
+        ></div>
       )}
 
       <div
-        className="drag-node border p-6"
+        className="drag-node rounded-md border border-gray-500 p-6"
         onPointerDown={evt => {
           if (isRootNode) {
             return
           }
-
           evt.stopPropagation()
-          runInAction(() => {
-            store.dragItem = node
-          })
+          store.draggedNode = node
+          store.draggedParentNode = parentNode
         }}
       >
         {!isRootNode && (
@@ -138,46 +58,32 @@ const TaskNode = observer(({ parentNode, node, index }: TaskNodeProps) => {
               {node.id} - {node.oriId} - {node.title}
             </div>
 
-            <button
-              onClick={() => {
-                runInAction(() => {
-                  parentNode.children.splice(index, 1)
-                })
-              }}
-            >
+            <Button type="text" size="mini" onClick={() => store.removeNode(node, parentNode)}>
               删除
-            </button>
+            </Button>
           </div>
         )}
 
         {(isRootNode || node.type === 'if') && (
-          <div className="node-body">
-            {node.children.map((item, index) => (
-              <TaskNode parentNode={node} node={item} index={index} key={item.id} />
+          <section className={cn('node-body', !isRootNode && 'pl-20')}>
+            {node.children.map(item => (
+              <TaskNode parentNode={node} node={item} key={item.id} />
             ))}
 
             <div
               id="append-after"
-              className={cn('min-h-[10px] bg-pink-200', store.appendAfterId === node.id && 'bg-pink-400')}
-              onPointerUp={onDropAppendAfter}
+              className={cn('min-h-[10px]', store.appendAfterNode?.id === node.id && 'bg-pink-400')}
+              onPointerUp={() => store.onDropAppendAfter()}
               onPointerEnter={() => {
-                if (!store.dragItem) {
-                  return
+                if (store.draggedNode) {
+                  store.appendAfterNode = node
                 }
-
-                runInAction(() => {
-                  store.appendAfterId = node.id
-                })
               }}
               onPointerLeave={() => {
-                runInAction(() => {
-                  store.appendAfterId = null
-                })
+                store.appendAfterNode = null
               }}
-            >
-              append-after
-            </div>
-          </div>
+            ></div>
+          </section>
         )}
       </div>
     </div>
