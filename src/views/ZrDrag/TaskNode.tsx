@@ -1,7 +1,7 @@
 import cn from '@/utils/cn'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
-import { store } from './store'
+import { isRootNode, store } from './store'
 import { type NodeItem } from './oriData'
 import { Button } from '@arco-design/web-react'
 
@@ -12,7 +12,7 @@ interface TaskNodeProps {
 
 const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
   console.log('render TaskNode')
-  const isRootNode = node.type === 'root'
+  const isRoot = isRootNode(node)
 
   useEffect(() => {
     document.onpointerup = () => {
@@ -21,8 +21,8 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
   }, [])
 
   return (
-    <div className={cn('task-node-item flow-root', isRootNode && 'root-node')}>
-      {!isRootNode && (
+    <div className={cn('task-node-item flow-root', isRoot && 'root-node')}>
+      {!isRoot && (
         <div
           id="insert-before"
           className={cn('min-h-[10px]', store.insertBeforeNode?.id === node.id && 'bg-purple-500')}
@@ -45,7 +45,7 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
         className="drag-node rounded-md border border-gray-500 p-6"
         onPointerDown={evt => store.startDrag(evt, node, parentNode)}
       >
-        {!isRootNode && (
+        {!isRoot && (
           <div className="node-title flex justify-between">
             <div>
               {node.id} - {node.oriId} - {node.title}
@@ -57,8 +57,8 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
           </div>
         )}
 
-        {(isRootNode || node.type === 'if') && (
-          <section className={cn('node-body', !isRootNode && 'pl-20')}>
+        {(isRoot || node.type === 'if') && (
+          <section className={cn('node-body', !isRoot && 'pl-20')}>
             {node.children.map(item => (
               <TaskNode parentNode={node} node={item} key={item.id} />
             ))}
