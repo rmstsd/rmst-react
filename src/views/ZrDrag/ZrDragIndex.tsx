@@ -15,8 +15,6 @@ function ZrDragIndex() {
       <div className="w-[300px]">
         <button
           onClick={() => {
-            store.up()
-
             navigator.clipboard.writeText(text).then(() => {
               console.log('copy success')
             })

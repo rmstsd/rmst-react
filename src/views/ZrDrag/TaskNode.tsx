@@ -2,7 +2,7 @@ import cn from '@/utils/cn'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { store } from './store'
-import { rootNode, type NodeItem } from './oriData'
+import { type NodeItem } from './oriData'
 import { Button } from '@arco-design/web-react'
 
 interface TaskNodeProps {
@@ -43,14 +43,7 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
 
       <div
         className="drag-node rounded-md border border-gray-500 p-6"
-        onPointerDown={evt => {
-          if (isRootNode) {
-            return
-          }
-          evt.stopPropagation()
-          store.draggedNode = node
-          store.draggedParentNode = parentNode
-        }}
+        onPointerDown={evt => store.startDrag(evt, node, parentNode)}
       >
         {!isRootNode && (
           <div className="node-title flex justify-between">

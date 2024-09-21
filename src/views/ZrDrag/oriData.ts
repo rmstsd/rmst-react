@@ -43,14 +43,6 @@ export const oriData = [
 
 export const rootNode: NodeItem = testData
 
-// {
-//   id: 'root',
-//   oriId: 0,
-//   title: '根节点',
-//   type: 'root',
-//   children: []
-// }
-
 export interface NodeItem {
   id: string
   title: string

@@ -3,8 +3,11 @@ import { rootNode } from './oriData'
 
 import type { NodeItem } from './oriData'
 import { contains } from './utils'
+import React from 'react'
 
 configure({ enforceActions: 'never' })
+
+export const isRootNode = (node: NodeItem) => node.type === 'root'
 
 class Store {
   constructor() {
@@ -24,6 +27,16 @@ class Store {
     this.draggedParentNode = null
     this.insertBeforeNode = null
     this.appendAfterNode = null
+  }
+
+  startDrag(evt: React.PointerEvent, node: NodeItem, parentNode: NodeItem) {
+    if (isRootNode(node)) {
+      return
+    }
+
+    evt.stopPropagation()
+    store.draggedNode = node
+    store.draggedParentNode = parentNode
   }
 
   removeNode(node: NodeItem, parentNode: NodeItem) {
