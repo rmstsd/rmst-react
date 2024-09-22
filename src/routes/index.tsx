@@ -22,6 +22,7 @@ import QuadTree from '../views/QuadTree'
 import ScrollDemo from '../views/ScrollDemo'
 import Sku from '../views/Sku'
 import VSelect from '../views/VSelect'
+import Sokoban from '@/views/Sokoban'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -35,6 +36,7 @@ const routes: IRouteObject[] = [
       { path: 'ck', element: <Ck /> },
       { path: 'gl', element: <Webgl /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
+      { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
