@@ -1,31 +1,8 @@
 import { observer } from 'mobx-react-lite'
-import Aside from './Aside'
-import Flow from './Flow'
-import { store } from './store'
+import V2 from './V2/V2'
 
 function ZrDragIndex() {
-  const text = JSON.stringify(store.rootNode, null, 2)
-
-  return (
-    <div className="flex h-full">
-      <Aside />
-
-      <Flow />
-
-      <div className="w-[300px]">
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(text).then(() => {
-              console.log('copy success')
-            })
-          }}
-        >
-          copy
-        </button>
-        <pre>{text}</pre>
-      </div>
-    </div>
-  )
+  return <V2 />
 }
 
 export default observer(ZrDragIndex)

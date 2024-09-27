@@ -1,4 +1,4 @@
-import { testData } from './testData'
+import { testData } from '../V1/testData'
 
 const item = {
   id: 1,
@@ -40,6 +40,11 @@ export const oriData = [
     type: 'if'
   }
 ]
+
+export function getOriDataById(id: number | string): OriItem {
+  id = Number(id)
+  return oriData.find(item => item.id === id) as OriItem
+}
 
 export const rootNode: NodeItem = testData
 

@@ -1,6 +1,6 @@
-let aa = 9
+const aa = 9
 
-let func = () => {
+const func = () => {
   aa
 }
 func

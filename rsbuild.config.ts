@@ -14,6 +14,9 @@ export default defineConfig({
   },
   output: {
     assetPrefix: './',
-    copy: [{ from: './public', to: '' }]
+    copy: [{ from: './public', to: '' }],
+    cssModules: {
+      localIdentName: '[local]-[hash:base64:4]'
+    }
   }
 })

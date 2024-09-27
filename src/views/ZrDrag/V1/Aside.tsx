@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite'
-import { genNodeItem, oriData } from './oriData'
+import { genNodeItem, oriData } from '../shared/oriData'
+import { DataSourceAttrName } from '../V2/store'
 import { store } from './store'
 
 function Aside() {
@@ -8,13 +9,15 @@ function Aside() {
       {oriData.map(item => (
         <div
           key={item.id}
-          data-source-id={item.id}
+          {...{ [DataSourceAttrName]: item.id }}
           className="p-2 hover:bg-gray-100"
           onClick={() => {
             store.rootNode.children.push(genNodeItem(item))
           }}
         >
-          {item.id} {item.title}
+          {item.id}
+          {' '}
+          {item.title}
         </div>
       ))}
     </aside>

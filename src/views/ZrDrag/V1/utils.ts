@@ -1,6 +1,6 @@
 import { store } from './store'
 
-import type { NodeItem } from './oriData'
+import type { NodeItem } from '../shared/oriData'
 
 export function findParentNode(id: NodeItem['id']): NodeItem {
   return dfs(store.rootNode)

@@ -1,9 +1,9 @@
 import cn from '@/utils/cn'
+import { Button } from '@arco-design/web-react'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { isRootNode, store } from './store'
-import { type NodeItem } from './oriData'
-import { Button } from '@arco-design/web-react'
+import type { NodeItem } from '../shared/oriData'
 
 interface TaskNodeProps {
   parentNode?: NodeItem
@@ -11,7 +11,6 @@ interface TaskNodeProps {
 }
 
 const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
-  console.log('render TaskNode')
   const isRoot = isRootNode(node)
 
   useEffect(() => {
@@ -38,7 +37,8 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
             store.insertBeforeNode = null
             store.insertedParentNode = null
           }}
-        ></div>
+        >
+        </div>
       )}
 
       <div
@@ -48,7 +48,11 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
         {!isRoot && (
           <div className="node-title flex justify-between">
             <div>
-              {node.id} - {node.oriId} - {node.title}
+              {node.id}
+              -
+              {node.oriId}
+              -
+              {node.title}
             </div>
 
             <Button type="text" size="mini" onClick={() => store.removeNode(node, parentNode)}>
@@ -75,7 +79,8 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
               onPointerLeave={() => {
                 store.appendAfterNode = null
               }}
-            ></div>
+            >
+            </div>
           </section>
         )}
       </div>

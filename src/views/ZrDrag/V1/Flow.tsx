@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite'
 
 import { store } from './store'
 import TaskNode from './TaskNode'
-import type { NodeItem } from './oriData'
+import type { NodeItem } from '../shared/oriData'
 
 function Flow() {
   return (

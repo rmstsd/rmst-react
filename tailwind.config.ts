@@ -1,5 +1,5 @@
-import type { Config } from 'tailwindcss'
 import plugin from 'tailwindcss/plugin'
+import type { Config } from 'tailwindcss'
 
 const spacingList = [
   '0',
@@ -52,7 +52,7 @@ export default {
       24: '24px',
       32: '32px'
     },
-    extend: {}
+    'extend': {}
   },
   plugins: [
     plugin(p => {

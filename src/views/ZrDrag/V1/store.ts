@@ -1,9 +1,9 @@
 import { configure, makeAutoObservable, toJS } from 'mobx'
-import { rootNode } from './oriData'
+import type React from 'react'
 
-import type { NodeItem } from './oriData'
+import { rootNode } from '../shared/oriData'
 import { contains } from './utils'
-import React from 'react'
+import type { NodeItem } from '../shared/oriData'
 
 configure({ enforceActions: 'never' })
 
@@ -15,6 +15,8 @@ class Store {
   }
 
   rootNode = rootNode
+
+  pos = { x: 0, y: 0 }
 
   draggedNode: NodeItem = null
   draggedParentNode: NodeItem = null
@@ -35,8 +37,12 @@ class Store {
     }
 
     evt.stopPropagation()
-    store.draggedNode = node
-    store.draggedParentNode = parentNode
+
+    this.pos.x = evt.clientX
+    this.pos.y = evt.clientY
+
+    this.draggedNode = node
+    this.draggedParentNode = parentNode
   }
 
   removeNode(node: NodeItem, parentNode: NodeItem) {
