@@ -1,9 +1,7 @@
-import { store } from './store'
+import type { NodeItem } from './oriData'
 
-import type { NodeItem } from '../shared/oriData'
-
-export function findParentNode(id: NodeItem['id']): NodeItem {
-  return dfs(store.rootNode)
+export function findParentNode(id: NodeItem['id'], node: NodeItem): NodeItem {
+  return dfs(node)
 
   function dfs(node: NodeItem, parent = null) {
     if (id === node.id) {
@@ -19,8 +17,8 @@ export function findParentNode(id: NodeItem['id']): NodeItem {
   }
 }
 
-export function findNode(id: NodeItem['id']): NodeItem {
-  return dfs(store.rootNode)
+export function findNode(id: NodeItem['id'], node: NodeItem): NodeItem {
+  return dfs(node)
 
   function dfs(node: NodeItem) {
     if (id === node.id) {

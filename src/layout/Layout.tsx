@@ -1,4 +1,6 @@
 import { Button, Menu } from '@arco-design/web-react'
+import { IconLeft, IconRight } from '@arco-design/web-react/icon'
+
 import { useLocalStorageState } from 'ahooks'
 import React, { useState } from 'react'
 import { Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom'
@@ -14,12 +16,19 @@ const LayoutView: React.FC = () => {
   return (
     <div className="h-full">
       <aside className="fixed left-0 top-0 z-10 h-full">
-        <Button className="absolute top-0 z-20" onClick={() => setSideOpen(!sideOpen)}>
-          {sideOpen ? 'Close' : 'Open'}
+        <Button
+          shape="round"
+          className="absolute top-0 z-20"
+          size="small"
+          icon={sideOpen ? <IconLeft /> : <IconRight />}
+          onClick={() => setSideOpen(!sideOpen)}
+          style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)', border: '1px solid #ddd' }}
+          type="default"
+        >
         </Button>
 
         <Menu
-          className="w-[200px] h-full overflow-auto border-r-2 transition-all"
+          className="h-full w-[200px] overflow-auto border-r-2 transition-all"
           style={{ marginLeft: sideOpen ? 0 : -200 }}
           defaultOpenKeys={routes.map(item => item.path)}
           selectedKeys={[location.pathname.split('/')[2]]}
@@ -40,7 +49,7 @@ const LayoutView: React.FC = () => {
         </Menu>
       </aside>
 
-      <section className="p-[10px] transition-all h-full" style={{ marginLeft: sideOpen ? 200 : 0 }}>
+      <section className="h-full p-[10px] transition-all" style={{ marginLeft: sideOpen ? 200 : 0 }}>
         <Outlet />
       </section>
     </div>

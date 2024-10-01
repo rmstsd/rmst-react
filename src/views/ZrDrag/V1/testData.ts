@@ -19,13 +19,6 @@ export const testData = {
       children: []
     },
     {
-      id: 'idabgimve',
-      title: '点击元素',
-      type: 'input',
-      oriId: 3,
-      children: []
-    },
-    {
       id: '0z4rgc7lq',
       title: '关闭进程',
       type: 'input',
@@ -33,10 +26,54 @@ export const testData = {
       children: []
     },
     {
-      id: 'epwu2du2',
-      title: '删除空格',
+      id: 'om7wm1cch',
+      title: '如果',
+      type: 'if',
+      oriId: 7,
+      children: [
+        {
+          id: 'epwu2du2',
+          title: '删除空格',
+          type: 'input',
+          oriId: 5,
+          children: []
+        },
+        {
+          id: 'm4kxgp1de',
+          title: '如果',
+          type: 'if',
+          oriId: 7,
+          children: [
+            {
+              id: '80rlso84',
+              title: '删除空格',
+              type: 'input',
+              oriId: 5,
+              children: []
+            },
+            {
+              id: 'idabgimve',
+              title: '点击元素',
+              type: 'input',
+              oriId: 3,
+              children: []
+            }
+          ]
+        },
+        {
+          id: 'tei4y46sf',
+          title: '发送请求',
+          type: 'input',
+          oriId: 6,
+          children: []
+        }
+      ]
+    },
+    {
+      id: 'kfqr9yzn9',
+      title: '点击元素',
       type: 'input',
-      oriId: 5,
+      oriId: 3,
       children: []
     }
   ]

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { genNodeItem, oriData } from '../shared/oriData'
+import { createNodeItem, oriData } from '../shared/oriData'
 
 function Aside() {
   return (

@@ -1,7 +1,7 @@
 import cn from '@/utils/cn'
 import { Button } from '@arco-design/web-react'
 import { observer } from 'mobx-react-lite'
-import { isRootNode } from './store'
+import { DataNodeAttrName, isRootNode } from './store'
 import type { NodeItem } from '../shared/oriData'
 
 interface TaskNodeProps {
@@ -13,8 +13,8 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
   const isRoot = isRootNode(node)
 
   return (
-    <div className={cn('task-node-item flow-root', isRoot && 'root-node')}>
-      <div className="drag-node mb-8 rounded-md border border-gray-500 p-6">
+    <div {...{ [DataNodeAttrName]: node.id }} className={cn('task-node-item mb-20 flow-root', isRoot && 'root-node')}>
+      <div className="drag-node rounded-md border border-gray-500 p-6">
         {!isRoot && (
           <div className="node-title flex justify-between">
             <div>

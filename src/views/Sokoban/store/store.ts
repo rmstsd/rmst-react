@@ -1,7 +1,8 @@
 import { makeAutoObservable, toJS } from 'mobx'
 import { testMapData } from '../testData'
+import { CellType } from '../type'
 import { calcPositionMap, directionKeyboards } from './position'
-import { CellType, MapData, Position } from '../type'
+import type { MapData, Position } from '../type'
 
 class SokobanStore {
   constructor() {
@@ -47,9 +48,9 @@ class SokobanStore {
 
   isValidMap() {
     if (
-      !this.mapData.boxes.length ||
-      !this.mapData.targets.length ||
-      this.mapData.boxes.length !== this.mapData.targets.length
+      !this.mapData.boxes.length
+      || !this.mapData.targets.length
+      || this.mapData.boxes.length !== this.mapData.targets.length
     ) {
       console.log('boxes and targets not match')
       return
@@ -86,9 +87,9 @@ class SokobanStore {
 
   isWin() {
     return (
-      this.mapData.boxes.length &&
-      this.mapData.targets.length &&
-      this.mapData.boxes.every(box => this.mapData.targets.some(target => box.x === target.x && box.y === target.y))
+      this.mapData.boxes.length
+      && this.mapData.targets.length
+      && this.mapData.boxes.every(box => this.mapData.targets.some(target => box.x === target.x && box.y === target.y))
     )
   }
 
@@ -109,14 +110,14 @@ class SokobanStore {
     const { calcPosition } = calcPositionMap[evt.key]
     const nextPosition = calcPosition(mapData.player)
 
-    if (sokobanStore.isWall(nextPosition)) {
+    if (this.isWall(nextPosition)) {
       return
     }
 
-    const nextBox = sokobanStore.findBox(nextPosition)
+    const nextBox = this.findBox(nextPosition)
     if (nextBox) {
       const nextNextPosition = calcPosition(nextPosition)
-      if (sokobanStore.isWall(nextNextPosition) || sokobanStore.findBox(nextNextPosition)) {
+      if (this.isWall(nextNextPosition) || this.findBox(nextNextPosition)) {
         return
       }
 

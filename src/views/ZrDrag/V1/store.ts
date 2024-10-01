@@ -2,7 +2,7 @@ import { configure, makeAutoObservable, toJS } from 'mobx'
 import type React from 'react'
 
 import { rootNode } from '../shared/oriData'
-import { contains } from './utils'
+import { contains } from '../shared/utils'
 import type { NodeItem } from '../shared/oriData'
 
 configure({ enforceActions: 'never' })

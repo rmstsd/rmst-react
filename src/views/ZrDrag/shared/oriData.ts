@@ -56,6 +56,6 @@ export interface NodeItem {
   children: NodeItem[]
 }
 
-export function genNodeItem(oriItem: OriItem): NodeItem {
+export function createNodeItem(oriItem: OriItem): NodeItem {
   return { ...oriItem, id: Math.random().toString(36).slice(4), oriId: oriItem.id, children: [] }
 }
