@@ -18,11 +18,7 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
         {!isRoot && (
           <div className="node-title flex justify-between">
             <div>
-              {node.id}
-              -
-              {node.oriId}
-              -
-              {node.title}
+              {node.id}-{node.oriId}-{node.title}
             </div>
 
             <Button type="text" size="mini">
@@ -32,7 +28,7 @@ const TaskNode = observer(({ parentNode, node }: TaskNodeProps) => {
         )}
 
         {(isRoot || node.type === 'if') && (
-          <section className={cn('node-body', !isRoot && 'pl-20')}>
+          <section className={cn('node-body mt-4', !isRoot && 'pl-20')}>
             {node.children.map(item => (
               <TaskNode parentNode={node} node={item} key={item.id} />
             ))}

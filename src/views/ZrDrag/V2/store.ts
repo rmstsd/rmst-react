@@ -1,6 +1,16 @@
-import { configure, makeAutoObservable } from 'mobx'
+import { configure, makeAutoObservable, toJS } from 'mobx'
 import { createNodeItem, getOriDataById, type NodeItem, rootNode } from '../shared/oriData'
-import { findNode } from '../shared/utils'
+import { contains, findNode, findParentNode } from '../shared/utils'
+import React from 'react'
+import {
+  calcDistanceOfPointToRect,
+  calcDistancePointToEdge,
+  ClosestPosition,
+  getNodeRectById,
+  IPoint,
+  isNearAfter,
+  isPointInRect
+} from './v2_utils'
 
 configure({ enforceActions: 'never' })
 
@@ -8,6 +18,10 @@ export const DataSourceAttrName = 'data-source-id'
 export const DataNodeAttrName = 'data-node-id'
 
 export const isRootNode = (node: NodeItem) => node.type === 'root'
+
+const Indicator_Height = 4
+const Indicator_BgColor = 'rgb(24, 144, 255)'
+const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 
 class Store {
   constructor() {
@@ -19,6 +33,12 @@ class Store {
   rootNode = rootNode
 
   pos = { x: 0, y: 0 }
+
+  closestNode: NodeItem | null = null
+
+  indicatorStyle: React.CSSProperties = { left: 0, top: 0, width: 0, height: Indicator_Height }
+
+  closestPosition: ClosestPosition
 
   init() {
     document.addEventListener('pointerdown', evt => {
@@ -53,66 +73,94 @@ class Store {
       }
     })
     document.addEventListener('pointerup', evt => {
-      this.draggedNode = null
-      this.indicator.x = 0
-      this.indicator.y = 0
-      this.indicator.width = 0
+      if (
+        this.draggedNode &&
+        this.closestNode &&
+        this.draggedNode !== this.closestNode &&
+        !contains(this.draggedNode, this.closestNode)
+      ) {
+        const parent = findParentNode(this.draggedNode.id, this.rootNode)
+        if (parent) {
+          parent.children.splice(parent.children.indexOf(this.draggedNode), 1)
+        }
+
+        const closestParent = findParentNode(this.closestNode.id, this.rootNode)
+        const index = closestParent.children.indexOf(this.closestNode)
+
+        if (this.closestPosition === ClosestPosition.Beforebegin) {
+          closestParent.children.splice(index, 0, this.draggedNode)
+        } else if (this.closestPosition === ClosestPosition.Afterend) {
+          closestParent.children.splice(index + 1, 0, this.draggedNode)
+        } else if (this.closestPosition === ClosestPosition.Inner) {
+          this.closestNode.children.push(this.draggedNode)
+        }
+      }
+
+      this.clear()
     })
   }
 
-  closestNode: NodeItem | null = null
+  clear() {
+    this.draggedNode = null
 
-  indicator = { x: 0, y: 0, width: 0 }
+    this.clearTouch()
+  }
+
+  clearTouch() {
+    this.closestNode = null
+    this.closestPosition = null
+
+    this.indicatorStyle.left = 0
+    this.indicatorStyle.top = 0
+    this.indicatorStyle.width = 0
+  }
 
   pointerDrag(evt: PointerEvent) {
     const target = evt.target as HTMLElement
 
-    const x = evt.clientX
-    const y = evt.clientY
+    const point = { x: evt.clientX, y: evt.clientY }
+    this.pos = point
 
-    const point = { x, y }
+    const touchNodeElement = target.closest(`[${DataNodeAttrName}]`)
+    if (!touchNodeElement) {
+      this.clearTouch()
+      return
+    }
 
-    this.pos.x = evt.clientX
-    this.pos.y = evt.clientY
-
-    const touchElement = target.closest(`[${DataNodeAttrName}]`)
-
-    // console.log('touchElement', touchElement)
-
-    const touchNode = this.findNodeByElement(touchElement)
-    const closestNode = this.findClosestNode(point, touchNode)
-
+    const closestNode = this.calcClosestNode(point, this.findNodeByElement(touchNodeElement))
     this.closestNode = closestNode
     console.log('closestNode', closestNode.title)
 
     const closestPosition = this.calcClosestPosition(point)
+    this.closestPosition = closestPosition
     console.log(closestPosition)
 
-    const closestRect = this.getELementByNodeId(this.closestNode.id).getBoundingClientRect()
-    this.indicator.width = closestRect.width
-    this.indicator.x = closestRect.left
+    const closestRect = getNodeRectById(this.closestNode.id)
+    this.indicatorStyle.width = closestRect.width
+    this.indicatorStyle.left = closestRect.left
+    this.indicatorStyle.height = Indicator_Height
+    this.indicatorStyle.backgroundColor = Indicator_BgColor
 
-    if (closestPosition === ClosestPosition.beforebegin) {
-      this.indicator.y = closestRect.y
-    } else if (closestPosition === ClosestPosition.afterend) {
-      this.indicator.y = closestRect.y + closestRect.height
+    if (closestPosition === ClosestPosition.Beforebegin) {
+      this.indicatorStyle.top = closestRect.y - Indicator_Height
+    } else if (closestPosition === ClosestPosition.Afterend) {
+      this.indicatorStyle.top = closestRect.y + closestRect.height
+    } else if (closestPosition === ClosestPosition.Inner) {
+      this.indicatorStyle.top = closestRect.y
+      this.indicatorStyle.height = closestRect.height
+      this.indicatorStyle.backgroundColor = Indicator_Inner_BgColor
     }
   }
 
-  findNodeByElement(element: Element) {
-    const nodeId = element.getAttribute(DataNodeAttrName)
-    const node = findNode(nodeId, this.rootNode)
-    return node
-  }
-
-  findClosestNode(point: IPoint, touchNode: NodeItem) {
+  calcClosestNode(point: IPoint, touchNode: NodeItem) {
     if (touchNode.children.length > 0) {
-      let closestNode: NodeItem | null = null
-      let minDistance = Infinity
+      let closestNode: NodeItem | null = touchNode
+      const touchNodeRect = getNodeRectById(touchNode.id)
+      const touchDistance = calcDistancePointToEdge(point, touchNodeRect)
+      let minDistance = touchDistance
 
       touchNode.children.forEach(child => {
-        const element = this.getELementByNodeId(child.id)
-        const rect = element.getBoundingClientRect()
+        const rect = getNodeRectById(child.id)
 
         const distance = isPointInRect(point, rect) ? 0 : calcDistanceOfPointToRect(point, rect)
 
@@ -129,98 +177,41 @@ class Store {
   }
 
   calcClosestPosition(point: IPoint): ClosestPosition {
-    const element = this.getELementByNodeId(this.closestNode.id)
-    const rect = element.getBoundingClientRect()
+    const rect = getNodeRectById(this.closestNode.id)
+    const isAfter = isNearAfter(point, rect)
+
+    let closestPosition: ClosestPosition
 
     if (isPointInRect(point, rect)) {
-      // 鼠标在矩形内
-
-      const centerY = rect.y + rect.height / 2
-
-      if (point.y < centerY) {
-        return ClosestPosition.beforebegin
+      if (allowAppend(this.closestNode)) {
+        if (this.closestNode.children.length > 0) {
+          closestPosition = isAfter ? ClosestPosition.Afterend : ClosestPosition.Beforebegin
+        } else {
+          closestPosition = ClosestPosition.Inner
+        }
       } else {
-        return ClosestPosition.afterend
+        closestPosition = isAfter ? ClosestPosition.Afterend : ClosestPosition.Beforebegin
       }
     } else {
-      const isAfter = isNearAfter(point, rect)
-
-      return isAfter ? ClosestPosition.afterend : ClosestPosition.beforebegin
+      closestPosition = isAfter ? ClosestPosition.Afterend : ClosestPosition.Beforebegin
     }
+
+    return closestPosition
   }
 
-  getELementByNodeId(nodeId: string) {
-    return document.querySelector(`[${DataNodeAttrName}="${nodeId}"]`)
+  findNodeByElement(element: Element) {
+    const nodeId = element.getAttribute(DataNodeAttrName)
+    const node = findNode(nodeId, this.rootNode)
+    return node
   }
 }
 
 export const store = new Store()
 
-export interface IPoint {
-  x: number
-  y: number
-}
-
-// export function isPointInRect(point: IPoint, rect: IRect, sensitive = true) {
-//   const boundSensor = (value: number) => {
-//     if (!sensitive) return 0
-//     const sensor = value * 0.1
-//     if (sensor > 20) return 20
-//     if (sensor < 10) return 10
-//     return sensor
-//   }
-
-//   return (
-//     point.x >= rect.x + boundSensor(rect.width) &&
-//     point.x <= rect.x + rect.width - boundSensor(rect.width) &&
-//     point.y >= rect.y + boundSensor(rect.height) &&
-//     point.y <= rect.y + rect.height - boundSensor(rect.height)
-//   )
-// }
-export function isPointInRect(point: IPoint, rect: IRect, sensitive = true) {
-  return point.x >= rect.x && point.x <= rect.x + rect.width && point.y >= rect.y && point.y <= rect.y + rect.height
-}
-
-export function isNearAfter(point: IPoint, rect: IRect, inline = false) {
-  if (inline) {
-    return (
-      Math.abs(point.x - rect.x) + Math.abs(point.y - rect.y) >
-      Math.abs(point.x - (rect.x + rect.width)) + Math.abs(point.y - (rect.y + rect.height))
-    )
-  }
-  return Math.abs(point.y - rect.y) > Math.abs(point.y - (rect.y + rect.height))
-}
-
-export function calcDistanceOfPointToRect(point: IPoint, rect: IRect) {
-  let minX = Math.min(Math.abs(point.x - rect.x), Math.abs(point.x - (rect.x + rect.width)))
-  let minY = Math.min(Math.abs(point.y - rect.y), Math.abs(point.y - (rect.y + rect.height)))
-  if (point.x >= rect.x && point.x <= rect.x + rect.width) {
-    minX = 0
-  }
-  if (point.y >= rect.y && point.y <= rect.y + rect.height) {
-    minY = 0
+function allowAppend(node: NodeItem) {
+  if (node.type === 'if') {
+    return true
   }
 
-  return Math.sqrt(minX ** 2 + minY ** 2)
-}
-
-export enum ClosestPosition {
-  // Before = 'Before',
-  // ForbidBefore = 'ForbidBefore',
-  // After = 'After',
-  // ForbidAfter = 'ForbidAfter',
-  // Upper = 'Upper',
-  // ForbidUpper = 'ForbidUpper',
-  // Under = 'Under',
-  // ForbidUnder = 'ForbidUnder',
-  // Inner = 'Inner',
-  // ForbidInner = 'ForbidInner',
-  // InnerAfter = 'InnerAfter',
-  // ForbidInnerAfter = 'ForbidInnerAfter',
-  // InnerBefore = 'InnerBefore',
-  // ForbidInnerBefore = 'ForbidInnerBefore',
-  // Forbid = 'Forbid'
-
-  beforebegin = 'beforebegin', // targetElement 之前。
-  afterend = 'afterend' // targetElement 之后。
+  return false
 }
