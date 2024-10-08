@@ -3,6 +3,7 @@ import { createNodeItem, getOriDataById, type NodeItem, rootNode } from '../shar
 import { contains, findNode, findParentNode } from '../shared/utils'
 import React from 'react'
 import {
+  allowAppend,
   calcDistanceOfPointToRect,
   calcDistancePointToEdge,
   ClosestPosition,
@@ -79,9 +80,9 @@ class Store {
         this.draggedNode !== this.closestNode &&
         !contains(this.draggedNode, this.closestNode)
       ) {
-        const parent = findParentNode(this.draggedNode.id, this.rootNode)
-        if (parent) {
-          parent.children.splice(parent.children.indexOf(this.draggedNode), 1)
+        const draggedNodeParent = findParentNode(this.draggedNode.id, this.rootNode)
+        if (draggedNodeParent) {
+          draggedNodeParent.children.splice(draggedNodeParent.children.indexOf(this.draggedNode), 1)
         }
 
         const closestParent = findParentNode(this.closestNode.id, this.rootNode)
@@ -120,6 +121,7 @@ class Store {
 
     const point = { x: evt.clientX, y: evt.clientY }
     this.pos = point
+    // const t = document.elementFromPoint(point.x, point.y)
 
     const touchNodeElement = target.closest(`[${DataNodeAttrName}]`)
     if (!touchNodeElement) {
@@ -128,28 +130,18 @@ class Store {
     }
 
     const closestNode = this.calcClosestNode(point, this.findNodeByElement(touchNodeElement))
+    if (isRootNode(closestNode)) {
+      this.clearTouch()
+      return
+    }
+
     this.closestNode = closestNode
     console.log('closestNode', closestNode.title)
 
-    const closestPosition = this.calcClosestPosition(point)
-    this.closestPosition = closestPosition
-    console.log(closestPosition)
+    this.closestPosition = this.calcClosestPosition(point)
+    console.log(this.closestPosition)
 
-    const closestRect = getNodeRectById(this.closestNode.id)
-    this.indicatorStyle.width = closestRect.width
-    this.indicatorStyle.left = closestRect.left
-    this.indicatorStyle.height = Indicator_Height
-    this.indicatorStyle.backgroundColor = Indicator_BgColor
-
-    if (closestPosition === ClosestPosition.Beforebegin) {
-      this.indicatorStyle.top = closestRect.y - Indicator_Height
-    } else if (closestPosition === ClosestPosition.Afterend) {
-      this.indicatorStyle.top = closestRect.y + closestRect.height
-    } else if (closestPosition === ClosestPosition.Inner) {
-      this.indicatorStyle.top = closestRect.y
-      this.indicatorStyle.height = closestRect.height
-      this.indicatorStyle.backgroundColor = Indicator_Inner_BgColor
-    }
+    this.calcIndicatorStyle()
   }
 
   calcClosestNode(point: IPoint, touchNode: NodeItem) {
@@ -157,12 +149,12 @@ class Store {
       let closestNode: NodeItem | null = touchNode
       const touchNodeRect = getNodeRectById(touchNode.id)
       const touchDistance = calcDistancePointToEdge(point, touchNodeRect)
+      console.log('touchNode', touchNode.title, '-', 'touchDistance', touchDistance)
       let minDistance = touchDistance
 
       touchNode.children.forEach(child => {
         const rect = getNodeRectById(child.id)
-
-        const distance = isPointInRect(point, rect) ? 0 : calcDistanceOfPointToRect(point, rect)
+        const distance = isPointInRect(point, rect) ? 0 : calcDistancePointToEdge(point, rect)
 
         if (distance < minDistance) {
           minDistance = distance
@@ -199,6 +191,25 @@ class Store {
     return closestPosition
   }
 
+  calcIndicatorStyle() {
+    const closestRect = getNodeRectById(this.closestNode.id)
+    this.indicatorStyle.width = closestRect.width
+    this.indicatorStyle.left = closestRect.left
+    this.indicatorStyle.height = Indicator_Height
+    this.indicatorStyle.backgroundColor = Indicator_BgColor
+
+    const { closestPosition } = this
+    if (closestPosition === ClosestPosition.Beforebegin) {
+      this.indicatorStyle.top = closestRect.y - Indicator_Height
+    } else if (closestPosition === ClosestPosition.Afterend) {
+      this.indicatorStyle.top = closestRect.y + closestRect.height
+    } else if (closestPosition === ClosestPosition.Inner) {
+      this.indicatorStyle.top = closestRect.y
+      this.indicatorStyle.height = closestRect.height
+      this.indicatorStyle.backgroundColor = Indicator_Inner_BgColor
+    }
+  }
+
   findNodeByElement(element: Element) {
     const nodeId = element.getAttribute(DataNodeAttrName)
     const node = findNode(nodeId, this.rootNode)
@@ -207,11 +218,3 @@ class Store {
 }
 
 export const store = new Store()
-
-function allowAppend(node: NodeItem) {
-  if (node.type === 'if') {
-    return true
-  }
-
-  return false
-}

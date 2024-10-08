@@ -6,8 +6,8 @@ import type { NodeItem } from '../shared/oriData'
 
 function Flow() {
   return (
-    <main className="flex grow select-none flex-col p-6">
-      <TaskNode node={store.rootNode as NodeItem} parentNode={null} />
+    <main className="flex grow select-none flex-col p-6 touch-none">
+      <TaskNode node={store.rootNode as NodeItem} />
     </main>
   )
 }

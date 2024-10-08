@@ -18,6 +18,16 @@ function V2() {
       <Flow />
 
       <Ghost />
+
+      <pre
+        onClick={() => {
+          navigator.clipboard.writeText(JSON.stringify(store.rootNode, null, 2)).then(() => {
+            console.log('Copied to clipboard')
+          })
+        }}
+      >
+        {JSON.stringify(store.rootNode, null, 2)}
+      </pre>
     </div>
   )
 }

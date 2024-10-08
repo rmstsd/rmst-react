@@ -1,3 +1,4 @@
+import { NodeItem } from '../shared/oriData'
 import { DataNodeAttrName } from './store'
 
 export interface IPoint {
@@ -8,9 +9,10 @@ export interface IPoint {
 export function calcDistancePointToEdge(point: IPoint, rect: IRect) {
   const distanceTop = Math.abs(point.y - rect.y)
   const distanceBottom = Math.abs(point.y - (rect.y + rect.height))
-  const distanceLeft = Math.abs(point.x - rect.x)
-  const distanceRight = Math.abs(point.x - (rect.x + rect.width))
-  return Math.min(distanceTop, distanceBottom, distanceLeft, distanceRight)
+  // const distanceLeft = Math.abs(point.x - rect.x)
+  // const distanceRight = Math.abs(point.x - (rect.x + rect.width))
+  // return Math.min(distanceTop, distanceBottom, distanceLeft, distanceRight)
+  return Math.min(distanceTop, distanceBottom)
 }
 
 export function isPointInRect(point: IPoint, rect: IRect, sensitive = true) {
@@ -85,4 +87,10 @@ export function getNodeRectById(nodeId: string) {
 
 export function getELementByNodeId(nodeId: string) {
   return document.querySelector(`[${DataNodeAttrName}="${nodeId}"]`)
+}
+
+const allowAppendType = ['root', 'if', 'while']
+
+export function allowAppend(node: NodeItem) {
+  return allowAppendType.includes(node.type)
 }

@@ -12,17 +12,38 @@ export const testData = {
       children: []
     },
     {
-      id: 'ikojzf12',
-      title: '填写输入框',
-      type: 'input',
-      oriId: 2,
-      children: []
-    },
-    {
       id: '0z4rgc7lq',
       title: '关闭进程',
       type: 'input',
       oriId: 4,
+      children: []
+    },
+    {
+      id: '7wzycde3',
+      title: 'while 循环',
+      type: 'while',
+      oriId: 8,
+      children: []
+    },
+    {
+      id: 'bo5b5isjr',
+      title: 'while 循环',
+      type: 'while',
+      oriId: 8,
+      children: []
+    },
+    {
+      id: 'rir08jrsr',
+      title: '如果',
+      type: 'if',
+      oriId: 7,
+      children: []
+    },
+    {
+      id: 'ikojzf12',
+      title: '填写输入框',
+      type: 'input',
+      oriId: 2,
       children: []
     },
     {

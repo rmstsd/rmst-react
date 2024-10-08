@@ -38,6 +38,11 @@ export const oriData = [
     id: 7,
     title: '如果',
     type: 'if'
+  },
+  {
+    id: 8,
+    title: 'while 循环',
+    type: 'while'
   }
 ]
 
