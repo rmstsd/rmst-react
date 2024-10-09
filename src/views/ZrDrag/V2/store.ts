@@ -1,10 +1,9 @@
 import { configure, makeAutoObservable, toJS } from 'mobx'
-import { createNodeItem, getOriDataById, type NodeItem, rootNode } from '../shared/oriData'
-import { contains, findNode, findParentNode } from '../shared/utils'
+import { createNodeItem, createRootNode, getOriDataById, type NodeItem, oriData, rootNode } from '../shared/oriData'
+import { contains, findNode, findParentNode, uuId } from '../shared/utils'
 import React from 'react'
 import {
   allowAppend,
-  calcDistanceOfPointToRect,
   calcDistancePointToEdge,
   ClosestPosition,
   getNodeRectById,
@@ -24,6 +23,17 @@ const Indicator_Height = 4
 const Indicator_BgColor = 'rgb(24, 144, 255)'
 const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 
+enum Flow_Type {
+  Main_Flow = 'Main_Flow',
+  Sub_Flow = 'Sub-Flow'
+}
+interface IFlow {
+  id: string
+  title: string
+  type: Flow_Type
+  rootNode: NodeItem
+}
+
 class Store {
   constructor() {
     makeAutoObservable(this)
@@ -31,7 +41,7 @@ class Store {
 
   draggedNode: NodeItem | null = null
 
-  rootNode = rootNode
+  flowList: IFlow[] = [{ id: 'asdasd', title: '主流程', type: Flow_Type.Main_Flow, rootNode: rootNode }]
 
   pos = { x: 0, y: 0 }
 
@@ -41,69 +51,48 @@ class Store {
 
   closestPosition: ClosestPosition
 
+  activeFlow: IFlow | null = null
+
+  isStartMove = false
   init() {
-    document.addEventListener('pointerdown', evt => {
-      const target = evt.target as HTMLElement
+    this.activeFlow = this.flowList[0]
 
-      const sourceELement = target.closest(`[${DataSourceAttrName}]`)
-      const nodeELement = target.closest(`[${DataNodeAttrName}]`)
-
-      if (sourceELement) {
-        const sourceId = sourceELement.getAttribute(DataSourceAttrName)
-        this.draggedNode = createNodeItem(getOriDataById(sourceId))
-
-        this.pos.x = evt.clientX
-        this.pos.y = evt.clientY
-      } else if (nodeELement) {
-        const nodeId = nodeELement.getAttribute(DataNodeAttrName)
-        const node = findNode(nodeId, this.rootNode)
-
-        if (isRootNode(node)) {
-          return
-        }
-
-        this.draggedNode = node
-
-        this.pos.x = evt.clientX
-        this.pos.y = evt.clientY
+    const onPointerMove = (evt: PointerEvent) => {
+      if (Math.hypot(evt.clientX - anPosition.x, evt.clientY - anPosition.y) < 5) {
+        return
       }
-    })
-    document.addEventListener('pointermove', evt => {
+
+      if (!this.isStartMove) {
+        this.isStartMove = true
+        this.dragStart(evt)
+      }
+
       if (this.draggedNode) {
-        this.pointerDrag(evt)
+        this.dragMove(evt)
       }
-    })
-    document.addEventListener('pointerup', evt => {
-      if (
-        this.draggedNode &&
-        this.closestNode &&
-        this.draggedNode !== this.closestNode &&
-        !contains(this.draggedNode, this.closestNode)
-      ) {
-        const draggedNodeParent = findParentNode(this.draggedNode.id, this.rootNode)
-        if (draggedNodeParent) {
-          draggedNodeParent.children.splice(draggedNodeParent.children.indexOf(this.draggedNode), 1)
-        }
+    }
 
-        const closestParent = findParentNode(this.closestNode.id, this.rootNode)
-        const index = closestParent.children.indexOf(this.closestNode)
+    const onPointerUp = (evt: PointerEvent) => {
+      this.dragStop(evt)
 
-        if (this.closestPosition === ClosestPosition.Beforebegin) {
-          closestParent.children.splice(index, 0, this.draggedNode)
-        } else if (this.closestPosition === ClosestPosition.Afterend) {
-          closestParent.children.splice(index + 1, 0, this.draggedNode)
-        } else if (this.closestPosition === ClosestPosition.Inner) {
-          this.closestNode.children.push(this.draggedNode)
-        }
-      }
+      document.removeEventListener('pointermove', onPointerMove)
+      document.removeEventListener('pointerup', onPointerUp)
+    }
 
-      this.clear()
-    })
+    let anPosition = { x: 0, y: 0 }
+    const onPointerDown = (evt: PointerEvent) => {
+      anPosition.x = evt.clientX
+      anPosition.y = evt.clientY
+
+      document.addEventListener('pointermove', onPointerMove)
+      document.addEventListener('pointerup', onPointerUp)
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
   }
 
   clear() {
     this.draggedNode = null
-
     this.clearTouch()
   }
 
@@ -116,7 +105,34 @@ class Store {
     this.indicatorStyle.width = 0
   }
 
-  pointerDrag(evt: PointerEvent) {
+  dragStart(evt: PointerEvent) {
+    const target = evt.target as HTMLElement
+
+    const sourceELement = target.closest(`[${DataSourceAttrName}]`)
+    const nodeELement = target.closest(`[${DataNodeAttrName}]`)
+
+    if (sourceELement) {
+      const sourceId = sourceELement.getAttribute(DataSourceAttrName)
+      this.draggedNode = createNodeItem(getOriDataById(sourceId))
+
+      this.pos.x = evt.clientX
+      this.pos.y = evt.clientY
+    } else if (nodeELement) {
+      const nodeId = nodeELement.getAttribute(DataNodeAttrName)
+      const node = findNode(nodeId, this.activeFlow.rootNode)
+
+      if (isRootNode(node)) {
+        return
+      }
+
+      this.draggedNode = node
+
+      this.pos.x = evt.clientX
+      this.pos.y = evt.clientY
+    }
+  }
+
+  dragMove(evt: PointerEvent) {
     const target = evt.target as HTMLElement
 
     const point = { x: evt.clientX, y: evt.clientY }
@@ -130,10 +146,6 @@ class Store {
     }
 
     const closestNode = this.calcClosestNode(point, this.findNodeByElement(touchNodeElement))
-    if (isRootNode(closestNode)) {
-      this.clearTouch()
-      return
-    }
 
     this.closestNode = closestNode
     console.log('closestNode', closestNode.title)
@@ -144,12 +156,42 @@ class Store {
     this.calcIndicatorStyle()
   }
 
+  dragStop(evt: PointerEvent) {
+    this.isStartMove = false
+    if (
+      this.draggedNode &&
+      this.closestNode &&
+      this.draggedNode !== this.closestNode &&
+      !contains(this.draggedNode, this.closestNode)
+    ) {
+      const draggedNodeParent = findParentNode(this.draggedNode.id, this.activeFlow.rootNode)
+      if (draggedNodeParent) {
+        draggedNodeParent.children.splice(draggedNodeParent.children.indexOf(this.draggedNode), 1)
+      }
+
+      const closestParent = findParentNode(this.closestNode.id, this.activeFlow.rootNode)
+      let index = 0
+      if (closestParent) {
+        index = closestParent.children.indexOf(this.closestNode)
+      }
+
+      if (this.closestPosition === ClosestPosition.Beforebegin) {
+        closestParent.children.splice(index, 0, this.draggedNode)
+      } else if (this.closestPosition === ClosestPosition.Afterend) {
+        closestParent.children.splice(index + 1, 0, this.draggedNode)
+      } else if (this.closestPosition === ClosestPosition.Inner) {
+        this.closestNode.children.push(this.draggedNode)
+      }
+    }
+
+    this.clear()
+  }
+
   calcClosestNode(point: IPoint, touchNode: NodeItem) {
     if (touchNode.children.length > 0) {
       let closestNode: NodeItem | null = touchNode
       const touchNodeRect = getNodeRectById(touchNode.id)
       const touchDistance = calcDistancePointToEdge(point, touchNodeRect)
-      console.log('touchNode', touchNode.title, '-', 'touchDistance', touchDistance)
       let minDistance = touchDistance
 
       touchNode.children.forEach(child => {
@@ -169,6 +211,10 @@ class Store {
   }
 
   calcClosestPosition(point: IPoint): ClosestPosition {
+    if (isRootNode(this.closestNode)) {
+      return ClosestPosition.Inner
+    }
+
     const rect = getNodeRectById(this.closestNode.id)
     const isAfter = isNearAfter(point, rect)
 
@@ -212,8 +258,32 @@ class Store {
 
   findNodeByElement(element: Element) {
     const nodeId = element.getAttribute(DataNodeAttrName)
-    const node = findNode(nodeId, this.rootNode)
+    const node = findNode(nodeId, this.activeFlow.rootNode)
     return node
+  }
+
+  addFlow() {
+    const newFlow = {
+      id: uuId(),
+      title: `流程 ${this.flowList.length}`,
+      type: Flow_Type.Sub_Flow,
+      rootNode: createRootNode()
+    }
+
+    this.flowList.push(newFlow)
+    store.activeFlow = this.flowList.at(-1)
+
+    return newFlow
+  }
+
+  removeFlow(key) {
+    this.flowList = this.flowList.filter(flow => flow.id !== key)
+    store.activeFlow = this.flowList[0]
+  }
+
+  removeNode(node: NodeItem) {
+    const parentNode = findParentNode(node.id, this.activeFlow.rootNode)
+    parentNode.children.splice(parentNode.children.indexOf(node), 1)
   }
 }
 

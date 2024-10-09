@@ -1,4 +1,5 @@
 import { testData } from '../V1/testData'
+import { uuId } from './utils'
 
 const item = {
   id: 1,
@@ -51,6 +52,18 @@ export function getOriDataById(id: number | string): OriItem {
   return oriData.find(item => item.id === id) as OriItem
 }
 
+const baseRootNode: NodeItem = {
+  id: 'root',
+  oriId: 0,
+  title: '根节点',
+  type: 'root',
+  children: []
+}
+
+export function createRootNode(children = []): NodeItem {
+  return { ...baseRootNode, id: uuId(), children }
+}
+
 export const rootNode: NodeItem = testData
 
 export interface NodeItem {
@@ -62,5 +75,5 @@ export interface NodeItem {
 }
 
 export function createNodeItem(oriItem: OriItem): NodeItem {
-  return { ...oriItem, id: Math.random().toString(36).slice(4), oriId: oriItem.id, children: [] }
+  return { ...oriItem, id: uuId(), oriId: oriItem.id, children: [] }
 }

@@ -5,10 +5,14 @@ import Aside from './Aside'
 import Flow from './Flow'
 import Ghost from './Ghost'
 import { store } from './store'
+import { toJS } from 'mobx'
 
 function V2() {
   useEffect(() => {
     store.init()
+
+    window.toJS = toJS
+    window.store = store
   }, [])
 
   return (
@@ -18,16 +22,6 @@ function V2() {
       <Flow />
 
       <Ghost />
-
-      <pre
-        onClick={() => {
-          navigator.clipboard.writeText(JSON.stringify(store.rootNode, null, 2)).then(() => {
-            console.log('Copied to clipboard')
-          })
-        }}
-      >
-        {JSON.stringify(store.rootNode, null, 2)}
-      </pre>
     </div>
   )
 }

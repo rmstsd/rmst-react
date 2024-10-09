@@ -73,3 +73,7 @@ export function contains(aNode: NodeItem, bNode: NodeItem) {
     }
   }
 }
+
+export function uuId() {
+  return Math.random().toString(36).slice(4)
+}
