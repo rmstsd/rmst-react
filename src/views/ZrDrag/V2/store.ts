@@ -148,10 +148,7 @@ class Store {
     const closestNode = this.calcClosestNode(point, this.findNodeByElement(touchNodeElement))
 
     this.closestNode = closestNode
-    console.log('closestNode', closestNode.title)
-
     this.closestPosition = this.calcClosestPosition(point)
-    console.log(this.closestPosition)
 
     this.calcIndicatorStyle()
   }

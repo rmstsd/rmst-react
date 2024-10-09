@@ -6,7 +6,7 @@ import TaskNode from './TaskNode'
 
 function Flow() {
   if (!store.activeFlow) {
-    return
+    return null
   }
 
   return (
