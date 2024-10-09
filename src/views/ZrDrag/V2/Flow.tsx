@@ -20,7 +20,7 @@ function Flow() {
         onChange={key => (store.activeFlow = store.flowList.find(f => f.id === key) || store.flowList[0])}
       >
         {store.flowList.map(item => (
-          <Tabs.TabPane key={item.id} title={item.title} className="grid grid-cols-2">
+          <Tabs.TabPane key={item.id} title={item.title} className="grid grid-cols-2 items-start">
             <TaskNode node={item.rootNode} />
 
             <pre
