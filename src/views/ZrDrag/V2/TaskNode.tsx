@@ -15,9 +15,10 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
   return (
     <div
       {...{ [DataNodeAttrName]: node.id }}
+      data-is-root={isRoot}
       className={cn(
-        'task-node-item mb-20 flow-root border border-gray-500 p-6 last:mb-0',
-        isRoot && 'root-node min-h-80 border-red-400'
+        'task-node-item mb-20 flow-root border border-gray-500 p-6 last-of-type:mb-0',
+        isRoot && 'mb-0 min-h-full border-red-400'
       )}
     >
       {!isRoot && (

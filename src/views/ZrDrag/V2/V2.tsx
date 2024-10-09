@@ -5,14 +5,10 @@ import Aside from './Aside'
 import Flow from './Flow'
 import Ghost from './Ghost'
 import { store } from './store'
-import { toJS } from 'mobx'
 
 function V2() {
   useEffect(() => {
     store.init()
-
-    window.toJS = toJS
-    window.store = store
   }, [])
 
   return (

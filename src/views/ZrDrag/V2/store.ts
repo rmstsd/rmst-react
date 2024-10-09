@@ -41,7 +41,7 @@ class Store {
 
   draggedNode: NodeItem | null = null
 
-  flowList: IFlow[] = [{ id: 'asdasd', title: '主流程', type: Flow_Type.Main_Flow, rootNode: rootNode }]
+  flowList: IFlow[] = [{ id: 'asdasd', title: '主流程', type: Flow_Type.Main_Flow, rootNode: createRootNode() }]
 
   pos = { x: 0, y: 0 }
 
