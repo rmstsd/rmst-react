@@ -1,5 +1,5 @@
 import { configure, makeAutoObservable } from 'mobx'
-import { createRootNode, type NodeItem } from '../../shared/oriData'
+import { createNode, createRootNode, type NodeItem } from '../../shared/oriData'
 import { findParentNode, uuId } from '../../shared/utils'
 
 import MoveHelper from './moveHelper'

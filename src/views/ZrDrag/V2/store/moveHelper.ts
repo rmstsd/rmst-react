@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { createNodeItem, getOriDataById, NodeItem } from '../../shared/oriData'
+import { createNode, getOriDataById, NodeItem } from '../../shared/oriData'
 import { contains, findNode, findParentNode } from '../../shared/utils'
 import {
   allowAppend,
@@ -12,7 +12,7 @@ import {
   isRootNode
 } from '../v2_utils'
 
-export const Indicator_Height = 4
+export const Indicator_Height = 2
 export const Indicator_BgColor = 'rgb(24, 144, 255)'
 export const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 
@@ -88,7 +88,7 @@ class MoveHelper {
 
     if (sourceElement) {
       const sourceId = sourceElement.getAttribute(DataSourceAttrName)
-      this.draggedNode = createNodeItem(getOriDataById(sourceId))
+      this.draggedNode = createNode(getOriDataById(sourceId))
     } else if (nodeElement) {
       const nodeId = nodeElement.getAttribute(DataNodeAttrName)
       const node = findNode(nodeId, this.rootNode)
@@ -159,7 +159,7 @@ class MoveHelper {
   }
 
   calcClosestNode(point: IPoint, touchNode: NodeItem) {
-    if (touchNode.children.length > 0) {
+    if (touchNode.expanded && touchNode.children.length > 0) {
       let closestNode: NodeItem | null = touchNode
       const touchNodeRect = getNodeRectById(touchNode.id)
       const touchDistance = calcDistancePointToEdge(point, touchNodeRect)
@@ -217,9 +217,9 @@ class MoveHelper {
 
     const { closestPosition } = this
     if (closestPosition === ClosestPosition.Beforebegin) {
-      this.indicatorStyle.top = closestRect.y - Indicator_Height
+      this.indicatorStyle.top = closestRect.y - Indicator_Height / 2 - 10
     } else if (closestPosition === ClosestPosition.Afterend) {
-      this.indicatorStyle.top = closestRect.y + closestRect.height
+      this.indicatorStyle.top = closestRect.y + closestRect.height - Indicator_Height / 2 + 10
     } else if (closestPosition === ClosestPosition.Inner) {
       this.indicatorStyle.top = closestRect.y
       this.indicatorStyle.height = closestRect.height

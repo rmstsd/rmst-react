@@ -1,5 +1,5 @@
 import cn from '@/utils/cn'
-import { Button } from '@arco-design/web-react'
+import { Button, Tag } from '@arco-design/web-react'
 import { observer } from 'mobx-react-lite'
 import { store } from './store/store'
 import type { NodeItem } from '../shared/oriData'
@@ -12,13 +12,14 @@ interface TaskNodeProps {
 
 const TaskNode = observer(({ node }: TaskNodeProps) => {
   const isRoot = isRootNode(node)
+  const isAllowAppend = allowAppend(node)
 
   return (
     <div
       {...{ [DataNodeAttrName]: node.id }}
       data-is-root={isRoot}
       className={cn(
-        'task-node-item mb-20 flow-root border border-gray-500 p-6 last-of-type:mb-0',
+        'task-node-item mb-20 flow-root border border-gray-500 p-6',
         isRoot && 'mb-0 min-h-full border-red-400'
       )}
     >
@@ -28,14 +29,25 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
             {node.id}-{node.oriId}-{node.title}
           </div>
 
-          <Button type="text" size="mini" onClick={() => store.removeNode(node)}>
-            删除
-          </Button>
+          <div>
+            {isAllowAppend && (
+              <>
+                <Tag className="mr-4">childrenCount: {node.children.length}</Tag>
+                <Button type="text" size="mini" onClick={() => (node.expanded = !node.expanded)}>
+                  {node.expanded ? '收起' : '展开'}
+                </Button>
+              </>
+            )}
+
+            <Button type="text" size="mini" onClick={() => store.removeNode(node)}>
+              删除
+            </Button>
+          </div>
         </div>
       )}
 
-      {allowAppend(node) && (
-        <section className={cn('node-body mt-4', !isRoot && 'pl-20')}>
+      {isAllowAppend && node.expanded && (
+        <section className={cn('node-body mt-20', !isRoot && 'pl-20')}>
           {node.children.map(item => (
             <TaskNode node={item} key={item.id} />
           ))}

@@ -52,16 +52,14 @@ export function getOriDataById(id: number | string): OriItem {
   return oriData.find(item => item.id === id) as OriItem
 }
 
-const baseRootNode: NodeItem = {
-  id: 'root',
-  oriId: 0,
+const rootOriItem = {
+  id: 0,
   title: '根节点',
-  type: 'root',
-  children: []
+  type: 'root'
 }
 
-export function createRootNode(children = []): NodeItem {
-  return { ...baseRootNode, id: uuId(), children }
+export function createRootNode(): NodeItem {
+  return createNode({ ...rootOriItem })
 }
 
 export const rootNode: NodeItem = testData
@@ -72,8 +70,9 @@ export interface NodeItem {
   type: string
   oriId: number
   children: NodeItem[]
+  expanded: boolean
 }
 
-export function createNodeItem(oriItem: OriItem): NodeItem {
-  return { ...oriItem, id: uuId(), oriId: oriItem.id, children: [] }
+export function createNode(oriItem: OriItem): NodeItem {
+  return { ...oriItem, id: uuId(), oriId: oriItem.id, children: [], expanded: true }
 }
