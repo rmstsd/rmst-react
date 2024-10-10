@@ -1,21 +1,25 @@
 import { observer } from 'mobx-react-lite'
-import { store } from './store'
+import { store } from './store/store'
 
 function Ghost() {
-  if (!store.draggedNode) {
+  const { moveHelper } = store
+  if (!moveHelper.draggedNode) {
     return null
   }
 
   return (
     <div className="pointer-events-none">
-      {store.draggedNode && <div className="indicator fixed" style={{ ...store.indicatorStyle }}></div>}
-
-      <div
-        className="pointer-events-none fixed border bg-white p-4 shadow-lg"
-        style={{ left: store.pos.x, top: store.pos.y }}
-      >
-        {store.draggedNode.title}
-      </div>
+      {moveHelper.isDragging && (
+        <>
+          <div className="indicator fixed" style={{ ...moveHelper.indicatorStyle }}></div>
+          <div
+            className="fixed left-0 top-0 border bg-white p-4 shadow-lg"
+            style={{ transform: `translate(${moveHelper.point.x}px, ${moveHelper.point.y}px)` }}
+          >
+            {moveHelper.draggedNode.title}
+          </div>
+        </>
+      )}
     </div>
   )
 }

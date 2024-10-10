@@ -1,9 +1,10 @@
 import cn from '@/utils/cn'
 import { Button } from '@arco-design/web-react'
 import { observer } from 'mobx-react-lite'
-import { DataNodeAttrName, isRootNode, store } from './store'
+import { store } from './store/store'
 import type { NodeItem } from '../shared/oriData'
-import { allowAppend } from './v2_utils'
+import { allowAppend, isRootNode } from './v2_utils'
+import { DataNodeAttrName } from './store/moveHelper'
 
 interface TaskNodeProps {
   node: NodeItem

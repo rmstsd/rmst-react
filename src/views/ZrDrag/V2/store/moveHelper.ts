@@ -1,7 +1,6 @@
-import { configure, makeAutoObservable, toJS } from 'mobx'
-import { createNodeItem, createRootNode, getOriDataById, type NodeItem, oriData, rootNode } from '../shared/oriData'
-import { contains, findNode, findParentNode, uuId } from '../shared/utils'
-import React from 'react'
+import { makeAutoObservable } from 'mobx'
+import { createNodeItem, getOriDataById, NodeItem } from '../../shared/oriData'
+import { contains, findNode, findParentNode } from '../../shared/utils'
 import {
   allowAppend,
   calcDistancePointToEdge,
@@ -9,78 +8,68 @@ import {
   getNodeRectById,
   IPoint,
   isNearAfter,
-  isPointInRect
-} from './v2_utils'
+  isPointInRect,
+  isRootNode
+} from '../v2_utils'
 
-configure({ enforceActions: 'never' })
+export const Indicator_Height = 4
+export const Indicator_BgColor = 'rgb(24, 144, 255)'
+export const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 
 export const DataSourceAttrName = 'data-source-id'
 export const DataNodeAttrName = 'data-node-id'
 
-export const isRootNode = (node: NodeItem) => node.type === 'root'
-
-const Indicator_Height = 4
-const Indicator_BgColor = 'rgb(24, 144, 255)'
-const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
-
-enum Flow_Type {
-  Main_Flow = 'Main_Flow',
-  Sub_Flow = 'Sub-Flow'
-}
-interface IFlow {
-  id: string
-  title: string
-  type: Flow_Type
-  rootNode: NodeItem
-}
-
-class Store {
+class MoveHelper {
   constructor() {
     makeAutoObservable(this)
+
+    this.init()
   }
 
+  rootNode: NodeItem | null = null
+
+  point = { x: 0, y: 0 }
+  isDragging = false
   draggedNode: NodeItem | null = null
-
-  flowList: IFlow[] = [{ id: 'asdasd', title: '主流程', type: Flow_Type.Main_Flow, rootNode: createRootNode() }]
-
-  pos = { x: 0, y: 0 }
-
   closestNode: NodeItem | null = null
-
+  closestPosition: ClosestPosition
   indicatorStyle: React.CSSProperties = { left: 0, top: 0, width: 0, height: Indicator_Height }
 
-  closestPosition: ClosestPosition
-
-  activeFlow: IFlow | null = null
-
-  isStartMove = false
-  init() {
-    this.activeFlow = this.flowList[0]
+  private init() {
+    const anPosition = { x: 0, y: 0 }
 
     const onPointerMove = (evt: PointerEvent) => {
-      if (Math.hypot(evt.clientX - anPosition.x, evt.clientY - anPosition.y) < 5) {
-        return
-      }
-
-      if (!this.isStartMove) {
-        this.isStartMove = true
-        this.dragStart(evt)
-      }
-
       if (this.draggedNode) {
+        if (!this.isDragging) {
+          if (Math.hypot(evt.clientX - anPosition.x, evt.clientY - anPosition.y) < 5) {
+            return
+          }
+
+          this.isDragging = true
+          this.dragStart(evt)
+        }
+
         this.dragMove(evt)
       }
     }
 
     const onPointerUp = (evt: PointerEvent) => {
-      this.dragStop(evt)
+      if (this.draggedNode && this.isDragging) {
+        this.isDragging = false
+        this.dragStop(evt)
+      }
+
+      if (!this.isDragging) {
+        this.clear()
+      }
 
       document.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerup', onPointerUp)
     }
 
-    let anPosition = { x: 0, y: 0 }
     const onPointerDown = (evt: PointerEvent) => {
+      this.setDraggedNodeNode(evt)
+
       anPosition.x = evt.clientX
       anPosition.y = evt.clientY
 
@@ -91,53 +80,42 @@ class Store {
     document.addEventListener('pointerdown', onPointerDown)
   }
 
-  clear() {
-    this.draggedNode = null
-    this.clearTouch()
-  }
-
-  clearTouch() {
-    this.closestNode = null
-    this.closestPosition = null
-
-    this.indicatorStyle.left = 0
-    this.indicatorStyle.top = 0
-    this.indicatorStyle.width = 0
-  }
-
-  dragStart(evt: PointerEvent) {
+  setDraggedNodeNode = (evt: PointerEvent) => {
     const target = evt.target as HTMLElement
 
-    const sourceELement = target.closest(`[${DataSourceAttrName}]`)
-    const nodeELement = target.closest(`[${DataNodeAttrName}]`)
+    const sourceElement = target.closest(`[${DataSourceAttrName}]`)
+    const nodeElement = target.closest(`[${DataNodeAttrName}]`)
 
-    if (sourceELement) {
-      const sourceId = sourceELement.getAttribute(DataSourceAttrName)
+    if (sourceElement) {
+      const sourceId = sourceElement.getAttribute(DataSourceAttrName)
       this.draggedNode = createNodeItem(getOriDataById(sourceId))
-
-      this.pos.x = evt.clientX
-      this.pos.y = evt.clientY
-    } else if (nodeELement) {
-      const nodeId = nodeELement.getAttribute(DataNodeAttrName)
-      const node = findNode(nodeId, this.activeFlow.rootNode)
+    } else if (nodeElement) {
+      const nodeId = nodeElement.getAttribute(DataNodeAttrName)
+      const node = findNode(nodeId, this.rootNode)
 
       if (isRootNode(node)) {
         return
       }
 
       this.draggedNode = node
-
-      this.pos.x = evt.clientX
-      this.pos.y = evt.clientY
     }
   }
 
+  dragStart(evt: PointerEvent) {
+    console.log('dragStart')
+  }
+
   dragMove(evt: PointerEvent) {
-    const target = evt.target as HTMLElement
+    console.log('dragMove')
 
     const point = { x: evt.clientX, y: evt.clientY }
-    this.pos = point
-    // const t = document.elementFromPoint(point.x, point.y)
+    this.point = point
+    const target = document.elementFromPoint(point.x, point.y)
+
+    if (!target) {
+      this.clearTouch()
+      return
+    }
 
     const touchNodeElement = target.closest(`[${DataNodeAttrName}]`)
     if (!touchNodeElement) {
@@ -154,19 +132,15 @@ class Store {
   }
 
   dragStop(evt: PointerEvent) {
-    this.isStartMove = false
-    if (
-      this.draggedNode &&
-      this.closestNode &&
-      this.draggedNode !== this.closestNode &&
-      !contains(this.draggedNode, this.closestNode)
-    ) {
-      const draggedNodeParent = findParentNode(this.draggedNode.id, this.activeFlow.rootNode)
+    console.log('dragStop')
+
+    if (this.closestNode && this.draggedNode !== this.closestNode && !contains(this.draggedNode, this.closestNode)) {
+      const draggedNodeParent = findParentNode(this.draggedNode.id, this.rootNode)
       if (draggedNodeParent) {
         draggedNodeParent.children.splice(draggedNodeParent.children.indexOf(this.draggedNode), 1)
       }
 
-      const closestParent = findParentNode(this.closestNode.id, this.activeFlow.rootNode)
+      const closestParent = findParentNode(this.closestNode.id, this.rootNode)
       let index = 0
       if (closestParent) {
         index = closestParent.children.indexOf(this.closestNode)
@@ -255,33 +229,23 @@ class Store {
 
   findNodeByElement(element: Element) {
     const nodeId = element.getAttribute(DataNodeAttrName)
-    const node = findNode(nodeId, this.activeFlow.rootNode)
+    const node = findNode(nodeId, this.rootNode)
     return node
   }
 
-  addFlow() {
-    const newFlow = {
-      id: uuId(),
-      title: `流程 ${this.flowList.length}`,
-      type: Flow_Type.Sub_Flow,
-      rootNode: createRootNode()
-    }
-
-    this.flowList.push(newFlow)
-    store.activeFlow = this.flowList.at(-1)
-
-    return newFlow
+  clear() {
+    this.draggedNode = null
+    this.clearTouch()
   }
 
-  removeFlow(key) {
-    this.flowList = this.flowList.filter(flow => flow.id !== key)
-    store.activeFlow = this.flowList[0]
-  }
+  clearTouch() {
+    this.closestNode = null
+    this.closestPosition = null
 
-  removeNode(node: NodeItem) {
-    const parentNode = findParentNode(node.id, this.activeFlow.rootNode)
-    parentNode.children.splice(parentNode.children.indexOf(node), 1)
+    this.indicatorStyle.left = 0
+    this.indicatorStyle.top = 0
+    this.indicatorStyle.width = 0
   }
 }
 
-export const store = new Store()
+export default MoveHelper

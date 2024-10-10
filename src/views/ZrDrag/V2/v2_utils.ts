@@ -1,5 +1,5 @@
 import { NodeItem } from '../shared/oriData'
-import { DataNodeAttrName } from './store'
+import { DataNodeAttrName } from './store/moveHelper'
 
 export interface IPoint {
   x: number
@@ -57,35 +57,19 @@ interface IRect {
 }
 
 export enum ClosestPosition {
-  // Before = 'Before',
-  // ForbidBefore = 'ForbidBefore',
-  // After = 'After',
-  // ForbidAfter = 'ForbidAfter',
-  // Upper = 'Upper',
-  // ForbidUpper = 'ForbidUpper',
-  // Under = 'Under',
-  // ForbidUnder = 'ForbidUnder',
-  // Inner = 'Inner',
-  // ForbidInner = 'ForbidInner',
-  // InnerAfter = 'InnerAfter',
-  // ForbidInnerAfter = 'ForbidInnerAfter',
-  // InnerBefore = 'InnerBefore',
-  // ForbidInnerBefore = 'ForbidInnerBefore',
-  // Forbid = 'Forbid'
-
   Beforebegin = 'beforebegin', // targetElement 之前。
   Afterend = 'afterend', // targetElement 之后。
   Inner = 'Inner'
 }
 
 export function getNodeRectById(nodeId: string) {
-  const element = getELementByNodeId(nodeId)
+  const element = getElementByNodeId(nodeId)
   const rect = element.getBoundingClientRect()
 
   return rect
 }
 
-export function getELementByNodeId(nodeId: string) {
+export function getElementByNodeId(nodeId: string) {
   return document.querySelector(`[${DataNodeAttrName}="${nodeId}"]`)
 }
 
@@ -94,3 +78,5 @@ const allowAppendType = ['root', 'if', 'while']
 export function allowAppend(node: NodeItem) {
   return allowAppendType.includes(node.type)
 }
+
+export const isRootNode = (node: NodeItem) => node.type === 'root'

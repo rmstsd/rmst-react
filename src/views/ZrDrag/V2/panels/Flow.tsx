@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite'
 import { Tabs } from '@arco-design/web-react'
 
-import { store } from './store'
-import TaskNode from './TaskNode'
+import { store } from '../store/store'
+import TaskNode from '../TaskNode'
 
 function Flow() {
   if (!store.activeFlow) {
@@ -10,18 +10,20 @@ function Flow() {
   }
 
   return (
-    <main className="touch-none select-none p-6 w-0 flex-grow">
+    <main className="w-0 flex-grow touch-none select-none p-6">
       <Tabs
         editable
         type="card-gutter"
         activeTab={store.activeFlow.id}
         onAddTab={() => store.addFlow()}
         onDeleteTab={key => store.removeFlow(key)}
-        onChange={key => (store.activeFlow = store.flowList.find(f => f.id === key) || store.flowList[0])}
+        onChange={key => {
+          store.setActiveFlow(store.flowList.find(f => f.id === key) || store.flowList[0])
+        }}
       >
         {store.flowList.map(item => (
           <Tabs.TabPane key={item.id} title={item.title} className="flex items-start">
-            <section className="h-full flex-shrink-0 flex-grow overflow-auto">
+            <section className="h-full flex-shrink-0 flex-grow touch-none overflow-auto">
               <TaskNode node={item.rootNode} />
             </section>
 
