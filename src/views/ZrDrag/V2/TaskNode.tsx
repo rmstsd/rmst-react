@@ -5,6 +5,7 @@ import { store } from './store/store'
 import type { NodeItem } from '../shared/oriData'
 import { allowAppend, isRootNode } from './v2_utils'
 import { DataNodeAttrName } from './store/moveHelper'
+import { IconDragArrow } from '@arco-design/web-react/icon'
 
 interface TaskNodeProps {
   node: NodeItem
@@ -29,6 +30,7 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
       {!isRoot && (
         <div className="node-title flex justify-between">
           <div>
+            {/* <Button data-drag={true} icon={<IconDragArrow />} type="default" size="mini" className="mr-4 cursor-move" /> */}
             {node.id}-{node.oriId}-{node.title}
           </div>
 
@@ -45,7 +47,7 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
             <Button
               type="text"
               size="mini"
-              onClick={(evt) => {
+              onClick={evt => {
                 console.log(evt)
                 if (moveHelper.isDragging) {
                   return
