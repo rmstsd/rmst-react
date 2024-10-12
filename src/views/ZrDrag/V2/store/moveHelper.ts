@@ -3,6 +3,7 @@ import { createNode, getOriDataById, NodeItem } from '../../shared/oriData'
 import { contains, findNode, findParentNode } from '../../shared/utils'
 import {
   allowAppend,
+  allowDrag,
   calcDistancePointToEdge,
   ClosestPosition,
   getNodeRectById,
@@ -19,6 +20,8 @@ export const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 export const DataSourceAttrName = 'data-source-id'
 export const DataNodeAttrName = 'data-node-id'
 
+type DraggedSourceType = 'node' | 'source'
+
 class MoveHelper {
   constructor() {
     makeAutoObservable(this)
@@ -31,6 +34,7 @@ class MoveHelper {
   point = { x: 0, y: 0 }
   isDragging = false
   draggedNode: NodeItem | null = null
+  draggedSourceType: DraggedSourceType | null = null
   closestNode: NodeItem | null = null
   closestPosition: ClosestPosition
   indicatorStyle: React.CSSProperties = { left: 0, top: 0, width: 0, height: Indicator_Height }
@@ -89,15 +93,15 @@ class MoveHelper {
     if (sourceElement) {
       const sourceId = sourceElement.getAttribute(DataSourceAttrName)
       this.draggedNode = createNode(getOriDataById(sourceId))
+      this.draggedSourceType = 'source'
     } else if (nodeElement) {
-      const nodeId = nodeElement.getAttribute(DataNodeAttrName)
-      const node = findNode(nodeId, this.rootNode)
-
-      if (isRootNode(node)) {
+      const node = findNode(nodeElement.getAttribute(DataNodeAttrName), this.rootNode)
+      if (!allowDrag(node)) {
         return
       }
 
       this.draggedNode = node
+      this.draggedSourceType = 'node'
     }
   }
 
@@ -125,6 +129,11 @@ class MoveHelper {
 
     const closestNode = this.calcClosestNode(point, this.findNodeByElement(touchNodeElement))
 
+    if (contains(this.draggedNode, closestNode)) {
+      this.clearTouch()
+      return
+    }
+
     this.closestNode = closestNode
     this.closestPosition = this.calcClosestPosition(point)
 
@@ -135,23 +144,21 @@ class MoveHelper {
     console.log('dragStop')
 
     if (this.closestNode && this.draggedNode !== this.closestNode && !contains(this.draggedNode, this.closestNode)) {
-      const draggedNodeParent = findParentNode(this.draggedNode.id, this.rootNode)
-      if (draggedNodeParent) {
-        draggedNodeParent.children.splice(draggedNodeParent.children.indexOf(this.draggedNode), 1)
+      if (this.draggedSourceType === 'node') {
+        this.removeNode(this.draggedNode)
       }
 
-      const closestParent = findParentNode(this.closestNode.id, this.rootNode)
-      let index = 0
-      if (closestParent) {
-        index = closestParent.children.indexOf(this.closestNode)
-      }
-
-      if (this.closestPosition === ClosestPosition.Beforebegin) {
-        closestParent.children.splice(index, 0, this.draggedNode)
-      } else if (this.closestPosition === ClosestPosition.Afterend) {
-        closestParent.children.splice(index + 1, 0, this.draggedNode)
-      } else if (this.closestPosition === ClosestPosition.Inner) {
+      if (this.closestPosition === ClosestPosition.Inner) {
         this.closestNode.children.push(this.draggedNode)
+      } else {
+        const closestParent = findParentNode(this.closestNode.id, this.rootNode)
+        const index = closestParent.children.indexOf(this.closestNode)
+
+        if (this.closestPosition === ClosestPosition.Beforebegin) {
+          closestParent.children.splice(index, 0, this.draggedNode)
+        } else if (this.closestPosition === ClosestPosition.Afterend) {
+          closestParent.children.splice(index + 1, 0, this.draggedNode)
+        }
       }
     }
 
@@ -235,6 +242,8 @@ class MoveHelper {
 
   clear() {
     this.draggedNode = null
+    this.draggedSourceType = null
+
     this.clearTouch()
   }
 
@@ -245,6 +254,11 @@ class MoveHelper {
     this.indicatorStyle.left = 0
     this.indicatorStyle.top = 0
     this.indicatorStyle.width = 0
+  }
+
+  removeNode(node: NodeItem) {
+    const parentNode = findParentNode(node.id, this.rootNode)
+    parentNode.children.splice(parentNode.children.indexOf(node), 1)
   }
 }
 

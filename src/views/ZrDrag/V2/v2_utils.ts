@@ -1,4 +1,5 @@
 import { NodeItem } from '../shared/oriData'
+import { findParentNode } from '../shared/utils'
 import { DataNodeAttrName } from './store/moveHelper'
 
 export interface IPoint {
@@ -77,6 +78,14 @@ const allowAppendType = ['root', 'if', 'while']
 
 export function allowAppend(node: NodeItem) {
   return allowAppendType.includes(node.type)
+}
+
+export const allowDrag = (node: NodeItem) => {
+  if (isRootNode(node)) {
+    return false
+  }
+
+  return true
 }
 
 export const isRootNode = (node: NodeItem) => node.type === 'root'

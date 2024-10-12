@@ -11,6 +11,8 @@ interface TaskNodeProps {
 }
 
 const TaskNode = observer(({ node }: TaskNodeProps) => {
+  const { moveHelper } = store
+
   const isRoot = isRootNode(node)
   const isAllowAppend = allowAppend(node)
 
@@ -20,7 +22,8 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
       data-is-root={isRoot}
       className={cn(
         'task-node-item mb-20 flow-root border border-gray-500 p-6',
-        isRoot && 'mb-0 min-h-full border-red-400'
+        isRoot && 'mb-0 min-h-full border-red-400',
+        moveHelper.isDragging && moveHelper.draggedNode === node && 'opacity-50'
       )}
     >
       {!isRoot && (
@@ -39,7 +42,17 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
               </>
             )}
 
-            <Button type="text" size="mini" onClick={() => store.removeNode(node)}>
+            <Button
+              type="text"
+              size="mini"
+              onClick={(evt) => {
+                console.log(evt)
+                if (moveHelper.isDragging) {
+                  return
+                }
+                moveHelper.removeNode(node)
+              }}
+            >
               删除
             </Button>
           </div>

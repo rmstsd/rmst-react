@@ -1,5 +1,5 @@
 import { configure, makeAutoObservable } from 'mobx'
-import { createNode, createRootNode, type NodeItem } from '../../shared/oriData'
+import { createRootNode, type NodeItem } from '../../shared/oriData'
 import { findParentNode, uuId } from '../../shared/utils'
 
 import MoveHelper from './moveHelper'
@@ -53,11 +53,6 @@ class Store {
   removeFlow(key) {
     this.flowList = this.flowList.filter(flow => flow.id !== key)
     this.setActiveFlow(this.flowList[0])
-  }
-
-  removeNode(node: NodeItem) {
-    const parentNode = findParentNode(node.id, this.activeFlow.rootNode)
-    parentNode.children.splice(parentNode.children.indexOf(node), 1)
   }
 }
 
