@@ -44,17 +44,7 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
               </>
             )}
 
-            <Button
-              type="text"
-              size="mini"
-              onClick={evt => {
-                console.log(evt)
-                if (moveHelper.isDragging) {
-                  return
-                }
-                moveHelper.removeNode(node)
-              }}
-            >
+            <Button type="text" size="mini" data-no-drag onClick={() => moveHelper.removeNode(node)}>
               删除
             </Button>
           </div>

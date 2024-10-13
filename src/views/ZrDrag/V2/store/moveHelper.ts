@@ -40,17 +40,17 @@ class MoveHelper {
   indicatorStyle: React.CSSProperties = { left: 0, top: 0, width: 0, height: Indicator_Height }
 
   private init() {
-    const anPosition = { x: 0, y: 0 }
+    let pointerDownEvent: PointerEvent
 
     const onPointerMove = (evt: PointerEvent) => {
       if (this.draggedNode) {
         if (!this.isDragging) {
-          if (Math.hypot(evt.clientX - anPosition.x, evt.clientY - anPosition.y) < 5) {
+          if (Math.hypot(evt.clientX - pointerDownEvent.clientX, evt.clientY - pointerDownEvent.clientY) < 5) {
             return
           }
 
           this.isDragging = true
-          this.dragStart(evt)
+          this.dragStart(pointerDownEvent)
         }
 
         this.dragMove(evt)
@@ -72,10 +72,14 @@ class MoveHelper {
     }
 
     const onPointerDown = (evt: PointerEvent) => {
-      this.setDraggedNodeNode(evt)
+      const target = evt.target as HTMLElement
+      if (target.closest(`[data-no-drag]`)) {
+        return
+      }
 
-      anPosition.x = evt.clientX
-      anPosition.y = evt.clientY
+      pointerDownEvent = evt
+
+      this.setDraggedNodeNode(target)
 
       document.addEventListener('pointermove', onPointerMove)
       document.addEventListener('pointerup', onPointerUp)
@@ -84,9 +88,7 @@ class MoveHelper {
     document.addEventListener('pointerdown', onPointerDown)
   }
 
-  setDraggedNodeNode = (evt: PointerEvent) => {
-    const target = evt.target as HTMLElement
-
+  setDraggedNodeNode = (target: HTMLElement) => {
     const sourceElement = target.closest(`[${DataSourceAttrName}]`)
     const nodeElement = target.closest(`[${DataNodeAttrName}]`)
 
@@ -143,7 +145,7 @@ class MoveHelper {
   dragStop(evt: PointerEvent) {
     console.log('dragStop')
 
-    if (this.closestNode && this.draggedNode !== this.closestNode && !contains(this.draggedNode, this.closestNode)) {
+    if (this.closestNode && !contains(this.draggedNode, this.closestNode)) {
       if (this.draggedSourceType === 'node') {
         this.removeNode(this.draggedNode)
       }
