@@ -1,4 +1,5 @@
 import Trigger from '@/components/Trigger/Trigger'
+import { Select } from '@arco-design/web-react'
 import React, { cloneElement, forwardRef, isValidElement, useEffect, useRef, useState, ReactNode } from 'react'
 
 const ChChild = () => {
@@ -31,6 +32,23 @@ export default function Tt() {
   const fieldRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const [count, setCount] = useState(0)
+
+  const [value, setValue] = useState('a')
+  const [options, setOptions] = useState(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('set')
+      setValue('g')
+      // setOptions(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+    }, 2000)
+  }, [])
+
+  return (
+    <>
+      <Select value={value} options={options} />
+    </>
+  )
 
   return (
     <div className="tt relative h-[600px] overflow-auto">
