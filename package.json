@@ -43,6 +43,7 @@
     "react-virtuoso": "^4.7.2",
     "resize-observer-polyfill": "^1.5.1",
     "scheduler": "^0.23.0",
+    "scrollyfills": "^1.0.3",
     "shallowequal": "^1.1.0",
     "tailwind-merge": "^2.4.0",
     "valtio": "^1.13.2",
