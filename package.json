@@ -22,6 +22,7 @@
     "canvaskit-wasm": "^0.39.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "es-toolkit": "^1.26.1",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "flickity": "^3.0.0",
     "gl-matrix": "^3.4.3",

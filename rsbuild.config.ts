@@ -6,8 +6,8 @@ import { pluginReact } from '@rsbuild/plugin-react'
 export default defineConfig({
   plugins: [pluginNodePolyfill(), pluginLess(), pluginReact()],
   dev: {
-    assetPrefix: './'
-    // hmr: false
+    assetPrefix: './',
+    hmr: false
   },
   html: {
     template: './index.html'
