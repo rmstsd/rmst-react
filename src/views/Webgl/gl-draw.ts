@@ -1,9 +1,7 @@
 import { random, randomInt, xor } from 'es-toolkit'
 
 export function glDraw(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext('webgl')
-  // gl.clearColor(1, 1, 1, 1)
-  // gl.clear(gl.COLOR_BUFFER_BIT)
+  const gl = canvas.getContext('webgl2')
 
   let down = false
   let prev = { x: 0, y: 0 }
@@ -68,6 +66,7 @@ export function glDraw(canvas: HTMLCanvasElement) {
   })
 
   function drawStage() {
+    gl.clearColor(1, 1, 1, 1)
     gl.clear(gl.COLOR_BUFFER_BIT)
     rects.forEach(({ x, y, size, color }) => {
       gl.vertexAttrib2f(a_Position, x, y)
@@ -98,18 +97,18 @@ export function glDraw(canvas: HTMLCanvasElement) {
     }
   `
 
-  initShaders(gl, vsSource, fsSource)
+  const program = initShaders(gl, vsSource, fsSource)
 
-  const a_Position = gl.getAttribLocation(gl.program, 'a_Position')
-  const a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize')
+  const a_Position = gl.getAttribLocation(program, 'a_Position')
+  const a_PointSize = gl.getAttribLocation(program, 'a_PointSize')
 
-  const u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor')
+  const u_FragColor = gl.getUniformLocation(program, 'u_FragColor')
   gl.uniform4f(u_FragColor, Math.random(), Math.random(), Math.random(), 1.0)
 
   gl.vertexAttrib2f(a_Position, 0, 0)
   gl.vertexAttrib1f(a_PointSize, 50.0)
 
-  const u_Translation = gl.getUniformLocation(gl.program, 'u_Translation')
+  const u_Translation = gl.getUniformLocation(program, 'u_Translation')
   gl.uniform4f(u_Translation, 0, 0.5, 0, 0)
 
   drawStage()
@@ -132,8 +131,7 @@ function initShaders(gl: WebGLRenderingContext, vsSource, fsSource) {
   //启动程序对象
   gl.useProgram(program)
   //将程序对象挂到上下文对象上
-  gl.program = program
-  return true
+  return program
 }
 
 function loadShader(gl: WebGLRenderingContext, type: GLenum, source) {
