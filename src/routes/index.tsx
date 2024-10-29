@@ -33,15 +33,21 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'immer', element: <Immer /> },
-      { path: 'ck', element: <Ck /> },
-      { path: 'gl', element: <Webgl /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
-      { path: 'QuadTree', element: <QuadTree /> },
-      { path: 'MapView', element: <MapView /> }
-      // { path: 'YogaLayout', element: <YogaLayout /> }
+      { path: 'QuadTree', element: <QuadTree /> }
+    ]
+  },
+  {
+    path: '/canvas',
+    element: <LayoutView />,
+    children: [
+      { path: 'ck', element: <Ck /> },
+      { path: 'gl', element: <Webgl /> },
+      { path: 'MapView', element: <MapView /> },
+      { path: 'YogaLayout', element: <YogaLayout /> }
     ]
   },
   {

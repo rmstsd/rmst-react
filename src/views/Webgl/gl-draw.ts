@@ -7,7 +7,7 @@ export function glDraw(canvas: HTMLCanvasElement) {
   let prev = { x: 0, y: 0 }
   let ts = { x: 0, y: 0 }
 
-  const rects = Array.from({ length: 8000 }, () => ({
+  const points = Array.from({ length: 8000 }, () => ({
     x: random(-1, 1),
     y: random(-1, 1),
     size: randomInt(10, 20),
@@ -39,7 +39,7 @@ export function glDraw(canvas: HTMLCanvasElement) {
     ts.x += dx / halfWidth
     ts.y += -dy / halfHeight
 
-    // gl.uniform4f(u_Translation, dx / halfWidth, dy / halfHeight, 0, 0)
+    gl.uniform4f(u_Translation_2, dx / halfWidth, dy / halfHeight, 0, 0)
 
     drawStage()
 
@@ -68,48 +68,106 @@ export function glDraw(canvas: HTMLCanvasElement) {
   function drawStage() {
     gl.clearColor(1, 1, 1, 1)
     gl.clear(gl.COLOR_BUFFER_BIT)
-    rects.forEach(({ x, y, size, color }) => {
-      gl.vertexAttrib2f(a_Position, x, y)
-      gl.vertexAttrib1f(a_PointSize, size)
-      gl.uniform4fv(u_FragColor, color)
-      gl.uniform4f(u_Translation, ts.x, ts.y, 0, 0)
-      gl.drawArrays(gl.POINTS, 0, 1)
+
+    triangles.forEach(({ points, color }) => {
+      const vertices = new Float32Array(points)
+      const vertexBuffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+
+      gl.vertexAttribPointer(a_Position_2, 2, gl.FLOAT, false, 0, 0)
+      gl.uniform4fv(t_color, color)
+
+      gl.enableVertexAttribArray(a_Position_2)
+      gl.uniform4f(u_Translation_2, ts.x, ts.y, 0, 0)
+
+      // gl.drawArrays(gl.POINTS, 0, 3)
+      gl.drawArrays(gl.TRIANGLES, 0, 3)
     })
+
+    // points.forEach(({ x, y, size, color }) => {
+    //   gl.vertexAttrib2f(a_Position, x, y)
+    //   gl.vertexAttrib1f(a_PointSize, size)
+    //   gl.uniform4fv(u_FragColor, color)
+    //   gl.uniform4f(u_Translation, ts.x, ts.y, 0, 0)
+    //   gl.drawArrays(gl.POINTS, 0, 1)
+    // })
   }
 
-  const vsSource = `
+  // const vsSource = `
+  //     attribute vec4 a_Position;
+  //     attribute float a_PointSize;
+  //     uniform vec4 u_Translation;
+
+  //     void main() {
+  //       gl_Position = a_Position+u_Translation;
+  //       gl_PointSize = a_PointSize;
+  //     }
+  //   `
+
+  // const fsSource = `
+  //   precision mediump float;
+  //   uniform vec4 u_FragColor;
+
+  //   void main() {
+  //     gl_FragColor = u_FragColor;
+  //   }
+  // `
+
+  // const program = initShaders(gl, vsSource, fsSource)
+
+  // const a_Position = gl.getAttribLocation(program, 'a_Position')
+  // const a_PointSize = gl.getAttribLocation(program, 'a_PointSize')
+
+  // const u_FragColor = gl.getUniformLocation(program, 'u_FragColor')
+  // gl.uniform4f(u_FragColor, Math.random(), Math.random(), Math.random(), 1.0)
+
+  // gl.vertexAttrib2f(a_Position, 0, 0)
+  // gl.vertexAttrib1f(a_PointSize, 50.0)
+
+  // const u_Translation = gl.getUniformLocation(program, 'u_Translation')
+  // gl.uniform4f(u_Translation, 0, 0.5, 0, 0)
+
+  // 三角面
+  const vs = `
       attribute vec4 a_Position;
-      attribute float a_PointSize;
       uniform vec4 u_Translation;
-
       void main() {
-        gl_Position = a_Position+u_Translation;
-        gl_PointSize = a_PointSize;
-      }
-    `
-
-  const fsSource = `
-    precision mediump float;
-    uniform vec4 u_FragColor;
-
-    void main() {
-      gl_FragColor = u_FragColor;
+        gl_Position = a_Position + u_Translation;
+        gl_PointSize = 10.0;
     }
   `
 
-  const program = initShaders(gl, vsSource, fsSource)
+  const fs = `
+    precision mediump float;
+    uniform vec4 t_color;
+    void main() {
+      gl_FragColor = t_color;
+    }
+  `
 
-  const a_Position = gl.getAttribLocation(program, 'a_Position')
-  const a_PointSize = gl.getAttribLocation(program, 'a_PointSize')
+  const triangles = Array.from({ length: 10 }, () => ({
+    points: [random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1)],
+    color: new Float32Array([Math.random(), Math.random(), Math.random(), 1.0])
+  }))
 
-  const u_FragColor = gl.getUniformLocation(program, 'u_FragColor')
-  gl.uniform4f(u_FragColor, Math.random(), Math.random(), Math.random(), 1.0)
+  const program_2 = initShaders(gl, vs, fs)
+  const vertices = new Float32Array([0.0, 0.1, -0.1, -0.1, 0.1, -0.1])
+  const vertexBuffer = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-  gl.vertexAttrib2f(a_Position, 0, 0)
-  gl.vertexAttrib1f(a_PointSize, 50.0)
+  const a_Position_2 = gl.getAttribLocation(program_2, 'a_Position')
+  const t_color = gl.getUniformLocation(program_2, 't_color')
 
-  const u_Translation = gl.getUniformLocation(program, 'u_Translation')
-  gl.uniform4f(u_Translation, 0, 0.5, 0, 0)
+  const u_Translation_2 = gl.getUniformLocation(program_2, 'u_Translation')
+  // gl.uniform4f(u_Translation_2, 0, 0.5, 0, 0)
+
+  gl.vertexAttribPointer(a_Position_2, 2, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(a_Position_2)
+
+  // gl.drawArrays(gl.POINTS, 0, 3)
+  // gl.drawArrays(gl.TRIANGLES, 0, 3)
 
   drawStage()
 }
