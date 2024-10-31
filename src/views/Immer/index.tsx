@@ -1,24 +1,26 @@
-import Trigger from '@/components/Trigger/Trigger'
-import { Checkbox, Select } from '@arco-design/web-react'
-import React, { useState, ReactNode, useContext } from 'react'
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react'
 
-const Context = React.createContext(1)
 export default function Tt() {
   const [flag, setFlag] = useState(false)
 
   console.log('render')
 
   return (
-    <Context.Provider value={2}>
-      <Child></Child>
-    </Context.Provider>
+    <>
+      <button onClick={() => setFlag(!flag)}>btn</button>
+      <Child
+        ref={rr => {
+          console.log('rr', rr)
+        }}
+      />
+    </>
   )
 }
 
-function Child() {
-  console.log(Context)
-  const v = useContext(Context)
-  console.log(v)
+let Child = forwardRef(function Child(props, ref) {
+  useImperativeHandle(ref, () => ({
+    ip: 1
+  }))
 
-  return <div>2</div>
-}
+  return <div></div>
+})

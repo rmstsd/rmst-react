@@ -1,14 +1,14 @@
 import type { RouteObject } from 'react-router-dom'
 
-import MapView from '@/mapView'
-import Ck from '@/views/Ck/Ck'
+import MapView from '@/views/Canvas/mapView'
+import Ck from '@/views/Canvas/Ck/Ck'
 import ContextSelector from '@/views/ContextSelector'
 import ElementRise from '@/views/ElementRise'
 import LgDemo from '@/views/LiteGraph/LgDemo'
 import Cart from '@/views/Sku/Cart'
 import Svg from '@/views/Svg/Svg'
-import Webgl from '@/views/Webgl/Webgl'
-import YogaLayout from '@/views/YogaLayout'
+import Webgl from '@/views/Canvas/Webgl/Webgl'
+import YogaLayout from '@/views/Canvas/YogaLayout'
 import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 import { Navigate } from 'react-router-dom'
 
@@ -23,6 +23,9 @@ import ScrollDemo from '../views/ScrollDemo'
 import Sku from '../views/Sku'
 import VSelect from '../views/VSelect'
 import Sokoban from '@/views/Sokoban'
+import Pixi from '@/views/Canvas/Pixi/Pixi'
+import Native from '@/views/Canvas/Native/Native'
+import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -47,7 +50,10 @@ const routes: IRouteObject[] = [
       { path: 'ck', element: <Ck /> },
       { path: 'gl', element: <Webgl /> },
       { path: 'MapView', element: <MapView /> },
-      { path: 'YogaLayout', element: <YogaLayout /> }
+      { path: 'YogaLayout', element: <YogaLayout /> },
+      { path: 'Pixi', element: <Pixi /> },
+      { path: 'Native', element: <Native /> },
+      { path: 'LeaferDemo', element: <LeaferDemo /> }
     ]
   },
   {

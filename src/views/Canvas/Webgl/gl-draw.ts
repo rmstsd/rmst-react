@@ -1,4 +1,6 @@
 import { random, randomInt, xor } from 'es-toolkit'
+import { drawRect } from './rect'
+import { testShader } from './test-shader'
 
 export function glDraw(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext('webgl2')
@@ -14,56 +16,62 @@ export function glDraw(canvas: HTMLCanvasElement) {
     color: new Float32Array([Math.random(), Math.random(), Math.random(), 1.0])
   }))
 
-  canvas.addEventListener('pointerdown', evt => {
-    down = true
-    prev.x = evt.clientX
-    prev.y = evt.clientY
-  })
+  // canvas.addEventListener('pointerdown', evt => {
+  //   down = true
+  //   prev.x = evt.clientX
+  //   prev.y = evt.clientY
+  // })
 
-  document.addEventListener('pointermove', evt => {
-    if (!down) return
+  // document.addEventListener('pointermove', evt => {
+  //   if (!down) return
 
-    const { clientX, clientY } = evt
+  //   const { clientX, clientY } = evt
 
-    const { left, top, width, height } = canvas.getBoundingClientRect()
-    const [cssX, cssY] = [clientX - left, clientY - top]
+  //   const { left, top, width, height } = canvas.getBoundingClientRect()
+  //   const [cssX, cssY] = [clientX - left, clientY - top]
 
-    const dx = clientX - prev.x
-    const dy = clientY - prev.y
+  //   const dx = clientX - prev.x
+  //   const dy = clientY - prev.y
 
-    const [halfWidth, halfHeight] = [width / 2, height / 2]
-    const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight]
-    const yBaseCenterTop = -yBaseCenter
-    const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight]
+  //   const [halfWidth, halfHeight] = [width / 2, height / 2]
+  //   const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight]
+  //   const yBaseCenterTop = -yBaseCenter
+  //   const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight]
 
-    ts.x += dx / halfWidth
-    ts.y += -dy / halfHeight
+  //   ts.x += dx / halfWidth
+  //   ts.y += -dy / halfHeight
 
-    gl.uniform4f(u_Translation_2, dx / halfWidth, dy / halfHeight, 0, 0)
+  //   gl.uniform4f(u_Translation_2, dx / halfWidth, dy / halfHeight, 0, 0)
 
-    drawStage()
+  //   drawStage()
 
-    prev.x = clientX
-    prev.y = clientY
-  })
+  //   prev.x = clientX
+  //   prev.y = clientY
+  // })
 
-  document.addEventListener('pointerup', evt => {
-    down = false
-  })
+  // document.addEventListener('pointerup', evt => {
+  //   down = false
+  // })
 
-  canvas.addEventListener('click', function (event) {
-    const { clientX, clientY } = event
-    const { left, top, width, height } = canvas.getBoundingClientRect()
-    const [cssX, cssY] = [clientX - left, clientY - top]
+  // canvas.addEventListener('click', function (event) {
+  //   const { clientX, clientY } = event
+  //   const { left, top, width, height } = canvas.getBoundingClientRect()
+  //   const [cssX, cssY] = [clientX - left, clientY - top]
 
-    const [halfWidth, halfHeight] = [width / 2, height / 2]
-    const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight]
-    const yBaseCenterTop = -yBaseCenter
-    const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight]
-    console.log(x, y)
+  //   const [halfWidth, halfHeight] = [width / 2, height / 2]
+  //   const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight]
+  //   const yBaseCenterTop = -yBaseCenter
+  //   const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight]
+  //   console.log(x, y)
 
-    drawStage()
-  })
+  //   drawStage()
+  // })
+
+  drawRect(gl)
+
+  // testShader(gl)
+
+  return
 
   function drawStage() {
     gl.clearColor(1, 1, 1, 1)
@@ -128,51 +136,51 @@ export function glDraw(canvas: HTMLCanvasElement) {
   // const u_Translation = gl.getUniformLocation(program, 'u_Translation')
   // gl.uniform4f(u_Translation, 0, 0.5, 0, 0)
 
-  // 三角面
-  const vs = `
-      attribute vec4 a_Position;
-      uniform vec4 u_Translation;
-      void main() {
-        gl_Position = a_Position + u_Translation;
-        gl_PointSize = 10.0;
-    }
-  `
+  // // 三角面
+  // const vs = `
+  //     attribute vec4 a_Position;
+  //     uniform vec4 u_Translation;
+  //     void main() {
+  //       gl_Position = a_Position + u_Translation;
+  //       gl_PointSize = 10.0;
+  //   }
+  // `
 
-  const fs = `
-    precision mediump float;
-    uniform vec4 t_color;
-    void main() {
-      gl_FragColor = t_color;
-    }
-  `
+  // const fs = `
+  //   precision mediump float;
+  //   uniform vec4 t_color;
+  //   void main() {
+  //     gl_FragColor = t_color;
+  //   }
+  // `
 
-  const triangles = Array.from({ length: 10 }, () => ({
-    points: [random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1)],
-    color: new Float32Array([Math.random(), Math.random(), Math.random(), 1.0])
-  }))
+  // const triangles = Array.from({ length: 1000 }, () => ({
+  //   points: [random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1)],
+  //   color: new Float32Array([Math.random(), Math.random(), Math.random(), 1.0])
+  // }))
 
-  const program_2 = initShaders(gl, vs, fs)
-  const vertices = new Float32Array([0.0, 0.1, -0.1, -0.1, 0.1, -0.1])
-  const vertexBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+  // const program_2 = initShaders(gl, vs, fs)
+  // const vertices = new Float32Array([0.0, 0.1, -0.1, -0.1, 0.1, -0.1])
+  // const vertexBuffer = gl.createBuffer()
+  // gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
+  // gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-  const a_Position_2 = gl.getAttribLocation(program_2, 'a_Position')
-  const t_color = gl.getUniformLocation(program_2, 't_color')
+  // const a_Position_2 = gl.getAttribLocation(program_2, 'a_Position')
+  // const t_color = gl.getUniformLocation(program_2, 't_color')
 
-  const u_Translation_2 = gl.getUniformLocation(program_2, 'u_Translation')
-  // gl.uniform4f(u_Translation_2, 0, 0.5, 0, 0)
+  // const u_Translation_2 = gl.getUniformLocation(program_2, 'u_Translation')
+  // // gl.uniform4f(u_Translation_2, 0, 0.5, 0, 0)
 
-  gl.vertexAttribPointer(a_Position_2, 2, gl.FLOAT, false, 0, 0)
-  gl.enableVertexAttribArray(a_Position_2)
+  // gl.vertexAttribPointer(a_Position_2, 2, gl.FLOAT, false, 0, 0)
+  // gl.enableVertexAttribArray(a_Position_2)
 
-  // gl.drawArrays(gl.POINTS, 0, 3)
-  // gl.drawArrays(gl.TRIANGLES, 0, 3)
+  // // gl.drawArrays(gl.POINTS, 0, 3)
+  // // gl.drawArrays(gl.TRIANGLES, 0, 3)
 
-  drawStage()
+  // drawStage()
 }
 
-function initShaders(gl: WebGLRenderingContext, vsSource, fsSource) {
+export function initShaders(gl: WebGLRenderingContext, vsSource, fsSource) {
   //创建程序对象
   const program = gl.createProgram()
   //建立着色对象

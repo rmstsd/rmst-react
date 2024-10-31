@@ -1,7 +1,7 @@
 import type { Canvas } from 'canvaskit-wasm/bin/canvaskit.js'
 
-import mapData from '@/mapView/mapData.json'
-import { AreaMapViewStore } from '@/mapView/store'
+import mapData from '@/views/Canvas/mapView/mapData.json'
+import { AreaMapViewStore } from '@/views/Canvas/mapView/store'
 import InitCanvasKit, { Surface } from 'canvaskit-wasm/bin/canvaskit.js'
 import { useEffect, useMemo, useRef } from 'react'
 

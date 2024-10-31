@@ -2,7 +2,7 @@ import { Button, Menu } from '@arco-design/web-react'
 import { IconLeft, IconRight } from '@arco-design/web-react/icon'
 
 import { useLocalStorageState } from 'ahooks'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom'
 
 import routes from '../routes'
@@ -12,6 +12,10 @@ const LayoutView: React.FC = () => {
   const location = useLocation()
 
   const [sideOpen, setSideOpen] = useLocalStorageState('side-open', { defaultValue: false })
+
+  useEffect(() => {
+    document.title = location.pathname
+  }, [location.pathname])
 
   return (
     <div className="h-full">
@@ -24,8 +28,7 @@ const LayoutView: React.FC = () => {
           onClick={() => setSideOpen(!sideOpen)}
           style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)', border: '1px solid #ddd' }}
           type="default"
-        >
-        </Button>
+        ></Button>
 
         <Menu
           className="h-full w-[200px] overflow-auto border-r-2 transition-all"
