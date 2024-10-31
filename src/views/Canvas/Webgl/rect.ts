@@ -20,7 +20,7 @@ const fs = `
   }
 `
 
-export function drawRect(gl: WebGLRenderingContext) {
+export function drawRect(gl: WebGL2RenderingContext) {
   drawByWebGL(gl)
 
   return
@@ -74,7 +74,7 @@ function initShader(gl: WebGLRenderingContext, vertexShaderSource, fragmentShade
 }
 
 // webgl 绘制矩形 https://codesandbox.io/p/sandbox/svg-canvas-2d-webgl-hui-zhi-ju-xing-forked-6qm7t9?file=%2Fsrc%2Findex.js%3A36%2C5
-const drawByWebGL = (gl: WebGLRenderingContext) => {
+const drawByWebGL = (gl: WebGL2RenderingContext) => {
   let prev = { x: 0, y: 0 }
   let down = false
   let ts = { x: 0, y: 0 }
