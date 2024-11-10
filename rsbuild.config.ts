@@ -18,5 +18,17 @@ export default defineConfig({
     cssModules: {
       localIdentName: '[local]-[hash:base64:4]'
     }
+  },
+  tools: {
+    rspack: {
+      module: {
+        rules: [
+          {
+            test: /\.(frag|vert)$/,
+            type: 'asset/source'
+          }
+        ]
+      }
+    }
   }
 })

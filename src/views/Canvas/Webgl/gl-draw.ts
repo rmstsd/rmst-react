@@ -1,6 +1,5 @@
-import { random, randomInt, xor } from 'es-toolkit'
+import { random, randomInt } from 'es-toolkit'
 import { drawRect } from './rect'
-import { testShader } from './test-shader'
 
 export function glDraw(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext('webgl2')
