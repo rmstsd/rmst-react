@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 
 export default function Native() {
   useEffect(() => {
-    // 至少 3500 个
     const canvas = document.querySelector('canvas')
 
     canvas.width = canvas.parentElement.clientWidth
@@ -10,7 +9,7 @@ export default function Native() {
 
     const ctx = canvas.getContext('2d')
 
-    const rects = Array.from({ length: 4000 }, () => {
+    const rects = Array.from({ length: 15000 }, () => {
       const x = Math.ceil(Math.random() * canvas.width)
       const y = Math.ceil(Math.random() * canvas.height)
       const width = Math.ceil(Math.random() * 20)

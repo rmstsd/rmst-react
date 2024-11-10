@@ -173,24 +173,26 @@ const drawByWebGL = (gl: WebGL2RenderingContext) => {
   const u_Translation = gl.getUniformLocation(program, 'u_Translation')
   // --
 
-  gl.clearColor(1, 1, 1, 1)
-  gl.clear(gl.COLOR_BUFFER_BIT)
+  // gl.clearColor(1, 1, 1, 1)
+  // gl.clear(gl.COLOR_BUFFER_BIT)
 
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
-  gl.uniform4fv(u_FragColor, glColor('blue', 0.5))
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  // gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+  // gl.uniform4fv(u_FragColor, glColor('blue', 0.5))
+  // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-  const rect2 = [
-    -0.27135627982184296, -0.6380974900500178, 0.34538168103537914, -0.6380974900500178, -0.27135627982184296,
-    -1.159547017491221, 0.34538168103537914, -1.159547017491221
-  ]
-  const vertices2 = new Float32Array(rect2)
+  // const rect2 = [
+  //   -0.27135627982184296, -0.6380974900500178, 0.34538168103537914, -0.6380974900500178, -0.27135627982184296,
+  //   -1.159547017491221, 0.34538168103537914, -1.159547017491221
+  // ]
+  // const vertices2 = new Float32Array(rect2)
 
-  gl.bufferData(gl.ARRAY_BUFFER, vertices2, gl.STATIC_DRAW)
-  gl.uniform4fv(u_FragColor, glColor('red', 0.5))
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  // gl.bufferData(gl.ARRAY_BUFFER, vertices2, gl.STATIC_DRAW)
+  // gl.uniform4fv(u_FragColor, glColor('red', 0.5))
+  // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-  const rects = genRects(8000)
+  const rects = genRects(15000)
+
+  render()
 
   function render() {
     gl.clearColor(1, 1, 1, 1)
