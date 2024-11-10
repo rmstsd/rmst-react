@@ -14,6 +14,9 @@
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
     "@gsap/react": "^2.1.1",
+    "@leafer-in/animate": "^1.0.7",
+    "@leafer-in/editor": "^1.0.7",
+    "@leafer-in/state": "^1.0.7",
     "@rsbuild/plugin-node-polyfill": "^1.0.4",
     "@timohausmann/quadtree-js": "^1.2.6",
     "ahooks": "^3.7.10",
@@ -30,7 +33,7 @@
     "gl-matrix": "^3.4.3",
     "gsap": "^3.12.5",
     "immer": "^10.0.4",
-    "leafer-ui": "^1.0.2",
+    "leafer-ui": "^1.0.7",
     "lenis": "^1.1.9",
     "litegraph.js": "^0.7.18",
     "mobx": "^6.13.2",

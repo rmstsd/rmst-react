@@ -52,7 +52,7 @@ const LayoutView: React.FC = () => {
         </Menu>
       </aside>
 
-      <section className="h-full p-[10px] transition-all" style={{ marginLeft: sideOpen ? 200 : 0 }}>
+      <section className="box-border h-full p-[10px] transition-all" style={{ marginLeft: sideOpen ? 200 : 0 }}>
         <Outlet />
       </section>
     </div>

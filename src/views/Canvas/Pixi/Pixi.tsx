@@ -31,7 +31,7 @@ export default function Pixi() {
 
       await app.init({ width: container.clientWidth, height: container.clientHeight, backgroundColor: '#fff' })
 
-      const randomRects = Array.from({ length: 5000 }, () => {
+      const randomRects = Array.from({ length: 8000 }, () => {
         const x = randomInt(20, rect.width - 40)
         const y = randomInt(20, rect.height - 40)
         const width = randomInt(10, 20)

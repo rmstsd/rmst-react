@@ -162,17 +162,11 @@ const drawByWebGL = (gl: WebGL2RenderingContext) => {
   ])
 
   // -- 一次性操作
-  // 创建缓存对象
   const vertexBuffer = gl.createBuffer()
-  // 绑定缓存对象到上下文
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
-  // 向缓存区写入数据
 
-  // 获取 a_Position 变量地址
   const a_Position = gl.getAttribLocation(program, 'a_Position')
-  // 允许访问缓存区
   gl.enableVertexAttribArray(a_Position)
-  // 将缓冲区对象分配给 a_Position 变量
   gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0)
 
   const u_FragColor = gl.getUniformLocation(program, 'u_FragColor')
@@ -196,14 +190,14 @@ const drawByWebGL = (gl: WebGL2RenderingContext) => {
   gl.uniform4fv(u_FragColor, glColor('red', 0.5))
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-  const rects = genRects(100)
+  const rects = genRects(8000)
 
   function render() {
     gl.clearColor(1, 1, 1, 1)
     gl.clear(gl.COLOR_BUFFER_BIT)
 
     rects.forEach(item => {
-      gl.bufferData(gl.ARRAY_BUFFER, item.points, gl.STATIC_DRAW)
+      gl.bufferData(gl.ARRAY_BUFFER, item.points, gl.DYNAMIC_DRAW)
       gl.uniform4fv(u_FragColor, item.color)
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
     })
@@ -229,8 +223,8 @@ function genRects(length = 1) {
     const x = random(-0.8, 0.8)
     const y = random(-0.8, 0.8)
 
-    const width = random(0.02, 0.1)
-    const height = random(0.02, 0.1)
+    const width = random(0.02, 0.03)
+    const height = random(0.02, 0.03)
 
     return {
       points: new Float32Array([
