@@ -1,0 +1,30 @@
+#root {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.widget-name {
+  display: flow-root;
+  width: 80%;
+  border: 1px solid black;
+  margin: 0;
+}
+
+.widget-name h2 {
+  font-size: 12px;
+}
+
+.widget-name[min-width~='400px'] h2 {
+  font-size: 18px;
+}
+
+.widget-name[min-width~='600px'] h2 {
+  padding: 55px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.widget-name[min-width~='700px'] h2 {
+  font-size: 34px;
+  color: red;
+}
