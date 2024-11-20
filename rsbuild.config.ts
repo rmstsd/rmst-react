@@ -2,9 +2,10 @@ import { defineConfig } from '@rsbuild/core'
 import { pluginLess } from '@rsbuild/plugin-less'
 import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
 import { pluginReact } from '@rsbuild/plugin-react'
+import { pluginBasicSsl } from '@rsbuild/plugin-basic-ssl'
 
 export default defineConfig({
-  plugins: [pluginNodePolyfill(), pluginLess(), pluginReact()],
+  plugins: [pluginNodePolyfill(), pluginLess(), pluginReact(), pluginBasicSsl()],
   dev: {
     assetPrefix: './',
     hmr: false

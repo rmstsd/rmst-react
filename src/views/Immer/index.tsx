@@ -2,51 +2,50 @@ import { Input } from '@arco-design/web-react'
 import { RefInputType } from '@arco-design/web-react/es/Input'
 import { toJS } from 'mobx'
 import { observer, useLocalObservable } from 'mobx-react-lite'
+import { useEffect } from 'react'
 import { useRef, useState } from 'react'
-
-interface User {
-  name: string
-  gender: string
-}
+import { Html5Qrcode, Html5QrcodeScanner } from 'html5-qrcode'
+import { noop } from 'es-toolkit'
 
 export default observer(function ImDemo() {
-  const store = useLocalObservable(() => ({ name: '', gender: '', list: [] }))
+  const [dd, dddd] = useState('')
 
-  const nameRef = useRef<RefInputType>(null)
+  const [html5QrCodem, setsss] = useState<Html5Qrcode>()
+
+  useEffect(() => {
+    const html5QrCode = new Html5Qrcode('reader')
+    setsss(html5QrCode)
+  }, [])
+
+  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    dddd(JSON.stringify(decodedResult, null, 2))
+
+    setvv(decodedText)
+
+    html5QrCodem.stop()
+  }
+
+  const [vv, setvv] = useState('')
+
+  const config = { fps: 10, qrbox: { width: 250, height: 250 } }
 
   return (
     <div>
-      <>FocusDemo</>
+      <button
+        onClick={() => {
+          html5QrCodem.start({ facingMode: 'environment' }, config, qrCodeSuccessCallback).catch(err => err)
+        }}
+      >
+        scan
+      </button>
 
-      <hr />
+      <button onClick={() => html5QrCodem.stop()}>cancel</button>
 
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <div>
-          <span>name:</span>
-          <Input autoFocus value={store.name} onChange={v => (store.name = v)} ref={nameRef} />
-        </div>
-        <div>
-          <span>gender:</span>
-          <Input
-            value={store.gender}
-            onChange={v => (store.gender = v)}
-            onPressEnter={event => {
-              console.log(toJS(store))
+      <input type="text" value={vv} onChange={noop} />
 
-              store.list.push({ name: store.name, gender: store.gender })
-              store.name = ''
-              store.gender = ''
-              nameRef.current.focus()
-            }}
-          />
-        </div>
-      </div>
-      <hr />
-      {store.list.map((item, index) => (
-        <div key={index}>
-          {item.name}-{item.gender}
-        </div>
-      ))}
+      <div id="reader"></div>
+
+      <pre>{dd}</pre>
     </div>
   )
 })
