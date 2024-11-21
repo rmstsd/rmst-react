@@ -28,3 +28,11 @@
   font-size: 34px;
   color: red;
 }
+
+.width-between-400-and-599 {
+  background-color: red;
+}
+
+.width-larger-than-600 {
+  background-color: pink;
+}
