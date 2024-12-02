@@ -7,6 +7,8 @@ import { useRef, useState } from 'react'
 import { Html5Qrcode, Html5QrcodeScanner } from 'html5-qrcode'
 import { noop } from 'es-toolkit'
 
+import pl from 'platform'
+
 export default observer(function ImDemo() {
   const [dd, dddd] = useState('')
 
@@ -15,6 +17,8 @@ export default observer(function ImDemo() {
   useEffect(() => {
     const html5QrCode = new Html5Qrcode('reader')
     setsss(html5QrCode)
+
+    dddd(JSON.stringify(pl, null, 2))
   }, [])
 
   const qrCodeSuccessCallback = (decodedText, decodedResult) => {
@@ -28,8 +32,11 @@ export default observer(function ImDemo() {
 
   const config = { fps: 10, qrbox: { width: 250, height: 250 } }
 
+  const [vvv, setvvv] = useState('')
+
   return (
     <div className="mt-20">
+      {navigator.platform}
       <button
         onClick={() => {
           dddd('')
