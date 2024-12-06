@@ -1,4 +1,4 @@
-import { Input } from '@arco-design/web-react'
+import { Button, ConfigProvider, Input } from '@arco-design/web-react'
 import { RefInputType } from '@arco-design/web-react/es/Input'
 import { toJS } from 'mobx'
 import { observer, useLocalObservable } from 'mobx-react-lite'
@@ -47,13 +47,9 @@ export default observer(function ImDemo() {
       >
         开始扫码
       </button>
-
       <button onClick={() => html5QrCodem.stop()}>停止扫码</button>
-
       <input type="text" value={vv} onChange={noop} />
-
       <div id="reader" className="w-100 h-100"></div>
-
       <pre>{dd}</pre>
     </div>
   )

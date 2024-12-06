@@ -6,7 +6,7 @@ import App from './App'
 import ElementQueries from 'css-element-queries/src/ElementQueries'
 ElementQueries.listen()
 
-import '@arco-design/web-react/dist/css/arco.css'
+import '@arco-design/web-react/dist/css/index.less'
 import './app.less'
 import { RectRender, registerUI } from 'leafer-ui'
 

@@ -5,7 +5,18 @@ import { pluginReact } from '@rsbuild/plugin-react'
 import { pluginBasicSsl } from '@rsbuild/plugin-basic-ssl'
 
 export default defineConfig({
-  plugins: [pluginNodePolyfill(), pluginLess(), pluginReact()],
+  plugins: [
+    pluginNodePolyfill(),
+    pluginLess({
+      // lessLoaderOptions: {
+      //   lessOptions: {
+      //     modifyVars: { prefix: 'rmst' },
+      //     javascriptEnabled: true
+      //   }
+      // }
+    }),
+    pluginReact()
+  ],
   dev: {
     assetPrefix: './',
     hmr: false

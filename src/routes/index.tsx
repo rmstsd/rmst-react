@@ -26,6 +26,7 @@ import Sokoban from '@/views/Sokoban'
 import Pixi from '@/views/Canvas/Pixi/Pixi'
 import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
+import PickerView from '@/views/PickerView'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -37,6 +38,7 @@ const routes: IRouteObject[] = [
     children: [
       { path: 'immer', element: <Immer /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
+      { path: 'PickerView', element: <PickerView /> },
       { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
