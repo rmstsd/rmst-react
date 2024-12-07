@@ -3,18 +3,14 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
 
-import ElementQueries from 'css-element-queries/src/ElementQueries'
-ElementQueries.listen()
-
 import '@arco-design/web-react/dist/css/index.less'
 import './app.less'
 import { RectRender, registerUI } from 'leafer-ui'
 
 import './test.css'
-import { useState } from 'react'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <HashRouter>
+  <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <ConfigProvider componentConfig={{ Button: { type: 'primary' } }}>
       <App />
     </ConfigProvider>

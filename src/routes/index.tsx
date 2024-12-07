@@ -15,7 +15,7 @@ import { Navigate } from 'react-router-dom'
 import LayoutView from '../layout/Layout'
 import Dm from '../views/Dm/Dm'
 import Hooks18 from '../views/Hooks18'
-import Immer from '../views/Immer'
+import Rmst from '../views/Rmst'
 import OrPortalTest from '../views/OrPortalTest'
 import MyPortalTest from '../views/PortalTest/MyPortalTest'
 import QuadTree from '../views/QuadTree'
@@ -30,13 +30,13 @@ import PickerView from '@/views/PickerView'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
-  { path: '/', element: <Navigate to="/ui-component/immer" />, hidden: true },
-  { path: '/ui-component', element: <Navigate to="/ui-component/immer" />, hidden: true },
+  { path: '/', element: <Navigate to="/ui-component/rmst" />, hidden: true },
+  { path: '/ui-component', element: <Navigate to="/ui-component/rmst" />, hidden: true },
   {
     path: '/ui-component',
     element: <LayoutView />,
     children: [
-      { path: 'immer', element: <Immer /> },
+      { path: 'rmst', element: <Rmst /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'PickerView', element: <PickerView /> },
       { path: 'Sokoban', element: <Sokoban /> },
