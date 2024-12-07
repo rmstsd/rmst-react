@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef, useState } from 'react'
+import { momentum } from './util'
 
 const config = {
   rows: 7,
   itemHeight: 50,
   containerHeight: 250,
-  data: Array.from({ length: 15 }, (_, i) => ({ label: `Item ${i}`, value: i }))
+  data: Array.from({ length: 30 }, (_, i) => ({ label: `Item ${i}`, value: i }))
 }
 
 type Item = {
@@ -39,10 +40,11 @@ export default function PickerView(props: Props) {
     scrollToTy(tyRef.current, 0)
   }, [ul])
 
-  function scrollToTy(ty: number, duration: number = 0) {
+  function scrollToTy(ty: number, duration: number = 0, easing: string = 'ease-out') {
     ul.animate([{ transform: `translateY(${ty}px)` }], {
       fill: 'forwards',
-      duration
+      duration,
+      easing
     })
   }
 
@@ -86,12 +88,18 @@ export default function PickerView(props: Props) {
 
       if (isDrag) {
         const duration = upEvt.timeStamp - downEvt.timeStamp
-        console.log('duration', duration)
-        const isMomentum = duration < 300 //&& absDistY > 90
+        const absDistY = Math.abs(upEvt.clientY - downEvt.clientY)
+
+        const isMomentum = duration < 300 && absDistY > 30
 
         if (isMomentum) {
+          console.log('惯性', minTy, maxTy)
           const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
           console.log('mu', mu)
+
+          tyRef.current = mu.destination
+
+          scrollToTy(mu.destination, mu.duration, mu.bezier)
         } else {
           const idx = -Math.round(_ty / itemHeight)
           tyRef.current = -itemHeight * idx

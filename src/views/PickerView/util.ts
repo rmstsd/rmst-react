@@ -1,4 +1,4 @@
-function momentum(current, start, duration, minY, maxY, wrapperHeight) {
+export function momentum(current, start, duration, minY, maxY, wrapperHeight) {
   const durationMap = {
     noBounce: 400,
     weekBounce: 100,
