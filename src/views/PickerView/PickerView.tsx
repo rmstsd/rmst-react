@@ -30,14 +30,14 @@ export default function PickerView(props: Props) {
 
   const [ul, setUl] = useState<HTMLUListElement>()
   const tyRef = useRef(0)
+  const isTriggerDragRef = useRef(false)
 
   useLayoutEffect(() => {
     if (!ul) {
       return
     }
 
-    tyRef.current = minTy
-    scrollToTy(tyRef.current, 0)
+    scrollToIndex(data.length - 2)
   }, [ul])
 
   function scrollToTy(ty: number, duration: number = 0, easing: string = 'ease-out') {
@@ -49,16 +49,24 @@ export default function PickerView(props: Props) {
   }
 
   const onClick = (item: Item, index: number) => {
+    if (isTriggerDragRef.current) {
+      return
+    }
+    console.log('未触发 drag')
+    scrollToIndex(index)
+  }
+
+  function scrollToIndex(index: number) {
     tyRef.current = -itemHeight * index
     scrollToTy(tyRef.current, 200)
 
+    const item = data[index]
     onChange(item.value)
   }
 
   const onPointerDown = (downEvt: React.PointerEvent) => {
     downEvt.preventDefault()
 
-    let isDrag = false
     let _ty = 0
 
     const onPointerMove = (moveEvt: PointerEvent) => {
@@ -69,7 +77,7 @@ export default function PickerView(props: Props) {
         return
       }
 
-      isDrag = true
+      isTriggerDragRef.current = true
 
       _ty = tyRef.current + deltaY
 
@@ -86,27 +94,29 @@ export default function PickerView(props: Props) {
     const onPointerUp = (upEvt: PointerEvent) => {
       console.log('up', upEvt.type)
 
-      if (isDrag) {
+      if (isTriggerDragRef.current) {
         const duration = upEvt.timeStamp - downEvt.timeStamp
         const absDistY = Math.abs(upEvt.clientY - downEvt.clientY)
 
         const isMomentum = duration < 300 && absDistY > 30
 
-        if (isMomentum) {
-          console.log('惯性', minTy, maxTy)
-          const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
-          console.log('mu', mu)
+        // if (isMomentum) {
+        //   console.log('惯性', minTy, maxTy)
+        //   const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
+        //   console.log('mu', mu)
 
-          tyRef.current = mu.destination
+        //   tyRef.current = mu.destination
 
-          scrollToTy(mu.destination, mu.duration, mu.bezier)
-        } else {
-          const idx = -Math.round(_ty / itemHeight)
-          tyRef.current = -itemHeight * idx
-          scrollToTy(tyRef.current, 200)
+        //   scrollToTy(mu.destination, mu.duration, mu.bezier)
+        // } else {
+        const idx = Math.abs(Math.round(_ty / itemHeight))
 
-          onChange(data[idx].value)
-        }
+        scrollToIndex(idx)
+
+        setTimeout(() => {
+          isTriggerDragRef.current = false
+        })
+        // }
       }
 
       document.removeEventListener('pointermove', onPointerMove)
