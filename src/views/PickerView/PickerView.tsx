@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { momentum } from './util'
+import { clamp } from 'es-toolkit'
 
 const config = {
   rows: 7,
@@ -25,7 +26,8 @@ export default function PickerView(props: Props) {
   const { data, itemHeight, containerHeight, rows } = config
   const containerPaddingTop = itemHeight * Math.floor(rows / 2)
 
-  const minTy = -itemHeight * (data.length - 1)
+  const minTy = containerHeight - itemHeight * data.length // -itemHeight * (data.length - 1)
+  console.log(minTy)
   const maxTy = 0
 
   const [ul, setUl] = useState<HTMLUListElement>()
@@ -37,31 +39,46 @@ export default function PickerView(props: Props) {
       return
     }
 
-    scrollToIndex(data.length - 2)
+    // scrollToIndex(data.length - 2)
   }, [ul])
 
   function scrollToTy(ty: number, duration: number = 0, easing: string = 'ease-out') {
-    ul.animate([{ transform: `translateY(${ty}px)` }], {
+    const aniInstance = ul.animate([{ transform: `translateY(${ty}px)` }], {
       fill: 'forwards',
       duration,
       easing
     })
+
+    if (duration !== 0) {
+      aniInstance.onfinish = () => {
+        console.log('onfinish')
+        if (ty < minTy) {
+          tyRef.current = minTy
+          scrollToTy(minTy, duration, easing)
+        }
+        if (ty > maxTy) {
+          tyRef.current = maxTy
+          scrollToTy(maxTy, duration, easing)
+        }
+      }
+    }
   }
 
   const onClick = (item: Item, index: number) => {
     if (isTriggerDragRef.current) {
       return
     }
-    console.log('未触发 drag')
-    scrollToIndex(index)
+    // console.log('未触发 drag')
+    // scrollToIndex(index)
   }
 
   function scrollToIndex(index: number) {
     tyRef.current = -itemHeight * index
     scrollToTy(tyRef.current, 200)
 
-    const item = data[index]
-    onChange(item.value)
+    console.log('index', index)
+    // const item = data[index]
+    // onChange(item.value)
   }
 
   const onPointerDown = (downEvt: React.PointerEvent) => {
@@ -80,13 +97,19 @@ export default function PickerView(props: Props) {
       isTriggerDragRef.current = true
 
       _ty = tyRef.current + deltaY
+      console.log(_ty)
 
       if (_ty < minTy) {
-        _ty = minTy
+        _ty = tyRef.current + deltaY / 3
       }
       if (_ty > maxTy) {
-        _ty = maxTy
+        _ty = tyRef.current + deltaY / 3
+        // _ty = maxTy
       }
+
+      // if (_ty < minTy || _ty > maxTy) {
+      //   _ty = Math.round(tyRef.current + deltaY / 3)
+      // }
 
       scrollToTy(_ty)
     }
@@ -100,23 +123,44 @@ export default function PickerView(props: Props) {
 
         const isMomentum = duration < 300 && absDistY > 30
 
-        // if (isMomentum) {
-        //   console.log('惯性', minTy, maxTy)
-        //   const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
-        //   console.log('mu', mu)
+        if (isMomentum) {
+          console.log('惯性', minTy, maxTy, containerHeight)
+          const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
+          console.log('mu', mu)
 
-        //   tyRef.current = mu.destination
+          const idx = Math.abs(Math.round(mu.destination / itemHeight))
+          // console.log(idx)
 
-        //   scrollToTy(mu.destination, mu.duration, mu.bezier)
-        // } else {
-        const idx = Math.abs(Math.round(_ty / itemHeight))
+          tyRef.current = mu.destination
+          scrollToTy(mu.destination, 200)
+        } else {
+          // 如果越界
+          if (_ty > maxTy || _ty < minTy) {
+            // 长拉住边界 回弹
+            backBounce()
+          } else {
+            // 慢拉 松手时
+            tyRef.current = _ty
+            const idx = Math.abs(Math.round(_ty / itemHeight))
+            scrollToIndex(idx)
+          }
 
-        scrollToIndex(idx)
+          function backBounce() {
+            if (_ty > maxTy) {
+              tyRef.current = maxTy
+              scrollToTy(maxTy, 200)
+            }
+
+            if (_ty < minTy) {
+              tyRef.current = minTy
+              scrollToTy(minTy, 200)
+            }
+          }
+        }
 
         setTimeout(() => {
           isTriggerDragRef.current = false
         })
-        // }
       }
 
       document.removeEventListener('pointermove', onPointerMove)
@@ -133,9 +177,9 @@ export default function PickerView(props: Props) {
       className="relative m-auto mt-[200px] w-[200px] touch-none select-none overflow-hidden border"
       onPointerDown={onPointerDown}
       onContextMenu={evt => evt.preventDefault()}
-      style={{ height: containerHeight, paddingTop: containerPaddingTop }}
+      style={{ height: containerHeight }}
     >
-      <ul ref={setUl}>
+      <ul ref={setUl} style={{}}>
         {data.map((item, index) => (
           <li
             key={item.value}

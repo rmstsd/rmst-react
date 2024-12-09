@@ -322,14 +322,16 @@ const PickerCell = forwardRef((props: PickerCellProps, ref: Ref<PickerCellRef>) 
     // 计算动量，保证滚动顺畅，条件：手势时间小于300ms && 移动距离绝对值大于30时
     // @en Calculate the momentum to ensure smooth scrolling, condition: the gesture time is less than 300ms && the absolute value of the moving distance is greater than 30
     if (duration < 300 && absDistY > 30) {
+      console.log('min', wrapperHeight - scrollerHeight)
       const momentumY = momentum(transformY, lastTransformY, duration, wrapperHeight - scrollerHeight, 0)
+      console.log('momentumY.destination', momentumY.destination)
       const newItemIndex = Math.max(0, Math.min(data.length - 1, Math.round((-1 * momentumY.destination) / itemHeight)))
 
       setBezier(momentumY.bezier)
 
       movingStatusRef.current = 'scrolling'
       _scrollToIndex(newItemIndex, momentumY.duration, () => {
-        _scrollingComplete(newItemIndex)
+        // _scrollingComplete(newItemIndex)
       })
     } else {
       _handleScrollEnd()
