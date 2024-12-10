@@ -87,9 +87,7 @@ export default function PickerView(props: Props) {
     let _ty = 0
 
     const onPointerMove = (moveEvt: PointerEvent) => {
-      console.log('move')
-
-      const deltaY = moveEvt.clientY - downEvt.clientY
+      let deltaY = moveEvt.clientY - downEvt.clientY
       if (Math.abs(deltaY) < 5) {
         return
       }
@@ -97,20 +95,21 @@ export default function PickerView(props: Props) {
       isTriggerDragRef.current = true
 
       _ty = tyRef.current + deltaY
-      console.log(_ty)
 
       if (_ty < minTy) {
-        _ty = tyRef.current + deltaY / 3
+        const asd = Math.abs(tyRef.current - minTy)
+        _ty = minTy + (deltaY + asd) / 3
       }
       if (_ty > maxTy) {
-        _ty = tyRef.current + deltaY / 3
-        // _ty = maxTy
+        const asd = Math.abs(tyRef.current - maxTy)
+        _ty = maxTy + (deltaY - asd) / 3
       }
 
       // if (_ty < minTy || _ty > maxTy) {
       //   _ty = Math.round(tyRef.current + deltaY / 3)
       // }
 
+      console.log('_ty', _ty)
       scrollToTy(_ty)
     }
 
@@ -129,7 +128,7 @@ export default function PickerView(props: Props) {
           console.log('mu', mu)
 
           const idx = Math.abs(Math.round(mu.destination / itemHeight))
-          // console.log(idx)
+          console.log(idx)
 
           tyRef.current = mu.destination
           scrollToTy(mu.destination, 200)
