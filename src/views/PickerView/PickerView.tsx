@@ -20,6 +20,8 @@ interface Props {
   onChange?: (value: string | number) => void
 }
 
+const defaultDuration = 300
+
 export default function PickerView(props: Props) {
   const { onChange } = props
 
@@ -49,19 +51,7 @@ export default function PickerView(props: Props) {
       easing
     })
 
-    if (duration !== 0) {
-      aniInstance.onfinish = () => {
-        console.log('onfinish')
-        if (ty < minTy) {
-          tyRef.current = minTy
-          scrollToTy(minTy, duration, easing)
-        }
-        if (ty > maxTy) {
-          tyRef.current = maxTy
-          scrollToTy(maxTy, duration, easing)
-        }
-      }
-    }
+    return aniInstance
   }
 
   const onClick = (item: Item, index: number) => {
@@ -74,7 +64,7 @@ export default function PickerView(props: Props) {
 
   function scrollToIndex(index: number) {
     tyRef.current = -itemHeight * index
-    scrollToTy(tyRef.current, 200)
+    scrollToTy(tyRef.current, defaultDuration)
 
     console.log('index', index)
     // const item = data[index]
@@ -106,7 +96,7 @@ export default function PickerView(props: Props) {
         _ty = maxTy + (deltaY - asd) / 3
       }
 
-      console.log('_ty', _ty)
+      // console.log('_ty', _ty)
       scrollToTy(_ty)
     }
 
@@ -124,13 +114,28 @@ export default function PickerView(props: Props) {
           const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
           console.log('mu', mu)
 
-          const idx = Math.abs(Math.round(mu.destination / itemHeight))
+          const idx = Math.round(Math.abs(mu.destination / itemHeight))
           console.log(idx)
 
-          const ty = -itemHeight * idx
+          const ty = -itemHeight * (idx + 1)
 
-          tyRef.current = ty //  mu.destination
-          scrollToTy(ty, 200)
+          tyRef.current = mu.destination
+          const ani = scrollToTy(mu.destination, defaultDuration)
+
+          ani.onfinish = () => {
+            console.log('onfinish')
+
+            if (mu.destination < minTy) {
+              tyRef.current = minTy
+              scrollToTy(minTy, duration)
+            }
+            if (mu.destination > maxTy) {
+              tyRef.current = maxTy
+              scrollToTy(maxTy, duration)
+            }
+          }
+          // tyRef.current = ty //  mu.destination
+          // scrollToTy(ty, defaultDuration)
         } else {
           // 如果越界
           if (_ty > maxTy || _ty < minTy) {
@@ -146,12 +151,12 @@ export default function PickerView(props: Props) {
           function backBounce() {
             if (_ty > maxTy) {
               tyRef.current = maxTy
-              scrollToTy(maxTy, 200)
+              scrollToTy(maxTy, defaultDuration)
             }
 
             if (_ty < minTy) {
               tyRef.current = minTy
-              scrollToTy(minTy, 200)
+              scrollToTy(minTy, defaultDuration)
             }
           }
         }
