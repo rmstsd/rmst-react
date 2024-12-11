@@ -28,24 +28,24 @@ export default function PickerView(props: Props) {
   const { data, itemHeight, containerHeight, rows } = config
   const containerPaddingTop = itemHeight * Math.floor(rows / 2)
 
-  const minTy = containerHeight - itemHeight * data.length // -itemHeight * (data.length - 1)
+  const minTy = containerHeight - itemHeight * data.length - containerPaddingTop * 2 // -itemHeight * (data.length - 1)
   console.log(minTy)
   const maxTy = 0
 
-  const [ul, setUl] = useState<HTMLUListElement>()
+  const [wrapperDom, setWrapperDom] = useState<HTMLUListElement>()
   const tyRef = useRef(0)
   const isTriggerDragRef = useRef(false)
 
   useLayoutEffect(() => {
-    if (!ul) {
+    if (!wrapperDom) {
       return
     }
 
     // scrollToIndex(data.length - 2)
-  }, [ul])
+  }, [wrapperDom])
 
   function scrollToTy(ty: number, duration: number = 0, easing: string = 'ease-out') {
-    const aniInstance = ul.animate([{ transform: `translateY(${ty}px)` }], {
+    const aniInstance = wrapperDom.animate([{ transform: `translateY(${ty}px)` }], {
       fill: 'forwards',
       duration,
       easing
@@ -112,30 +112,29 @@ export default function PickerView(props: Props) {
         if (isMomentum) {
           console.log('惯性', minTy, maxTy, containerHeight)
           const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
-          console.log('mu', mu)
 
-          const idx = Math.round(Math.abs(mu.destination / itemHeight))
-          console.log(idx)
+          const idx = Math.round(-mu.destination / itemHeight)
+          const ansIdx = clamp(idx, 0, data.length - 1)
 
-          const ty = -itemHeight * (idx + 1)
+          if (mu.destination < minTy || mu.destination > maxTy) {
+            tyRef.current = mu.destination
+            const ani = scrollToTy(mu.destination, defaultDuration)
 
-          tyRef.current = mu.destination
-          const ani = scrollToTy(mu.destination, defaultDuration)
+            ani.onfinish = () => {
+              console.log('onfinish')
 
-          ani.onfinish = () => {
-            console.log('onfinish')
-
-            if (mu.destination < minTy) {
-              tyRef.current = minTy
-              scrollToTy(minTy, duration)
+              if (mu.destination < minTy) {
+                tyRef.current = minTy
+                scrollToTy(minTy, duration)
+              }
+              if (mu.destination > maxTy) {
+                tyRef.current = maxTy
+                scrollToTy(maxTy, duration)
+              }
             }
-            if (mu.destination > maxTy) {
-              tyRef.current = maxTy
-              scrollToTy(maxTy, duration)
-            }
+          } else {
+            scrollToIndex(ansIdx)
           }
-          // tyRef.current = ty //  mu.destination
-          // scrollToTy(ty, defaultDuration)
         } else {
           // 如果越界
           if (_ty > maxTy || _ty < minTy) {
@@ -182,7 +181,7 @@ export default function PickerView(props: Props) {
       onContextMenu={evt => evt.preventDefault()}
       style={{ height: containerHeight }}
     >
-      <ul ref={setUl} style={{}}>
+      <ul ref={setWrapperDom} style={{ paddingTop: containerPaddingTop }}>
         {data.map((item, index) => (
           <li
             key={item.value}
