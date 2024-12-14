@@ -20,7 +20,7 @@ interface Props {
   onChange?: (value: string | number) => void
 }
 
-const defaultDuration = 300
+const defaultDuration = 200
 
 export default function PickerView(props: Props) {
   const { onChange } = props
@@ -113,7 +113,7 @@ export default function PickerView(props: Props) {
       clearTimeout(timer)
       timer = setTimeout(() => {
         stay = true
-      })
+      }, 10)
     }
 
     const onPointerUp = (upEvt: PointerEvent) => {
@@ -133,21 +133,21 @@ export default function PickerView(props: Props) {
           const ansIdx = clamp(idx, 0, data.length - 1)
 
           if (mu.destination < minTy || mu.destination > maxTy) {
-            tyRef.current = mu.destination
-            const ani = scrollToTy(mu.destination, defaultDuration)
+            tyRef.current = clamp(mu.destination, minTy, maxTy)
+            const ani = scrollToTy(tyRef.current, defaultDuration)
 
-            ani.onfinish = () => {
-              console.log('onfinish')
+            // ani.onfinish = () => {
+            //   console.log('onfinish')
 
-              if (mu.destination < minTy) {
-                tyRef.current = minTy
-                scrollToTy(minTy, duration)
-              }
-              if (mu.destination > maxTy) {
-                tyRef.current = maxTy
-                scrollToTy(maxTy, duration)
-              }
-            }
+            //   if (mu.destination < minTy) {
+            //     tyRef.current = minTy
+            //     scrollToTy(minTy, duration)
+            //   }
+            //   if (mu.destination > maxTy) {
+            //     tyRef.current = maxTy
+            //     scrollToTy(maxTy, duration)
+            //   }
+            // }
           } else {
             scrollToIndex(ansIdx)
           }
