@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { momentum } from './util'
-import { clamp } from 'es-toolkit'
+import { clamp, timeout } from 'es-toolkit'
 
 const config = {
   rows: 7,
@@ -74,7 +74,12 @@ export default function PickerView(props: Props) {
   const onPointerDown = (downEvt: React.PointerEvent) => {
     downEvt.preventDefault()
 
+    let startTime = downEvt.timeStamp
+    let startClientY = downEvt.clientY
+
     let _ty = 0
+    let stay = false
+    let timer = null
 
     const onPointerMove = (moveEvt: PointerEvent) => {
       let deltaY = moveEvt.clientY - downEvt.clientY
@@ -98,18 +103,29 @@ export default function PickerView(props: Props) {
 
       // console.log('_ty', _ty)
       scrollToTy(_ty)
+
+      if (moveEvt.timeStamp - startTime > 300) {
+        startTime = moveEvt.timeStamp
+        startClientY = moveEvt.clientY
+      }
+
+      stay = false
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        stay = true
+      })
     }
 
     const onPointerUp = (upEvt: PointerEvent) => {
       console.log('up', upEvt.type)
 
       if (isTriggerDragRef.current) {
-        const duration = upEvt.timeStamp - downEvt.timeStamp
-        const absDistY = Math.abs(upEvt.clientY - downEvt.clientY)
+        const duration = upEvt.timeStamp - startTime
+        const absDistY = Math.abs(upEvt.clientY - startClientY)
 
         const isMomentum = duration < 300 && absDistY > 30
 
-        if (isMomentum) {
+        if (!stay && isMomentum) {
           console.log('惯性', minTy, maxTy, containerHeight)
           const mu = momentum(_ty, tyRef.current, duration, minTy, maxTy, containerHeight)
 
