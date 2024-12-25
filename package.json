@@ -27,6 +27,7 @@
     "clsx": "^2.1.0",
     "color-alpha": "^2.0.0",
     "color-rgba": "^3.0.0",
+    "decamelize": "^6.0.0",
     "es-toolkit": "^1.26.1",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "gl-matrix": "^3.4.3",
