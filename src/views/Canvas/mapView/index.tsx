@@ -23,6 +23,19 @@ export default function MapView() {
       height: containerRef.current?.clientHeight
     })
 
+    canvas.setTransform({
+      a: 0.0625,
+      b: 0,
+      c: 0,
+      d: 0.0625,
+      e: 411.4375,
+      f: 316.25,
+      x: 242.455,
+      y: 275.42,
+      width: 216.35999999999999,
+      height: 52.3775
+    })
+
     canvas.app.config.move.drag = true
     canvas.app.config.wheel.zoomMode = true
 
@@ -55,7 +68,9 @@ export default function MapView() {
         const daShortSite = 1
         const daLongSite = 2.4
 
-        const directionData = pathParams.dual ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}` : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
+        const directionData = pathParams.dual
+          ? `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite}`
+          : `M${daStart},${-daShortSite} L${daStart},${daShortSite} L${daLongSite},0 L${daStart},${-daShortSite} 
            M${-daStart},${-daShortSite} L${-daStart},${daShortSite} L${-daLongSite},0 L${-daStart},${-daShortSite}`
 
         let directionTransform = ''

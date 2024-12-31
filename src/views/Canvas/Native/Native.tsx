@@ -9,7 +9,7 @@ export default function Native() {
 
     const ctx = canvas.getContext('2d')
 
-    const rects = Array.from({ length: 15000 }, () => {
+    const rects = Array.from({ length: 10000 }, () => {
       const x = Math.ceil(Math.random() * canvas.width)
       const y = Math.ceil(Math.random() * canvas.height)
       const width = Math.ceil(Math.random() * 20)
@@ -37,7 +37,19 @@ export default function Native() {
     let isPointerDown = false
     let prevX = 0
     let prevY = 0
+
+    canvas.addEventListener('click', () => {
+      const dd = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      setTimeout(() => {
+        ctx.translate(200, 200)
+        ctx.putImageData(dd, 0, 0)
+      }, 1000)
+    })
+
     canvas.addEventListener('pointerdown', event => {
+      return
       isPointerDown = true
       prevX = event.clientX
       prevY = event.clientY
