@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { genRects } from '../constant'
 
 export default function Native() {
   useEffect(() => {
@@ -9,28 +10,9 @@ export default function Native() {
 
     const ctx = canvas.getContext('2d')
 
-    const rects = Array.from({ length: 10000 }, () => {
-      const x = Math.ceil(Math.random() * canvas.width)
-      const y = Math.ceil(Math.random() * canvas.height)
-      const width = Math.ceil(Math.random() * 20)
-      const height = Math.ceil(1 + Math.random() * 20)
-      const color = `rgb(${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)}, ${Math.ceil(
-        Math.random() * 255
-      )})`
+    const rects = genRects(10000, canvas.clientWidth, canvas.clientHeight)
 
-      const cachedCanvas = document.createElement('canvas')
-      cachedCanvas.width = width
-      cachedCanvas.height = height
-      const ctx = cachedCanvas.getContext('2d')
-      ctx.fillStyle = color
-      ctx.rect(0, 0, width, height)
-      ctx.fill()
-
-      const path2d = new Path2D()
-      path2d.rect(x, y, width, height)
-
-      return { x, y, width, height, color, path2d, cachedCanvas }
-    })
+    let dd
 
     drawCanvas()
 
@@ -38,18 +20,11 @@ export default function Native() {
     let prevX = 0
     let prevY = 0
 
-    canvas.addEventListener('click', () => {
-      const dd = ctx.getImageData(0, 0, canvas.width, canvas.height)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      setTimeout(() => {
-        ctx.translate(200, 200)
-        ctx.putImageData(dd, 0, 0)
-      }, 1000)
-    })
+    canvas.addEventListener('click', () => {})
 
     canvas.addEventListener('pointerdown', event => {
-      return
+      event.preventDefault()
+
       isPointerDown = true
       prevX = event.clientX
       prevY = event.clientY
@@ -65,6 +40,10 @@ export default function Native() {
         prevY = event.clientY
 
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+        {
+          // ctx.putImageData(dd, tx, ty)
+          // return
+        }
 
         ctx.save()
         ctx.translate(tx, ty)
@@ -82,17 +61,18 @@ export default function Native() {
 
     function drawRect(rect) {
       ctx.beginPath()
-      // ctx.rect(x, y, width, height)
-      ctx.fillStyle = rect.color
-      ctx.fill(rect.path2d)
+      const { x, y, width, height } = rect
+      ctx.rect(x, y, width, height)
+      ctx.fillStyle = rect.fill
+      ctx.fill()
     }
 
     function drawCanvas() {
       rects.forEach(rect => {
-        // ctx.drawImage(rect.cachedCanvas, rect.x, rect.y, rect.cachedCanvas.width, rect.cachedCanvas.height)
-
         drawRect(rect)
       })
+
+      // dd = ctx.getImageData(0, 0, canvas.width, canvas.height)
     }
 
     // 节流函数

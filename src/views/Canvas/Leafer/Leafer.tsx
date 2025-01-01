@@ -1,69 +1,29 @@
-import { Leafer, App, Rect, Box } from 'leafer-ui'
-import '@leafer-in/editor'
-import '@leafer-in/state'
-import '@leafer-in/animate'
+import { Leafer, App, Rect, Box, Leaf } from 'leafer-ui'
+import '@leafer-in/viewport'
 
 import { useEffect } from 'react'
+import { genRects } from '../constant'
 
 export default function LeaferDemo() {
   useEffect(() => {
-    var leafer = new App({
-      view: document.querySelector('.ll-aa'),
-      editor: {}
+    const container = document.querySelector('.ll-aa')
+    var app = new App({
+      view: container,
+      tree: { type: 'viewport' }
     })
-    // leafer.config.move.drag = true
 
-    const randomRects = Array.from({ length: 40 }, () => {
-      const x = Math.floor(Math.random() * window.innerWidth)
-      const y = Math.floor(Math.random() * window.innerHeight)
-      const width = Math.floor(Math.random() * 30)
-      const height = Math.floor(Math.random() * 30)
-      const fill = '#' + Math.floor(Math.random() * 16777215).toString(16)
-      return new Rect({
-        editable: true,
-        draggable: true,
-        x,
-        y,
-        width,
-        height,
-        fill,
-        cursor: 'pointer',
-        hoverStyle: {
-          fill: '#FF4B4B',
-          cornerRadius: 20
-        },
-        pressStyle: {
-          fill: 'pink',
-          transitionOut: 'bounce-out'
-        }
-      })
-    })
+    app.config.move.drag = true
+
+    const randomRects = genRects(10000, container.clientWidth, container.clientHeight)
 
     randomRects.forEach(rect => {
-      leafer.tree.add(rect)
+      const rectItem = new Rect({ ...rect })
+      app.tree.add(rectItem)
     })
 
-    const box = new Box({
-      editable: true,
-      x: 100,
-      y: 100,
-      width: 200,
-      height: 200,
-      fill: 'rgba(255, 0, 0, 0.5)',
-      cursor: 'pointer',
-      children: [
-        new Rect({
-          editable: true,
-          x: 50,
-          y: 50,
-          width: 20,
-          height: 30,
-          fill: 'rgba(0, 255, 0, 0.5)'
-        })
-      ]
-    })
-
-    leafer.tree.add(box)
+    return () => {
+      app.destroy(true)
+    }
   }, [])
   return <div className="ll-aa h-full"></div>
 }
