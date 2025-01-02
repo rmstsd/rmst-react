@@ -5,7 +5,6 @@ import App from './App'
 
 import '@arco-design/web-react/dist/css/index.less'
 import './app.less'
-import { RectRender, registerUI } from 'leafer-ui'
 
 import './test.css'
 
