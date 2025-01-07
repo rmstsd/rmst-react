@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@arco-design/web-react": "^2.60.3",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@gsap/react": "^2.1.1",
     "@leafer-in/viewport": "^1.2.2",
     "@rsbuild/plugin-node-polyfill": "^1.0.4",

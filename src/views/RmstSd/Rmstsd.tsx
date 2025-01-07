@@ -1,42 +1,66 @@
-import { sleep } from '@/utils/utils'
-import { startTransition, useState, useTransition } from 'react'
+import { DndContext, MouseSensor, useDraggable, useSensor, useSensors } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+import { useEffect } from 'react'
 
-let value = ''
-
-export default function RmstSd() {
-  const [_, up] = useState([])
-  // const [p, startTransition] = useTransition()
+export default function Rmstsd() {
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 }
+    })
+  )
 
   return (
-    <div className="">
-      <input
-        className="border border-gray-400 p-4"
-        onChange={e => {
-          value = e.target.value
-          startTransition(() => {
-            up([])
-          })
-        }}
-      />
-
-      <div className="flex flex-wrap gap-10">
-        {new Array(500).fill(null).map((_, i) => (
-          <Child key={i} />
-        ))}
-      </div>
+    <div>
+      <DndContext sensors={sensors}>
+        <Draggable />
+      </DndContext>
     </div>
   )
 }
 
-const Child = ({}) => {
-  // sleep(1)
+function Draggable() {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: 'draggable'
+  })
+  const style = {
+    transform: CSS.Translate.toString(transform)
+  }
 
-  return <div style={{ backgroundColor: colorMap[value.length] }}>{value}</div>
-}
+  useEffect(() => {
+    document.addEventListener(
+      'change',
+      evt => {
+        console.log('change capture', evt.target)
+        evt.stopPropagation()
+      },
+      { capture: true }
+    )
+  }, [])
 
-const colorMap = {
-  1: 'green',
-  2: 'blue',
-  3: 'purple',
-  4: 'orange'
+  return (
+    <label
+      className="inline-block"
+      {...attributes}
+      {...listeners}
+      ref={setNodeRef}
+      style={style}
+      onClick={evt => {
+        console.log('click', evt.target)
+      }}
+    >
+      <input
+        type="checkbox"
+        onChange={evt => {
+          console.log('change', evt.target.checked)
+        }}
+        onClick={() => {
+          console.log('input click ')
+        }}
+        onClickCapture={() => {
+          console.log('input click capture')
+        }}
+      />
+      <span>aa</span>
+    </label>
+  )
 }
