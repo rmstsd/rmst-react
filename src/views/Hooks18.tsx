@@ -1,7 +1,7 @@
 import { Input, Tabs } from '@arco-design/web-react'
 import React, { memo, useDeferredValue, useEffect, useRef, useState, useSyncExternalStore, useTransition } from 'react'
 
-import { sleep } from '../utils/utils'
+import { sleepSync } from '../utils/utils'
 
 const Hooks18 = () => {
   return (

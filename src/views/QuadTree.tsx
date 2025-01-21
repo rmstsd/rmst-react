@@ -4,7 +4,7 @@ import { Input } from '@arco-design/web-react'
 import Quadtree from '@timohausmann/quadtree-js'
 import { memo, useEffect, useRef, useState, useTransition } from 'react'
 
-import { sleep } from '../utils/utils'
+import { sleepSync } from '../utils/utils'
 
 const QuadTree = () => {
   useEffect(() => {
@@ -74,7 +74,7 @@ const QuadTree = () => {
 export default QuadTree
 
 const Child = memo(({ text }) => {
-  sleep(1)
+  sleepSync(1)
 
   return <span>{text}</span>
 })

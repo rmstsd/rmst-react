@@ -111,9 +111,16 @@ function propsParser(propsStr: string) {
   return props
 }
 
-export function sleep(ms: number) {
+export function sleepSync(ms: number) {
   const t = Date.now()
   while (Date.now() - t < ms) {}
+}
+
+
+export function sleepAsync(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
 }
 
 export const lossFrame = (container, func) => {
@@ -137,7 +144,7 @@ export const lossFrame = (container, func) => {
 
     cancelAnimationFrame(timer)
     timer = requestAnimationFrame(() => {
-      sleep(100)
+      sleepSync(100)
 
       func?.()
 

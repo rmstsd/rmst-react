@@ -1,145 +1,187 @@
-import { useInterval } from 'ahooks'
-import { PointerEvent, useEffect, useLayoutEffect, useState } from 'react'
-import DndKitDd from './DndKit'
-
+import { useEffect } from 'react'
 import './style.less'
-import { makeAutoObservable } from 'mobx'
-import { observer, useLocalObservable } from 'mobx-react-lite'
+import { sleepAsync, sleepSync } from '@/utils/utils'
 
-let isDragging = false
+export default function Rmstsd() {
+  useEffect(() => {
+    const div = document.querySelector('div')
+    const overlay = document.querySelector('.overlay')
 
-document.addEventListener(
-  'click',
-  evt => {
-    if (isDragging) {
-      evt.preventDefault()
-      evt.stopPropagation()
-    }
-  },
-  { capture: true }
-)
+    const sel = window.getSelection()
 
-function Rmstsd() {
-  const onPointerDown = (downEvt: PointerEvent) => {
-    const ab = new AbortController()
+    div.onclick = async evt => {
+      const range = sel.getRangeAt(0)
 
-    document.addEventListener(
-      'pointermove',
-      evt => {
-        const dis = Math.sqrt((downEvt.clientX - evt.clientX) ** 2 + (downEvt.clientY - evt.clientY) ** 2)
-        if (!isDragging) {
-          if (dis > 20) {
-            downEvt.preventDefault()
-            isDragging = true
+      console.log(range)
 
-            console.log('drag start')
+      const node = range.startContainer
 
-            document.getSelection().removeAllRanges()
+      const aa = splitRange(node, range.startOffset, range.endOffset)
 
-            // drag start
-          }
-          return
+      for (const item of aa) {
+        await sleepAsync(2000)
+        console.log(item)
+
+        sel.removeAllRanges()
+
+        sel.addRange(item)
+      }
+
+      console.log(aa)
+
+      return
+
+      let prevChar = node.textContent[range.startOffset]
+
+      const prevRange = document.createRange()
+      prevRange.setStart(node, range.startOffset)
+      prevRange.setEnd(node, range.startOffset + 1)
+
+      let prevRectTop = prevRange.getBoundingClientRect().top
+
+      let rows = 1
+
+      let start = range.startOffset
+      let end
+
+      const ans = []
+
+      for (let i = range.startOffset; i < range.endOffset; i++) {
+        const tempRange = document.createRange()
+
+        tempRange.setStart(node, i)
+        tempRange.setEnd(node, i + 1)
+        const tempRect = tempRange.getBoundingClientRect()
+
+        if (tempRect.top > prevRectTop) {
+          end = i + 1
+
+          ans.push({ start, end })
+
+          start = i
+
+          prevRectTop = tempRect.top
+          rows++
         }
 
-        // move
-      },
-      {
-        signal: ab.signal
+        if (i === range.endOffset - 1) {
+          ans.push({ start, end: range.endOffset })
+        }
       }
-    )
-    document.addEventListener(
-      'pointerup',
-      evt => {
-        setTimeout(() => {
-          isDragging = false
-        })
 
-        ab.abort()
-      },
-      {
-        signal: ab.signal
+      console.log(rows)
+      console.log(ans)
+
+      sel.removeAllRanges()
+
+      for (const item of ans) {
+        await sleepAsync(2000)
+        console.log(item)
+
+        sel.removeAllRanges()
+        const range = document.createRange()
+        range.setStart(node, item.start)
+        range.setEnd(node, item.end)
+
+        sel.addRange(range)
       }
-    )
-  }
 
-  // return <DndKitDd />
+      return
 
-  return (
-    <div>
-      <div onPointerDown={onPointerDown}>asdasasdasdas</div>
-      <div>999</div>
-      <div>999</div>
-      <div>999</div>
-    </div>
-  )
-}
+      if (range.collapsed) {
+        range.selectNodeContents(range.startContainer)
+      }
 
-export default function Aff() {
-  const [bool, setBool] = useState(false)
+      const rangeRect = range.getBoundingClientRect()
+      const x = evt.clientX
+      const y = evt.clientY
 
-  return (
-    <div>
-      <button className="border" onClick={() => setBool(!bool)}>
-        dd
-      </button>
-      {bool && <Child></Child>}
-    </div>
-  )
-}
+      console.log(isHitText(x, y, rangeRect))
+    }
 
-class Store {
-  constructor() {
-    makeAutoObservable(this)
-  }
-  tableWidth = 0
-  widths = []
+    const isHitText = (x, y, rangeRect) => {
+      const width = 30
+      const height = 20
 
-  init(columns) {
-    this.widths = columns.map(() => 100)
-    this.tableWidth = columns.length * 100
-  }
-}
-const columns = [{ dataIndex: 'name' }, { dataIndex: 'age' }, { dataIndex: 'aa' }, { dataIndex: 'bb' }]
-const data = Array.from({ length: 100 }, (_, index) => ({ name: index, age: index, aa: index, bb: index }))
+      const halfWidth = width / 2
+      const halfHeight = height / 2
 
-const Child = observer(function () {
-  const store = useLocalObservable(() => new Store())
+      const points = [
+        { x, y },
+        { x: x - halfWidth, y: y - halfHeight },
+        { x, y: y - halfHeight },
+        { x: x + halfWidth, y: y - halfHeight },
+        { x: x + halfWidth, y },
+        { x: x + halfWidth, y: y + halfHeight },
+        { x, y: y + halfHeight },
+        { x: x - halfWidth, y: y + halfHeight },
+        { x: x - halfWidth, y }
+      ]
 
-  const { tableWidth, widths } = store
+      overlay.style.left = x - halfWidth + 'px'
+      overlay.style.top = y - halfHeight + 'px'
+      overlay.style.width = width + 'px'
+      overlay.style.height = height + 'px'
 
-  useLayoutEffect(() => {
-    store.init(columns)
+      for (const point of points) {
+        const { x, y } = point
+        const isInRect = x > rangeRect.left && x < rangeRect.right && y > rangeRect.top && y < rangeRect.bottom
+
+        if (isInRect) {
+          return true
+        }
+      }
+
+      return false
+    }
   }, [])
 
   return (
-    <table style={{ width: tableWidth + 'px', tableLayout: 'fixed' }} className="rr-table">
-      <thead>
-        <tr>
-          {columns.map((item, index) => {
-            return (
-              <th key={item.dataIndex} className="border-spacing-0" style={{ width: widths[index] + 'px' }}>
-                {item.dataIndex}
-              </th>
-            )
-          })}
-        </tr>
-      </thead>
+    <div>
+      <div className="content">君不见黄河之水天上来，奔流到海不复回</div>
 
-      <tbody>
-        {data.map(item => {
-          return (
-            <tr key={item.name}>
-              {columns.map((item, index) => {
-                return (
-                  <td key={item.dataIndex} className="border-spacing-0" style={{ width: widths[index] + 'px' }}>
-                    {item.dataIndex}
-                  </td>
-                )
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
+      <div className="overlay"></div>
+    </div>
   )
-})
+}
+
+// 将一个跨行的 range 切割为多个不跨行的 range
+function splitRange(node: Text, startOffset: number, endOffset: number): Range[] {
+  const range = document.createRange()
+  const rowTop = getCharTop(node, startOffset)
+  // 字符数小于两个不用判断是否跨行
+  // 头尾高度一致说明在同一行
+  if (endOffset - startOffset < 2 || rowTop === getCharTop(node, endOffset - 1)) {
+    range.setStart(node, startOffset)
+    range.setEnd(node, endOffset)
+    return [range]
+  } else {
+    const last = findRowLastChar(rowTop, node, startOffset, endOffset - 1)
+    range.setStart(node, startOffset)
+    range.setEnd(node, last + 1)
+    const others = splitRange(node, last + 1, endOffset)
+    return [range, ...others]
+  }
+}
+
+// 二分法找到 range 某一行的最右字符
+function findRowLastChar(top: number, node: Text, start: number, end: number): number {
+  if (end - start === 1) {
+    return getCharTop(node, end) === top ? end : start
+  }
+  const mid = Math.floor((end + start) / 2)
+  return getCharTop(node, mid) === top ? findRowLastChar(top, node, mid, end) : findRowLastChar(top, node, start, mid)
+}
+
+// 获取 range 某个字符位置的 top 值
+function getCharTop(node: Text, offset: number) {
+  return getCharRect(node, offset).top
+}
+
+// 获取 range 某个字符位置的 DOMRect
+function getCharRect(node: Text, offset: number) {
+  const range = document.createRange()
+  range.setStart(node, offset)
+  range.setEnd(node, offset + 1 > node.textContent!.length ? offset : offset + 1)
+  return range.getBoundingClientRect()
+}
