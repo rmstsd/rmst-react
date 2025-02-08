@@ -88,7 +88,7 @@ export class AreaMapViewStore {
   }
 }
 
-class SceneAreaMapRuntime {
+export class SceneAreaMapRuntime {
   points: UiPointParams[] = []
 
   paths: UiPathParams[] = []

@@ -2,8 +2,10 @@ import { useEffect } from 'react'
 import './style.less'
 import { sleepAsync, sleepSync } from '@/utils/utils'
 import { splitRange } from './splitRange'
+import platform from 'platform'
 
 export default function Rmstsd() {
+  console.log(platform)
   useEffect(() => {
     const div = document.querySelector('div')
     const overlay = document.querySelector('.overlay')
@@ -72,10 +74,20 @@ export default function Rmstsd() {
 
   return (
     <div className="rmstsd">
+      <Plt />
       <div className="content">君不见黄河之水天上来，奔流到海不复回</div>
 
       <div className="overlay"></div>
       <div className="img-cont"></div>
+    </div>
+  )
+}
+
+function Plt() {
+  return (
+    <div>
+      <div>{navigator.platform}</div>
+      <div>{navigator.userAgent}</div>
     </div>
   )
 }
