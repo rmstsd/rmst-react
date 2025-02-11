@@ -6,7 +6,7 @@ import { SceneAreaMapRuntime } from '../mapView/store'
 import { genRects } from '../constant'
 import randomColor from 'randomcolor'
 
-import logoPng from '@/assets/logo.png'
+import logoJpg from '@/assets/logo.jpg'
 
 const siteSize = 0.5
 
@@ -152,8 +152,11 @@ export default function Pixi() {
     app.stage.addChild(basicText)
 
     // Load the bunny texture
-    const texture = await Assets.load(logoPng)
+    const texture = await Assets.load(logoJpg)
     const bunny = new Sprite(texture)
+
+    bunny.eventMode = 'static'
+    bunny.cursor = 'move'
 
     // Center the sprite's anchor point
     bunny.anchor.set(0.5)

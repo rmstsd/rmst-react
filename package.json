@@ -44,6 +44,8 @@
     "react-canvaskit": "0.0.1-alpha.8",
     "react-container-query": "^0.13.0",
     "react-dom": "^18.3.1",
+    "react-flexbox-grid": "^2.1.2",
+    "react-grid-system": "^8.2.1",
     "react-reconciler": "^0.29.2",
     "react-router-dom": "^6.22.3",
     "react-transition-group": "^4.4.5",
