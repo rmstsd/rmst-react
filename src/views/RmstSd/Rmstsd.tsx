@@ -17,7 +17,19 @@ export default function Rmstsd() {
 
     const sel = window.getSelection()
 
+    div.onpointerdown = evt => {
+      requestAnimationFrame(() => {
+        console.log(sel.rangeCount)
+
+        const range = sel.getRangeAt(0).cloneRange()
+        range.selectNodeContents(range.startContainer)
+
+        console.log(isHitText(evt.clientX, evt.clientY, range.getBoundingClientRect()))
+      })
+    }
+
     div.onclick = async evt => {
+      return
       const range = sel.getRangeAt(0)
 
       console.log(range)
