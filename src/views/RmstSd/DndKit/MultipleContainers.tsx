@@ -33,10 +33,10 @@ export function MultipleContainers(props) {
   const [items, setItems] = useState<Items>(
     () =>
       initialItems ?? {
-        A: createRange(1, index => `A${index + 1}`),
-        B: createRange(2, index => `B${index + 1}`),
-        C: createRange(3, index => `C${index + 1}`),
-        D: createRange(4, index => `D${index + 1}`)
+        A: createRange(6, index => `A${index + 1}`),
+        B: createRange(7, index => `B${index + 1}`),
+        C: createRange(8, index => `C${index + 1}`),
+        D: createRange(5, index => `D${index + 1}`)
       }
   )
 
@@ -119,11 +119,11 @@ export function MultipleContainers(props) {
     setClonedItems(null)
   }
 
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      recentlyMovedToNewContainer.current = false
-    })
-  }, [items])
+  // useEffect(() => {
+  //   requestAnimationFrame(() => {
+  //     recentlyMovedToNewContainer.current = false
+  //   })
+  // }, [items])
 
   function handleRemove(containerID: UniqueIdentifier) {
     setContainers(containers => containers.filter(id => id !== containerID))
@@ -145,6 +145,8 @@ export function MultipleContainers(props) {
 
         const overContainer = findContainer(overId)
         const activeContainer = findContainer(active.id)
+
+        console.log(overContainer, activeContainer)
 
         if (!overContainer || !activeContainer) {
           return
@@ -270,7 +272,7 @@ function SortableItem(props: SortableItemProps) {
 
   return (
     <li
-      className="mt-4 flex justify-between"
+      className="mt-4 flex h-[100px] justify-between"
       style={
         {
           transition: [transition].filter(Boolean).join(', '),
