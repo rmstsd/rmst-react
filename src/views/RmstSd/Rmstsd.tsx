@@ -6,10 +6,22 @@ import platform from 'platform'
 import { Grid } from '@arco-design/web-react'
 import GridSys from './GridSys'
 import FlexboxGrid from './FlexboxGrid'
+import {
+  DndContext,
+  DragOverlay,
+  MeasuringStrategy,
+  PointerSensor,
+  useDndContext,
+  useDraggable,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import { SortableContext, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 const Row = Grid.Row
 const Col = Grid.Col
 
-export default function Rmstsd() {
+function Rmstsd() {
   console.log(platform)
   useEffect(() => {
     const div = document.querySelector('div')
@@ -149,4 +161,210 @@ function Plt() {
       <div>{navigator.userAgent}</div>
     </div>
   )
+}
+
+//
+
+const list = [
+  {
+    id: 'a',
+    gName: 'a',
+    children: [
+      {
+        id: 'b',
+        cName: 'b'
+      },
+      {
+        id: 'c',
+        cName: 'c'
+      },
+      {
+        id: 'q',
+        cName: 'q'
+      },
+      {
+        id: 'w',
+        cName: 'w'
+      }
+    ]
+  },
+  {
+    id: 'd',
+    gName: 'd',
+    children: [
+      {
+        id: 'e',
+        cName: 'e'
+      },
+      {
+        id: 'f',
+        cName: 'f'
+      }
+    ]
+  }
+]
+
+const measuring: MeasuringConfiguration = {
+  droppable: {
+    strategy: MeasuringStrategy.Always
+  }
+}
+
+import Demo from './DndKit/Demo'
+
+export default Demo
+
+function Dd() {
+  const sensors = useSensors(useSensor(PointerSensor))
+
+  return (
+    <div>
+      <DndContext
+        onDragStart={evt => {
+          console.log('onDragStart', evt.active.id)
+        }}
+        onDragOver={evt => {
+          console.log('onDragOver', evt)
+        }}
+        onDragMove={evt => {
+          // console.log('onDragMove', evt)
+        }}
+        onDragEnd={evt => {
+          console.log('onDragEnd', evt)
+        }}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        measuring={measuring}
+      >
+        <SortableContext items={list.map(item => item.id)}>
+          {list.map(item => (
+            <Gitem item={item} key={item.id} />
+          ))}
+        </SortableContext>
+
+        <DragOverlay dropAnimation={null}>
+          <div>hello</div>
+        </DragOverlay>
+      </DndContext>
+    </div>
+  )
+}
+
+const Gitem = ({ item }) => {
+  const { setNodeRef, listeners, transform, transition } = useSortable({ id: item.id })
+
+  return (
+    <div
+      className="m-20 border"
+      style={
+        {
+          // transform: CSS.Translate.toString(transform), transition
+        }
+      }
+    >
+      <div className="m-10 flex gap-6 border-b">
+        {item.gName}
+
+        <button {...listeners} ref={setNodeRef}>
+          handle
+        </button>
+      </div>
+
+      <div>
+        <SortableContext items={item.children.map(cItem => cItem.id)}>
+          {item.children.map(cItem => (
+            <CItem key={cItem.id} item={cItem} />
+          ))}
+        </SortableContext>
+      </div>
+    </div>
+  )
+}
+
+const CItem = ({ item }) => {
+  const { setNodeRef, listeners, transform, transition, index } = useSortable({ id: item.id })
+  // console.log(index, item.id)
+
+  const { active, activatorEvent, over } = useDndContext()
+
+  // console.log(index)
+  // console.log('active', JSON.parse(JSON.stringify(active)))
+  // console.log('over', over)
+
+  // if (activatorEvent) {
+  //   console.log(activatorEvent.clientX)
+  // }
+
+  const activeIndex = (() => {
+    if (active) {
+      return active.data.current.sortable.items.indexOf(active.id)
+    }
+  })()
+
+  // const pos = over?.id === item.id ? (index > activeIndex ? 'After' : 'Before') : undefined
+
+  return (
+    <div
+      className="m-10 flex gap-8 border p-4"
+      style={
+        {
+          // transform: CSS.Translate.toString(transform),
+          // transition,
+          // borderTop: pos === 'Before' ? '1px solid red' : '',
+          // borderBottom: pos === 'After' ? '1px solid red' : ''
+        }
+      }
+    >
+      {item.cName}
+
+      <button {...listeners} ref={setNodeRef}>
+        handle
+      </button>
+    </div>
+  )
+}
+
+import type { Coordinates, ClientRect } from '../../types'
+
+import type { CollisionDescriptor, CollisionDetection } from './types'
+export function sortCollisionsAsc(
+  { data: { value: a } }: CollisionDescriptor,
+  { data: { value: b } }: CollisionDescriptor
+) {
+  return a - b
+}
+export function distanceBetween(p1: Coordinates, p2: Coordinates) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
+}
+
+/**
+ * Returns the coordinates of the center of a given ClientRect
+ */
+function centerOfRectangle(rect: ClientRect, left = rect.left, top = rect.top): Coordinates {
+  return {
+    x: left + rect.width * 0.5,
+    y: top + rect.height * 0.5
+  }
+}
+
+/**
+ * Returns the closest rectangles from an array of rectangles to the center of a given
+ * rectangle.
+ */
+export const closestCenter: CollisionDetection = ({ collisionRect, droppableRects, droppableContainers }) => {
+  const centerRect = centerOfRectangle(collisionRect, collisionRect.left, collisionRect.top)
+  const collisions: CollisionDescriptor[] = []
+
+  for (const droppableContainer of droppableContainers) {
+    const { id } = droppableContainer
+    const rect = droppableRects.get(id)
+
+    if (rect) {
+      const distBetween = distanceBetween(centerOfRectangle(rect), centerRect)
+
+      collisions.push({ id, data: { droppableContainer, value: distBetween } })
+    }
+  }
+
+  return collisions.sort(sortCollisionsAsc)
 }
