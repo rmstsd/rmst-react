@@ -37,8 +37,8 @@ export function MultipleContainers(props) {
         B: createRange(20, index => `B${index + 1}`),
         C: createRange(20, index => `C${index + 1}`),
         D: createRange(20, index => `D${index + 1}`),
-        E: createRange(20, index => `D${index + 1}`),
-        F: createRange(20, index => `D${index + 1}`)
+        E: createRange(20, index => `E${index + 1}`),
+        F: createRange(20, index => `F${index + 1}`)
       }
   )
 
