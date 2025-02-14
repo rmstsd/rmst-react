@@ -33,10 +33,12 @@ export function MultipleContainers(props) {
   const [items, setItems] = useState<Items>(
     () =>
       initialItems ?? {
-        A: createRange(6, index => `A${index + 1}`),
-        B: createRange(7, index => `B${index + 1}`),
-        C: createRange(8, index => `C${index + 1}`),
-        D: createRange(5, index => `D${index + 1}`)
+        A: createRange(20, index => `A${index + 1}`),
+        B: createRange(20, index => `B${index + 1}`),
+        C: createRange(20, index => `C${index + 1}`),
+        D: createRange(20, index => `D${index + 1}`),
+        E: createRange(20, index => `D${index + 1}`),
+        F: createRange(20, index => `D${index + 1}`)
       }
   )
 
@@ -258,40 +260,6 @@ export function MultipleContainers(props) {
     </DndContext>
   )
 }
-
-interface SortableItemProps {
-  containerId: UniqueIdentifier
-  id: UniqueIdentifier
-  index: number
-}
-
-function SortableItem(props: SortableItemProps) {
-  const { id, index, containerId } = props
-  const { setNodeRef, setActivatorNodeRef, listeners, isDragging, isSorting, over, overIndex, transform, transition } =
-    useSortable({ id })
-
-  return (
-    <li
-      className="mt-4 flex h-[100px] justify-between"
-      style={
-        {
-          transition: [transition].filter(Boolean).join(', '),
-          transform: CSS.Transform.toString(transform)
-        } as React.CSSProperties
-      }
-      ref={setNodeRef}
-    >
-      {id}
-
-      <span ref={setActivatorNodeRef} {...listeners}>
-        h
-      </span>
-    </li>
-  )
-}
-
-const animateLayoutChanges: AnimateLayoutChanges = args => defaultAnimateLayoutChanges({ ...args, wasDragging: true })
-
 function DroppableContainer(props: { id: UniqueIdentifier; items: UniqueIdentifier[]; children; label }) {
   const { children, id, items, label } = props
 
@@ -307,18 +275,19 @@ function DroppableContainer(props: { id: UniqueIdentifier; items: UniqueIdentifi
   return (
     <div
       ref={setNodeRef}
-      className="m-4 border"
+      className="m-4 border border-gray-400 p-10"
       style={{
         transition,
         transform: CSS.Translate.toString(transform)
       }}
     >
-      {label ? (
-        <div className="flex justify-between">
-          {label}
-          <span {...listeners}>handle</span>
-        </div>
-      ) : null}
+      <div className="flex justify-between border-b border-gray-400 pb-10">
+        {label}
+
+        <span {...listeners} className="cursor-move">
+          han
+        </span>
+      </div>
 
       <div>
         <ul>{children}</ul>
@@ -326,6 +295,38 @@ function DroppableContainer(props: { id: UniqueIdentifier; items: UniqueIdentifi
     </div>
   )
 }
+interface SortableItemProps {
+  containerId: UniqueIdentifier
+  id: UniqueIdentifier
+  index: number
+}
+
+function SortableItem(props: SortableItemProps) {
+  const { id, index, containerId } = props
+  const { setNodeRef, setActivatorNodeRef, listeners, isDragging, isSorting, over, overIndex, transform, transition } =
+    useSortable({ id })
+
+  return (
+    <li
+      className="mt-10 flex justify-between rounded border border-gray-400 p-10"
+      style={
+        {
+          transition: [transition].filter(Boolean).join(', '),
+          transform: CSS.Transform.toString(transform)
+        } as React.CSSProperties
+      }
+      ref={setNodeRef}
+    >
+      {id}
+
+      <span ref={setActivatorNodeRef} {...listeners} className="cursor-move">
+        han
+      </span>
+    </li>
+  )
+}
+
+const animateLayoutChanges: AnimateLayoutChanges = args => defaultAnimateLayoutChanges({ ...args, wasDragging: true })
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
