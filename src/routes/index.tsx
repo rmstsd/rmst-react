@@ -27,6 +27,7 @@ import Pixi from '@/views/Canvas/Pixi/Pixi'
 import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 import PickerView from '@/views/PickerView'
+import DndKitDd from '@/views/DndkitDemo/DndKitDd'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -37,6 +38,7 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'rmst', element: <Rmst /> },
+      { path: 'DndKitDd', element: <DndKitDd /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'PickerView', element: <PickerView /> },
       { path: 'Sokoban', element: <Sokoban /> },
