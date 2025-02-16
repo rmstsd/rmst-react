@@ -33,12 +33,12 @@ export function MultipleContainers(props) {
   const [items, setItems] = useState<Items>(
     () =>
       initialItems ?? {
-        A: createRange(20, index => `A${index + 1}`),
-        B: createRange(20, index => `B${index + 1}`),
-        C: createRange(20, index => `C${index + 1}`),
-        D: createRange(20, index => `D${index + 1}`),
-        E: createRange(20, index => `E${index + 1}`),
-        F: createRange(20, index => `F${index + 1}`)
+        A: createRange(4, index => `A${index + 1}`),
+        B: createRange(4, index => `B${index + 1}`),
+        C: createRange(4, index => `C${index + 1}`),
+        D: createRange(5, index => `D${index + 1}`),
+        E: createRange(4, index => `E${index + 1}`),
+        F: createRange(6, index => `F${index + 1}`)
       }
   )
 
@@ -131,9 +131,11 @@ export function MultipleContainers(props) {
     setContainers(containers => containers.filter(id => id !== containerID))
   }
 
+  console.log('items', items)
+
   return (
     <DndContext
-      collisionDetection={collisionDetectionStrategy}
+      collisionDetection={closestCenter}
       onDragStart={({ active }) => {
         setActiveId(active.id)
         setClonedItems(items)
@@ -148,13 +150,14 @@ export function MultipleContainers(props) {
         const overContainer = findContainer(overId)
         const activeContainer = findContainer(active.id)
 
-        console.log(overContainer, activeContainer)
+        console.log(activeContainer, overContainer)
 
         if (!overContainer || !activeContainer) {
           return
         }
 
         if (activeContainer !== overContainer) {
+          console.log('move')
           setItems(items => {
             const activeItems = items[activeContainer]
             const overItems = items[overContainer]
@@ -232,7 +235,7 @@ export function MultipleContainers(props) {
       }}
       onDragCancel={onDragCancel}
     >
-      <div style={{ width: 300, flexShrink: 0, padding: 20 }}>
+      <div style={{ width: 300, flexShrink: 0, padding: 20, overflow: 'auto', height: 600 }}>
         <SortableContext items={[...containers]} strategy={verticalListSortingStrategy}>
           {containers.map(containerId => (
             <DroppableContainer
@@ -275,7 +278,7 @@ function DroppableContainer(props: { id: UniqueIdentifier; items: UniqueIdentifi
   return (
     <div
       ref={setNodeRef}
-      className="m-4 border border-gray-400 p-10"
+      className="m-20 border border-gray-400 p-10"
       style={{
         transition,
         transform: CSS.Translate.toString(transform)
@@ -319,7 +322,7 @@ function SortableItem(props: SortableItemProps) {
     >
       {id}
 
-      <span ref={setActivatorNodeRef} {...listeners} className="cursor-move">
+      <span {...listeners} className="cursor-move">
         han
       </span>
     </li>

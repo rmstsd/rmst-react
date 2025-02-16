@@ -3,10 +3,10 @@ import { MultipleContainers } from './MultipleContainers'
 
 export default function Demo() {
   return (
-    <div className="flex">
+    <div className="flex gap-10">
       <MultipleContainers />
 
-      {/* <MyDnd /> */}
+      <MyDnd />
     </div>
   )
 }
