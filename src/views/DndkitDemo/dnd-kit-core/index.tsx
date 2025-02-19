@@ -7,6 +7,7 @@ import { makeAutoObservable } from 'mobx'
 import { observer } from 'mobx-react-lite'
 
 import './style.less'
+import { CSSProperties } from 'react'
 
 class Store {
   coord = { x: 0, y: 0 }
@@ -40,17 +41,18 @@ const Draggable = observer(function (props) {
     id: 'draggable'
   })
 
+  console.log(transform?.x)
+
   const style = {
-    transform: isDragging ? CSS.Transform.toString(transform) : '',
-    left: store.coord.x,
-    top: store.coord.y
-  }
+    '--translate-x': transform?.x ?? 0,
+    '--translate-y': transform?.y ?? 0
+  } as CSSProperties
 
   return (
-    <button ref={setNodeRef} style={style} className={cn('h-50 relative border', isDragging && 'ani')}>
+    <button ref={setNodeRef} style={style} className={cn('drag-item relative h-50 border', isDragging && 'dragging')}>
       <span>drag-item</span>
 
-      <span className="h-30 ml-5 inline-flex w-40 items-center justify-center border" {...listeners}>
+      <span className="ml-5 inline-flex h-30 w-40 items-center justify-center border" {...listeners}>
         han
       </span>
     </button>

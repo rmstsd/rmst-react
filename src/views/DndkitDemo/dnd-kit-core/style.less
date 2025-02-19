@@ -1,17 +1,29 @@
 .dnd-kit-core {
-  .ani {
-    animation-name: down;
-    animation-duration: .4s;
-    animation-fill-mode: forwards;
+  .drag-item {
+    transition: box-shadow .3s ease-in-out;
+    // transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale, 1));
+    box-shadow: var(--box-shadow);
+
+    span {
+      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale, 1));
+    }
+
+    &.dragging {
+      --scale: 1.2;
+      --box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+      // animation: down .3s ease-in-out;
+    }
   }
 
   @keyframes down {
-    from {
-      scale: 1;
+    0% {
+      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(1);
     }
 
-    to {
-      scale: 1.2;
+    100% {
+      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale));
+      box-shadow: var(--box-shadow);
     }
   }
 }
