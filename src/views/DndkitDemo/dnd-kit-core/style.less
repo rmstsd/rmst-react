@@ -1,29 +1,25 @@
 .dnd-kit-core {
   .drag-item {
-    transition: box-shadow .3s ease-in-out;
-    // transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale, 1));
+    transition: box-shadow .3s ease;
+    transform: translate(var(--translate-x, 0), var(--translate-y, 0)) scale(var(--scale));
     box-shadow: var(--box-shadow);
 
-    span {
-      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale, 1));
-    }
-
     &.dragging {
-      --scale: 1.2;
+      --scale: 1.5;
       --box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
         0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-      // animation: down .3s ease-in-out;
+      //
+      animation: down .3s ease;
     }
   }
 
   @keyframes down {
     0% {
-      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(1);
+      transform: translate(var(--translate-x, 0), var(--translate-y, 0)) scale(1);
     }
 
     100% {
-      transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scale(var(--scale));
-      box-shadow: var(--box-shadow);
+      transform: translate(var(--translate-x, 0), var(--translate-y, 0)) scale(var(--scale));
     }
   }
 }

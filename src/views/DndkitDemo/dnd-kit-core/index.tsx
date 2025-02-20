@@ -24,6 +24,7 @@ const DndKitCore = observer(function DndKitCore() {
     <div style={{ height: 600 }} className="dnd-kit-core border p-10">
       <DndContext
         onDragEnd={({ delta }) => {
+          console.log('end')
           store.coord.x += delta.x
           store.coord.y += delta.y
         }}
@@ -41,11 +42,11 @@ const Draggable = observer(function (props) {
     id: 'draggable'
   })
 
-  console.log(transform?.x)
-
   const style = {
-    '--translate-x': transform?.x ?? 0,
-    '--translate-y': transform?.y ?? 0
+    '--translate-x': `${transform?.x ?? 0}px`,
+    '--translate-y': `${transform?.y ?? 0}px`,
+    // left: `${store.coord.x}px`,
+    // top: `${store.coord.y}px`
   } as CSSProperties
 
   return (
