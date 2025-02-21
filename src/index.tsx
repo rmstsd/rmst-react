@@ -6,8 +6,6 @@ import App from './App'
 import '@arco-design/web-react/dist/css/index.less'
 import './app.less'
 
-import './test.css'
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <ConfigProvider componentConfig={{ Button: { type: 'primary' } }}>

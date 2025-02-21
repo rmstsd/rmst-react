@@ -1,13 +1,18 @@
-@tailwind base;
+// @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-dark: #121422;
-  --color-black: #06070d;
-  --spacing-1: 1px;
+*:not(button),
+:before,
+:after {
+  box-sizing: border-box;
+  border: 0 solid #d4d6da;
 }
-
+button {
+  cursor: pointer;
+}
+// tw ↑
+// 
 html,
 body,
 #root {
@@ -62,16 +67,4 @@ body {
 
 .my-node-exit-done {
   visibility: hidden;
-}
-
-// 
-.rmst-column {
-  border: 1px solid #ddd;
-  height: 300px;
-  overflow: hidden;
-
-  .rmst-column-item {
-    height: 50px;
-    line-height: 50px;
-  }
 }
