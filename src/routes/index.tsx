@@ -28,6 +28,7 @@ import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 import PickerView from '@/views/PickerView'
 import DndKitDd from '@/views/DndkitDemo/DndKitDd'
+import GoldCalc from '@/views/RmstSd/GoldCalc'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -44,7 +45,8 @@ const routes: IRouteObject[] = [
       { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
-      { path: 'QuadTree', element: <QuadTree /> }
+      { path: 'QuadTree', element: <QuadTree /> },
+      { path: 'GoldCalc', element: <GoldCalc /> }
     ]
   },
   {
