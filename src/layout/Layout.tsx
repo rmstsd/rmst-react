@@ -11,7 +11,9 @@ const LayoutView: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [sideOpen, setSideOpen] = useLocalStorageState('side-open', { defaultValue: false })
+  const [sideOpen, setSideOpen] = useLocalStorageState('side-open', {
+    defaultValue: window.innerWidth < 500 ? false : true
+  })
 
   useEffect(() => {
     document.title = location.pathname
@@ -19,17 +21,17 @@ const LayoutView: React.FC = () => {
 
   return (
     <div className="h-full">
-      <aside className="fixed left-0 top-0 z-10 h-full">
-        <Button
-          shape="round"
-          className="absolute top-0 z-20"
-          size="small"
-          icon={sideOpen ? <IconLeft /> : <IconRight />}
-          onClick={() => setSideOpen(!sideOpen)}
-          style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)', border: '1px solid #ddd' }}
-          type="default"
-        ></Button>
+      <Button
+        shape="round"
+        className="fixed bottom-4 left-4 z-20"
+        size="large"
+        icon={sideOpen ? <IconLeft /> : <IconRight />}
+        onClick={() => setSideOpen(!sideOpen)}
+        style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)', border: '1px solid #ddd' }}
+        type="default"
+      ></Button>
 
+      <aside className="fixed left-0 top-0 z-10 h-full">
         <Menu
           className="h-full w-[200px] overflow-auto border-r-2 transition-all"
           style={{ marginLeft: sideOpen ? 0 : -200 }}
@@ -49,6 +51,8 @@ const LayoutView: React.FC = () => {
                 </Menu.SubMenu>
               )
             })}
+
+          <div className="h-40"></div>
         </Menu>
       </aside>
 
