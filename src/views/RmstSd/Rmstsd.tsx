@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './style.less'
 import { sleepAsync, sleepSync } from '@/utils/utils'
 import { splitRange } from './splitRange'
@@ -320,6 +320,36 @@ const CItem = ({ item }) => {
   )
 }
 
-import Demo from './DndKit/Demo'
+// import Demo from './DndKit/Demo'
+// export default Demo
 
-export default Demo
+import { EditorProvider, FloatingMenu, BubbleMenu, useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Jodit from './RickText/Jodit'
+import Ckeditor from './RickText/Ckeditor'
+
+// define your extension array
+const extensions = [StarterKit]
+
+const content = '<p>Hello World!</p>'
+
+import { isMobile, isDesktop, isAndroid, isTablet } from 'react-device-detect'
+
+export default function TapTip() {
+  const op = { isMobile, isDesktop, isAndroid, isTablet }
+
+  return (
+    <div>
+      {Object.entries(op).map(([key, value]) => {
+        return (
+          <div key={key} className="my-4">
+            {key}:{String(value)}
+          </div>
+        )
+      })}
+    </div>
+  )
+  return <Ckeditor />
+
+  return <Jodit />
+}
