@@ -1,4 +1,4 @@
-import { Application, Assets, Container, Graphics, GraphicsPath, Sprite, Text } from 'pixi.js'
+import { Application, Assets, Container, Graphics, GraphicsPath, Sprite, Text, Matrix } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 
 import mapData from './smallData.json'
@@ -12,6 +12,7 @@ const siteSize = 0.5
 
 export default function Pixi() {
   const [container, setContainer] = useState<HTMLDivElement>()
+  const appRef = useRef<Application>()
 
   useEffect(() => {
     if (!container) {
@@ -19,12 +20,31 @@ export default function Pixi() {
     }
 
     init()
+
+    return () => {
+      appRef.current?.destroy(true)
+    }
   }, [container])
 
   const init = async () => {
     const app = new Application()
+    appRef.current = app
 
     await app.init({ width: container.clientWidth, height: container.clientHeight, backgroundColor: '#fff' })
+
+    const rectItem = new Graphics().rect(100, 100, 300, 200).fill('red')
+    rectItem.eventMode = 'static'
+    rectItem.cursor = 'pointer'
+
+    const mt = new Matrix()
+    mt.translate(100, 100).scale(2, 2)
+    rectItem.setFromMatrix(mt)
+
+    app.stage.addChild(rectItem)
+
+    container.appendChild(app.canvas)
+
+    return
 
     // app.stage.position.set(100, 100)
     // app.stage.scale.set(25)
@@ -80,30 +100,30 @@ export default function Pixi() {
     //   })
     // }
 
-    const g = new Container()
-    const rects2 = genRects(10, 500, 500, 60).map(rect => {
-      const rectItem = new Graphics().rect(rect.x, rect.y, rect.width, rect.height).fill(rect.fill)
-      rectItem.eventMode = 'static'
-      rectItem.cursor = 'pointer'
+    // const g = new Container()
+    // const rects2 = genRects(10, 500, 500, 60).map(rect => {
+    //   const rectItem = new Graphics().rect(rect.x, rect.y, rect.width, rect.height).fill(rect.fill)
+    //   rectItem.eventMode = 'static'
+    //   rectItem.cursor = 'pointer'
 
-      rectItem.onclick = () => {
-        console.log('aaa')
+    //   rectItem.onclick = () => {
+    //     console.log('aaa')
 
-        gh.clear()
+    //     gh.clear()
 
-        rects2.forEach(item => {
-          item.rect(rect.x, rect.y, rect.width, rect.height).fill(rect.fill)
-        })
+    //     rects2.forEach(item => {
+    //       item.rect(rect.x, rect.y, rect.width, rect.height).fill(rect.fill)
+    //     })
 
-        gh.rect(rect.x, rect.y, rect.width, rect.height).fill(randomColor()).stroke('red')
-      }
+    //     gh.rect(rect.x, rect.y, rect.width, rect.height).fill(randomColor()).stroke('red')
+    //   }
 
-      g.addChild(rectItem)
+    //   g.addChild(rectItem)
 
-      return gh
-    })
+    //   return gh
+    // })
 
-    app.stage.addChild(g)
+    // app.stage.addChild(g)
 
     // {
     //   let count = 0
@@ -132,45 +152,43 @@ export default function Pixi() {
     //   })
     // }
 
-    const path_main = new GraphicsPath(
-      'M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z'
-    )
-    const pathShape = gh.path(path_main).fill('pink')
-    app.stage.addChild(pathShape)
+    // const path_main = new GraphicsPath(
+    //   'M4.99989 13.9999L4.99976 5L6.99976 4.99997L6.99986 11.9999L17.1717 12L13.222 8.05024L14.6362 6.63603L21.0001 13L14.6362 19.364L13.222 17.9497L17.1717 14L4.99989 13.9999Z'
+    // )
+    // const pathShape = gh.path(path_main).fill('pink')
+    // app.stage.addChild(pathShape)
 
-    const basicText = new Text({ text: 'Basic text in pixi' })
-    basicText.x = 50
-    basicText.y = 100
+    // const basicText = new Text({ text: 'Basic text in pixi' })
+    // basicText.x = 50
+    // basicText.y = 100
 
-    basicText.eventMode = 'static'
-    basicText.cursor = 'pointer'
+    // basicText.eventMode = 'static'
+    // basicText.cursor = 'pointer'
 
-    basicText.onclick = () => {
-      basicText.text = randomColor()
-    }
+    // basicText.onclick = () => {
+    //   basicText.text = randomColor()
+    // }
 
-    app.stage.addChild(basicText)
+    // app.stage.addChild(basicText)
 
-    // Load the bunny texture
-    const texture = await Assets.load(logoJpg)
-    const bunny = new Sprite(texture)
+    // // Load the bunny texture
+    // const texture = await Assets.load(logoJpg)
+    // const bunny = new Sprite(texture)
 
-    bunny.eventMode = 'static'
-    bunny.cursor = 'move'
+    // bunny.eventMode = 'static'
+    // bunny.cursor = 'move'
 
-    // Center the sprite's anchor point
-    bunny.anchor.set(0.5)
+    // // Center the sprite's anchor point
+    // bunny.anchor.set(0.5)
 
-    // Move the sprite to the center of the screen
-    bunny.x = app.screen.width / 2
-    bunny.y = app.screen.height / 2
-    bunny.width = 200
-    bunny.height = 200
-    bunny.alpha = 0.5
+    // // Move the sprite to the center of the screen
+    // bunny.x = app.screen.width / 2
+    // bunny.y = app.screen.height / 2
+    // bunny.width = 200
+    // bunny.height = 200
+    // bunny.alpha = 0.5
 
-    app.stage.addChild(bunny)
-
-    container.appendChild(app.canvas)
+    // app.stage.addChild(bunny)
   }
 
   return <div className="pixi h-full" ref={setContainer}></div>
