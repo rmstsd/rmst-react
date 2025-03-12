@@ -1,7 +1,6 @@
 import { Application, Assets, Container, Graphics, GraphicsPath, Sprite, Text, Matrix } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 
-import mapData from './smallData.json'
 import { SceneAreaMapRuntime } from '../mapView/store'
 import { genRects } from '../constant'
 import randomColor from 'randomcolor'
@@ -32,15 +31,23 @@ export default function Pixi() {
 
     await app.init({ width: container.clientWidth, height: container.clientHeight, backgroundColor: '#fff' })
 
-    const rectItem = new Graphics().rect(100, 100, 300, 200).fill('red')
+    const rootMt = new Matrix()
+    rootMt.scale(1, -1).translate(0, app.screen.height)
+    app.stage.setFromMatrix(rootMt)
+
+    const rectItem = new Graphics().rect(200, 200, 100, 100).fill('red')
     rectItem.eventMode = 'static'
     rectItem.cursor = 'pointer'
 
-    const mt = new Matrix()
-    mt.translate(100, 100).scale(2, 2)
-    rectItem.setFromMatrix(mt)
+    const basicText = new Text({ text: 'Basic text in pixi' })
+    basicText.x = 0
+    basicText.y = 0
 
-    app.stage.addChild(rectItem)
+    const textMt = new Matrix()
+    textMt.scale(1, -1).translate(0, 50)
+    basicText.setFromMatrix(textMt)
+
+    app.stage.addChild(rectItem, basicText)
 
     container.appendChild(app.canvas)
 
@@ -191,5 +198,5 @@ export default function Pixi() {
     // app.stage.addChild(bunny)
   }
 
-  return <div className="pixi h-full" ref={setContainer}></div>
+  return <div className="pixi h-full" ref={setContainer} style={{ border: '1px solid #ccc' }}></div>
 }
