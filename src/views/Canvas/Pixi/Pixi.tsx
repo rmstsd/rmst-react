@@ -1,4 +1,15 @@
-import { Application, Assets, Container, Graphics, GraphicsPath, Sprite, Text, Matrix } from 'pixi.js'
+import {
+  Application,
+  Assets,
+  Container,
+  Graphics,
+  GraphicsPath,
+  Sprite,
+  Text,
+  Matrix,
+  Transform,
+  RAD_TO_DEG
+} from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 
 import { SceneAreaMapRuntime } from '../mapView/store'
@@ -35,19 +46,27 @@ export default function Pixi() {
     rectItem.eventMode = 'static'
     rectItem.cursor = 'pointer'
 
+    app.stage.addChild(rectItem)
+
     const mt = new Matrix()
-    rectItem.pivot = { x: 100, y: 100 }
-    // rectItem.position.set(100, 100)
-    mt.scale(2, 2)
-    setTimeout(() => {
-      rectItem.setFromMatrix(mt)
-    }, 1000)
+    const trs = new Transform()
+    trs.pivot.set(100, 100)
+    trs.position.set(100, 100)
+    trs.scale.set(2)
+    trs.rotation = 0.3
 
-    const textMt = new Matrix()
-    textMt.scale(1, -1).translate(0, 50)
-    basicText.setFromMatrix(textMt)
+    // mt.translate(100, 100).rotate()
 
-    app.stage.addChild(rectItem, basicText)
+    app.stage.setFromMatrix(trs.matrix)
+
+    // app.stage.position.set(100, 100)
+    // // app.stage.scale.set(2)
+    // app.stage.angle = 45
+    // app.stage.position.set(-100, -100)
+
+    // app.stage.pivot.set(100, 100)
+    // app.stage.position.set(100, 100)
+    // app.stage.angle = 45
 
     container.appendChild(app.canvas)
 
