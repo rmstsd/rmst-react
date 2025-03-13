@@ -31,17 +31,17 @@ export default function Pixi() {
 
     await app.init({ width: container.clientWidth, height: container.clientHeight, backgroundColor: '#fff' })
 
-    const rootMt = new Matrix()
-    rootMt.scale(1, -1).translate(0, app.screen.height)
-    app.stage.setFromMatrix(rootMt)
-
-    const rectItem = new Graphics().rect(200, 200, 100, 100).fill('red')
+    const rectItem = new Graphics().rect(100, 100, 300, 200).fill('gray').stroke('red')
     rectItem.eventMode = 'static'
     rectItem.cursor = 'pointer'
 
-    const basicText = new Text({ text: 'Basic text in pixi' })
-    basicText.x = 0
-    basicText.y = 0
+    const mt = new Matrix()
+    rectItem.pivot = { x: 100, y: 100 }
+    // rectItem.position.set(100, 100)
+    mt.scale(2, 2)
+    setTimeout(() => {
+      rectItem.setFromMatrix(mt)
+    }, 1000)
 
     const textMt = new Matrix()
     textMt.scale(1, -1).translate(0, 50)

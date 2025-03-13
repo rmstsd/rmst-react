@@ -46,14 +46,14 @@ const Dm = () => {
       <button onClick={() => setRoll(true)}>滚动</button>
       <button onClick={() => setRoll(false)}>暂停</button>
 
-      <div ref={containerRef} className="video w-[600px] border-2 h-[400px] relative overflow-hidden resize">
+      <div ref={containerRef} className="video relative h-[400px] w-[600px] resize overflow-hidden border-2">
         <div
           ref={dmDomRef}
           onAnimationEnd={() => {
             console.log('end 移除dom')
           }}
           className={clsx(
-            'absolute top-0 left-0',
+            'absolute left-0 top-0',
             //
             'dm',
             'dmAni',
