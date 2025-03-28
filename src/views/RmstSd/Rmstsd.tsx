@@ -18,6 +18,7 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+
 const Row = Grid.Row
 const Col = Grid.Col
 
@@ -336,17 +337,53 @@ const content = '<p>Hello World!</p>'
 import { isMobile, isDesktop, isAndroid, isTablet } from 'react-device-detect'
 
 export default function TapTip() {
-  const op = { isMobile, isDesktop, isAndroid, isTablet }
+  const rects = [
+    { x: 0, y: 0, width: 100, height: 100 },
+    { x: -800, y: 0, width: 100, height: 100 },
+    { x: 0, y: 400, width: 100, height: 100 },
+    { x: 55, y: -676, width: 1050, height: 100 }
+  ]
+
+  const x1s = rects.map(r => r.x)
+  const y1s = rects.map(r => r.y)
+
+  const x2s = rects.map(r => r.x + r.width)
+  const y2s = rects.map(r => r.y + r.height)
+
+  const bounds = {
+    x1: Math.min(...rects.map(r => r.x)),
+    y1: Math.min(...rects.map(r => r.y)),
+    x2: Math.max(...rects.map(r => r.x + r.width)),
+    y2: Math.max(...rects.map(r => r.y + r.height))
+  }
+
+  const bouRect = { x: bounds.x1, y: bounds.y1, width: bounds.x2 - bounds.x1, height: bounds.y2 - bounds.y1 }
+
+  const size = 500 - 20
+
+  const s1 = size / 2 / Math.abs(bounds.x1)
+  const s2 = size / 2 / Math.abs(bounds.y1)
+  const s3 = size / 2 / Math.abs(bounds.x2)
+  const s4 = size / 2 / Math.abs(bounds.y2)
+
+  const ss = Math.min(s1, s2, s3, s4)
+
+  const mt = new DOMMatrix().translate(250, 250).scale(ss, ss, 1)
+
+  const transform = `translate(${mt.e} ${mt.f}) scale(${mt.a})`
 
   return (
     <div>
-      {Object.entries(op).map(([key, value]) => {
-        return (
-          <div key={key} className="my-4">
-            {key}:{String(value)}
-          </div>
-        )
-      })}
+      <svg className="border" width={500} height={500}>
+        <g transform={transform}>
+          <rect x={bouRect.x} y={bouRect.y} width={bouRect.width} height={bouRect.height} fill="none" stroke="blue" />
+
+          <circle cx="0" cy="0" r="10" fill="red" />
+          {rects.map((p, idx) => (
+            <rect key={idx} x={p.x} y={p.y} width={p.width} height={p.height} />
+          ))}
+        </g>
+      </svg>
     </div>
   )
   return <Ckeditor />

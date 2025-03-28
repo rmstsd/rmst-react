@@ -40,24 +40,107 @@ export default function Pixi() {
     const app = new Application()
     appRef.current = app
 
-    await app.init({ width: container.clientWidth, height: container.clientHeight, backgroundColor: '#fff' })
+    await app.init({
+      width: container.clientWidth,
+      height: container.clientHeight,
+      backgroundColor: '#fff',
+      antialias: true,
+      resolution: window.devicePixelRatio || 1
+    })
+    app.canvas.style.setProperty('width', '100%')
+    app.canvas.style.setProperty('height', '100%')
+    container.appendChild(app.canvas)
 
-    const rectItem = new Graphics().rect(100, 100, 300, 200).fill('gray').stroke('red')
-    rectItem.eventMode = 'static'
-    rectItem.cursor = 'pointer'
+    // const rectItem = new Graphics().rect(100, 100, 300, 200).fill('red').stroke({ color: 'blue', width: 10 })
+    // rectItem.setMask({ mask: new Graphics().rect(100, 100, 300, 200).fill('transparent') })
+    // app.stage.addChild(rectItem)
 
-    app.stage.addChild(rectItem)
+    const sc = 4
+    app.stage.scale.x = sc
+    app.stage.scale.y = sc
 
-    const mt = new Matrix()
-    const trs = new Transform()
-    trs.pivot.set(100, 100)
-    trs.position.set(100, 100)
-    trs.scale.set(2)
-    trs.rotation = 0.3
 
-    // mt.translate(100, 100).rotate()
+    {
+      const basicText = new Text({ text: '黑胡椒会尽快' })
+      basicText.x = 50
+      basicText.y = 100
 
-    app.stage.setFromMatrix(trs.matrix)
+      basicText.eventMode = 'static'
+      basicText.cursor = 'pointer'
+
+      basicText.resolution = window.devicePixelRatio * sc
+
+      app.stage.addChild(basicText)
+
+      return
+      const rect = new Graphics().rect(-100, 100, 240, 240).fill('blue')
+      rect.eventMode = 'static'
+      rect.cursor = 'pointer'
+
+      rect.on('click', evt => {
+        console.log('click')
+      })
+      rect.on('pointerenter', evt => {
+        const { x, y } = evt.global
+
+        if (
+          x >= app.screen.x &&
+          y >= app.screen.y &&
+          x <= app.screen.x + app.screen.width &&
+          y <= app.screen.y + app.screen.height
+        ) {
+          console.log('enter')
+        }
+      })
+      app.stage.addChild(rect)
+
+      const rect2 = new Graphics().rect(500, 100, 240, 240).fill('blue')
+      rect2.eventMode = 'static'
+      rect2.cursor = 'pointer'
+
+      rect2.on('click', evt => {
+        console.log('click')
+      })
+      rect2.on('pointerenter', evt => {
+        const { x, y } = evt.global
+        if (
+          x >= app.screen.x &&
+          y >= app.screen.y &&
+          x <= app.screen.x + app.screen.width &&
+          y <= app.screen.y + app.screen.height
+        ) {
+          console.log('enter')
+        }
+      })
+
+      app.stage.addChild(rect2)
+    }
+
+    return
+
+    const p1 = { x: 100, y: 100 }
+    const p2 = { x: 100, y: 200 }
+
+    const line = new Graphics()
+      .moveTo(100, 100)
+      .lineTo(100, 200)
+      .lineTo(200, 200)
+      .closePath()
+      .stroke({ width: 4, color: 'red' })
+    app.stage.addChild(line)
+
+    // const basicText = new Text({ text: 'Basic text in pixi' })
+    // basicText.x = 50
+    // basicText.y = 100
+
+    // basicText.eventMode = 'static'
+    // basicText.cursor = 'pointer'
+    // basicText.scale.set(1, -1)
+
+    // app.stage.scale.set(1, -1)
+    // app.stage.position.set(0, app.screen.height)
+
+    // app.stage.setFromMatrix(trs.matrix)
 
     // app.stage.position.set(100, 100)
     // // app.stage.scale.set(2)
@@ -68,14 +151,9 @@ export default function Pixi() {
     // app.stage.position.set(100, 100)
     // app.stage.angle = 45
 
-    container.appendChild(app.canvas)
-
-    return
-
     // app.stage.position.set(100, 100)
     // app.stage.scale.set(25)
 
-    const gh = new Graphics()
     // const rects = mapData.sites.map(item => {
     //   const rect = gh.rect(item.x - siteSize / 2, item.y - siteSize / 2, siteSize, siteSize).fill('red')
 
@@ -217,5 +295,147 @@ export default function Pixi() {
     // app.stage.addChild(bunny)
   }
 
-  return <div className="pixi h-full" ref={setContainer} style={{ border: '1px solid #ccc' }}></div>
+  useEffect(() => {
+    // 示例用法
+
+    return
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement
+    const ctx = canvas.getContext('2d')
+
+    ctx.clearRect(100, 100, 600, 466)
+
+    const p1 = { x: 100, y: 100 }
+    const p2 = { x: 300, y: 400 }
+
+    const angle = Math.atan2(p2.x - p1.x, p2.y - p1.y)
+
+    const tx = Math.cos(Math.PI - angle) * 50
+    const ty = Math.sin(Math.PI - angle) * 50
+
+    console.log(tx, ty)
+
+    ctx.arc(tx + p1.x, ty + p1.y, 5, 0, Math.PI * 2)
+    ctx.fillStyle = 'red'
+    ctx.fill()
+
+    // drawDashedLine(ctx, p1, p2, 10)
+    drawDashedLine2(ctx, p1.x, p1.y, p2.x, p2.y, 10)
+
+    ctx.translate(tx, ty)
+    drawDashedLine2(ctx, p1.x, p1.y, p2.x, p2.y, 10)
+
+    ctx.beginPath()
+    ctx.arc(p1.x, p1.y, 3, 0, Math.PI * 2)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.arc(p2.x, p2.y, 3, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // default centered
+    ctx.lineWidth = 10
+    ctx.strokeRect(10, 10, 100, 100)
+
+    ctx.lineWidth = 1
+    ctx.strokeStyle = 'red'
+    ctx.strokeRect(10, 10, 100, 100) // show main path
+
+    // inner
+    ctx.rect(150, 10, 100, 100)
+    ctx.rect(150 + 10, 10 + 10, 100 - 20, 100 - 20) // offset position and size
+    ctx.fill('evenodd') // !important
+    ctx.strokeRect(150, 10, 100, 100)
+  }, [])
+
+  return (
+    <div className="h-full">
+      <div className="pixi h-full w-9/12" ref={setContainer} style={{ border: '1px solid #ccc' }}></div>
+
+      {/* <canvas id="myCanvas" width={600} height={600}></canvas> */}
+    </div>
+  )
+}
+
+function drawDashedLine(context: CanvasRenderingContext2D, p1, p2, dashLength) {
+  const dx = p2.x - p1.x
+  const dy = p2.y - p1.y
+
+  const angle = Math.atan2(dy, dx)
+
+  const distance = Math.sqrt(dx * dx + dy * dy)
+  console.log(distance)
+
+  const dashCount = distance / (dashLength * 2)
+  const dxDash = dx / dashCount
+  const dyDash = dy / dashCount
+
+  context.beginPath()
+  let prevDistance = 0
+  for (let i = 0; i < dashCount; i++) {
+    console.log(dashLength * 2 * i)
+
+    const start = dashLength * 2 * i
+    const end = dashLength * 2 * i + dashLength * 2
+    console.log(start, end)
+
+    const startX = p1.x + dxDash * i * 2
+    const startY = p1.y + dyDash * i * 2
+    const endX = p1.x + dxDash * (i * 2 + 1)
+    const endY = p1.y + dyDash * (i * 2 + 1)
+
+    context.moveTo(startX, startY)
+    context.lineTo(endX, endY)
+
+    prevDistance += dashLength * 2
+  }
+  context.stroke()
+}
+
+function drawDashedLine2(context, x1, y1, x2, y2, dashLength) {
+  const dx = x2 - x1
+  const dy = y2 - y1
+  const length = Math.hypot(dx, dy)
+
+  if (length === 0) return // 两个点重合，无需绘制
+
+  const unitX = dx / length
+  const unitY = dy / length
+
+  let currentX = x1
+  let currentY = y1
+  let currentPosition = 0
+
+  context.beginPath()
+
+  while (currentPosition < length) {
+    // 绘制线段部分
+    const draw = Math.min(dashLength, length - currentPosition)
+    const endX = currentX + unitX * draw
+    const endY = currentY + unitY * draw
+    context.moveTo(currentX, currentY)
+    context.lineTo(endX, endY)
+    // 更新当前位置到线段终点
+    currentX = endX
+    currentY = endY
+    currentPosition += draw
+
+    // 跳过间隙部分
+    const skip = Math.min(dashLength, length - currentPosition)
+    currentX += unitX * skip
+    currentY += unitY * skip
+    currentPosition += skip
+  }
+
+  context.stroke()
+}
+
+function calculateNormalAngle(vx, vy) {
+  // 计算法向量（逆时针旋转90度）
+  const nx = -vy
+  const ny = vx
+
+  // 计算法向量的角度（弧度）
+  const angleRadians = Math.atan2(ny, nx)
+
+  return angleRadians
 }
