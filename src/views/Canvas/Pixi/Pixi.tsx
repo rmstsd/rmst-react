@@ -55,23 +55,11 @@ export default function Pixi() {
     // rectItem.setMask({ mask: new Graphics().rect(100, 100, 300, 200).fill('transparent') })
     // app.stage.addChild(rectItem)
 
-    const sc = 4
+    const sc = 9
     app.stage.scale.x = sc
     app.stage.scale.y = sc
 
-
     {
-      const basicText = new Text({ text: '黑胡椒会尽快' })
-      basicText.x = 50
-      basicText.y = 100
-
-      basicText.eventMode = 'static'
-      basicText.cursor = 'pointer'
-
-      basicText.resolution = window.devicePixelRatio * sc
-
-      app.stage.addChild(basicText)
-
       return
       const rect = new Graphics().rect(-100, 100, 240, 240).fill('blue')
       rect.eventMode = 'static'
