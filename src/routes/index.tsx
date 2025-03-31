@@ -1,7 +1,5 @@
 import type { RouteObject } from 'react-router-dom'
 
-import MapView from '@/views/Canvas/mapView'
-import Ck from '@/views/Canvas/Ck/Ck'
 import ContextSelector from '@/views/ContextSelector'
 import Cart from '@/views/Sku/Cart'
 import Svg from '@/views/Svg/Svg'
@@ -26,6 +24,7 @@ import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 import PickerView from '@/views/PickerView'
 import DndKitDd from '@/views/DndkitDemo/DndKitDd'
+import PrMap from '@/views/Canvas/_PrMap'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -42,16 +41,15 @@ const routes: IRouteObject[] = [
       { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
-      { path: 'QuadTree', element: <QuadTree /> },
+      { path: 'QuadTree', element: <QuadTree /> }
     ]
   },
   {
     path: '/canvas',
     element: <LayoutView />,
     children: [
-      { path: 'ck', element: <Ck /> },
+      { path: 'PrMap', element: <PrMap /> },
       { path: 'gl', element: <Webgl /> },
-      { path: 'MapView', element: <MapView /> },
       { path: 'YogaLayout', element: <YogaLayout /> },
       { path: 'Pixi', element: <Pixi /> },
       { path: 'Native', element: <Native /> },
@@ -67,7 +65,7 @@ const routes: IRouteObject[] = [
       { path: 'ScrollDemo', element: <ScrollDemo /> },
       { path: 'VSelect', element: <VSelect /> },
       { path: 'dm', element: <Dm /> },
-      { path: 'svg-ruler', element: <Svg /> },
+      { path: 'svg-ruler', element: <Svg /> }
     ]
   },
   {

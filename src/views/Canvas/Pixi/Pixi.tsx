@@ -12,7 +12,6 @@ import {
 } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 
-import { SceneAreaMapRuntime } from '../mapView/store'
 import { genRects } from '../constant'
 import randomColor from 'randomcolor'
 
