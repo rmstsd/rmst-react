@@ -3,8 +3,6 @@ import type { RouteObject } from 'react-router-dom'
 import MapView from '@/views/Canvas/mapView'
 import Ck from '@/views/Canvas/Ck/Ck'
 import ContextSelector from '@/views/ContextSelector'
-import ElementRise from '@/views/ElementRise'
-import LgDemo from '@/views/LiteGraph/LgDemo'
 import Cart from '@/views/Sku/Cart'
 import Svg from '@/views/Svg/Svg'
 import Webgl from '@/views/Canvas/Webgl/Webgl'
@@ -15,7 +13,7 @@ import { Navigate } from 'react-router-dom'
 import LayoutView from '../layout/Layout'
 import Dm from '../views/Dm/Dm'
 import Hooks18 from '../views/Hooks18'
-import Rmst from '../views/RmstSd/Rmstsd'
+import Rmst from '../views/_RmstSd/Rmstsd'
 import OrPortalTest from '../views/OrPortalTest'
 import MyPortalTest from '../views/PortalTest/MyPortalTest'
 import QuadTree from '../views/QuadTree'
@@ -28,7 +26,6 @@ import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 import PickerView from '@/views/PickerView'
 import DndKitDd from '@/views/DndkitDemo/DndKitDd'
-import GoldCalc from '@/views/RmstSd/GoldCalc'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -46,7 +43,6 @@ const routes: IRouteObject[] = [
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
       { path: 'QuadTree', element: <QuadTree /> },
-      { path: 'GoldCalc', element: <GoldCalc /> }
     ]
   },
   {
@@ -72,7 +68,6 @@ const routes: IRouteObject[] = [
       { path: 'VSelect', element: <VSelect /> },
       { path: 'dm', element: <Dm /> },
       { path: 'svg-ruler', element: <Svg /> },
-      { path: 'elementRise', element: <ElementRise /> }
     ]
   },
   {
