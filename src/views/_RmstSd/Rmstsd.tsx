@@ -1,7 +1,10 @@
 import opentype from 'opentype.js'
 import { load } from 'opentype.js'
-import { Application, Graphics } from 'pixi.js'
+import { Application, Assets, Graphics, Sprite } from 'pixi.js'
 import { useEffect, useState } from 'react'
+
+import jk from '@/assets/jack-load.svg?raw'
+import jk1 from '@/assets/jack-load-1.svg?raw'
 
 export default function TestOpen() {
   useEffect(() => {
@@ -22,6 +25,16 @@ export default function TestOpen() {
     })
 
     pixiContainer.appendChild(app.canvas)
+
+    const robotImg = new Graphics()
+    robotImg.svg(jk1)
+
+    robotImg.position.set(100, 100)
+    app.stage.addChild(robotImg)
+
+    new Graphics().moveTo(0, 0).lineTo(1, 1).fill({})
+
+    return
 
     const canvas = document.querySelector('.canvas2d') as HTMLCanvasElement
     const ctx = canvas.getContext('2d')
