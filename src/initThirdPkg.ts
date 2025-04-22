@@ -1,5 +1,3 @@
-// import 'lenis/dist/lenis.css'
-
 import { useGSAP } from '@gsap/react'
 import { Draggable, Flip, gsap, MotionPathPlugin, Observer, ScrollToPlugin, ScrollTrigger, TextPlugin } from 'gsap/all'
 

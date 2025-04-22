@@ -1,4 +1,3 @@
-import { useScroll } from '@/App'
 import viteSvg from '@/assets/vite.svg'
 import { useEventListener } from 'ahooks'
 import gsap from 'gsap'
@@ -32,10 +31,6 @@ export default function Frame2() {
   useLayoutEffect(() => {
     updateStyle(window.scrollY, true)
   }, [])
-
-  useScroll(({ scroll }) => {
-    updateStyle(scroll)
-  })
 
   function updateStyle(scroll: number, init = false) {
     const scrollTop = scroll
