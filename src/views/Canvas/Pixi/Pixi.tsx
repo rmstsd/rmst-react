@@ -8,7 +8,9 @@ import {
   Text,
   Matrix,
   Transform,
-  RAD_TO_DEG
+  RAD_TO_DEG,
+  TextStyle,
+  BitmapText
 } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 
@@ -44,19 +46,48 @@ export default function Pixi() {
       height: container.clientHeight,
       backgroundColor: '#fff',
       antialias: true,
-      resolution: window.devicePixelRatio || 1
+      resolution: window.devicePixelRatio || 1,
+      autoDensity: true
     })
-    app.canvas.style.setProperty('width', '100%')
-    app.canvas.style.setProperty('height', '100%')
     container.appendChild(app.canvas)
+    new BitmapText({
+      text: 'bitmap fonts are supported!\nWoo yay!',
+      style: {
+        fontFamily: 'Desyrel',
+        fontSize: 55,
+        align: 'left',
+      }
+    })
+    {
+      const style = new TextStyle({
+        fontSize: 36,
+        fontWeight: 'bold',
+        fill: { color: 'red', alpha: 0.5 },
+        align: 'center',
+        lineHeight: 1 * 36,
+        dropShadow: {
+          color: '#000000',
+          blur: 4,
+          angle: Math.PI / 6,
+          distance: 10,
+        }
+      })
+
+      const richText = new Text({
+        text: `Rich text with a l
+ot of`,
+        style
+      })
+
+      richText.x = 50
+      richText.y = 220
+
+      app.stage.addChild(richText)
+    }
 
     // const rectItem = new Graphics().rect(100, 100, 300, 200).fill('red').stroke({ color: 'blue', width: 10 })
     // rectItem.setMask({ mask: new Graphics().rect(100, 100, 300, 200).fill('transparent') })
     // app.stage.addChild(rectItem)
-
-    const sc = 9
-    app.stage.scale.x = sc
-    app.stage.scale.y = sc
 
     {
       return
