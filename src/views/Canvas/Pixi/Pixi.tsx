@@ -44,47 +44,26 @@ export default function Pixi() {
     await app.init({
       width: container.clientWidth,
       height: container.clientHeight,
+      resizeTo: container,
       backgroundColor: '#fff',
       antialias: true,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true
     })
     container.appendChild(app.canvas)
-    new BitmapText({
-      text: 'bitmap fonts are supported!\nWoo yay!',
-      style: {
-        fontFamily: 'Desyrel',
-        fontSize: 55,
-        align: 'left',
-      }
-    })
+
     {
-      const style = new TextStyle({
-        fontSize: 36,
-        fontWeight: 'bold',
-        fill: { color: 'red', alpha: 0.5 },
-        align: 'center',
-        lineHeight: 1 * 36,
-        dropShadow: {
-          color: '#000000',
-          blur: 4,
-          angle: Math.PI / 6,
-          distance: 10,
-        }
-      })
+      const path = new Graphics()
+      path
+        .path(
+          new GraphicsPath(
+            'M 274.157882891006,150.71258092125663 L222.37805292125813,148.21562110899958 L219.88109310900109,199.99545107874656 L271.66092307874897,202.4924108910036 Z'
+          )
+        )
+        .stroke({ color: 'red', })
 
-      const richText = new Text({
-        text: `Rich text with a l
-ot of`,
-        style
-      })
-
-      richText.x = 50
-      richText.y = 220
-
-      app.stage.addChild(richText)
+      app.stage.addChild(path)
     }
-
     // const rectItem = new Graphics().rect(100, 100, 300, 200).fill('red').stroke({ color: 'blue', width: 10 })
     // rectItem.setMask({ mask: new Graphics().rect(100, 100, 300, 200).fill('transparent') })
     // app.stage.addChild(rectItem)
@@ -370,6 +349,14 @@ ot of`,
       <div className="pixi h-full w-9/12" ref={setContainer} style={{ border: '1px solid #ccc' }}></div>
 
       {/* <canvas id="myCanvas" width={600} height={600}></canvas> */}
+
+      <svg width={800} height={800}>
+        <path
+          d="M 274.157882891006,150.71258092125663 L222.37805292125813,148.21562110899958 L219.88109310900109,199.99545107874656 L271.66092307874897,202.4924108910036 Z"
+          fill="none"
+          stroke="red"
+        />
+      </svg>
     </div>
   )
 }

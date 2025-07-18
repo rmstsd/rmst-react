@@ -1,4 +1,6 @@
+import { InputNumber } from '@arco-design/web-react'
 import { $, sharex } from 'helux'
+import { useState } from 'react'
 
 const {
   reactive: outer,
@@ -14,16 +16,20 @@ const {
 })
 
 export default function Aa() {
-  console.log('render')
+  const [count, setCount] = useState(10)
+  console.log('render count', count)
 
   return (
-    <button
-      onClick={() => {
-        outer.a++
+    <InputNumber
+      value={count}
+      onChange={val => {
+        const nv = val ?? 0
+        console.log(nv)
+
+        setCount(nv)
       }}
-    >
-      {$(outer.a)}
-    </button>
+      
+    />
   )
 }
 
