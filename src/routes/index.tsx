@@ -2,7 +2,6 @@ import type { RouteObject } from 'react-router-dom'
 
 import ContextSelector from '@/views/ContextSelector'
 import Cart from '@/views/Sku/Cart'
-import Svg from '@/views/Svg/Svg'
 import Webgl from '@/views/Canvas/Webgl/Webgl'
 import YogaLayout from '@/views/Canvas/YogaLayout'
 import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
@@ -14,7 +13,6 @@ import Hooks18 from '../views/Hooks18'
 import Rmst from '../views/_RmstSd/Rmstsd'
 import OrPortalTest from '../views/OrPortalTest'
 import MyPortalTest from '../views/PortalTest/MyPortalTest'
-import QuadTree from '../views/QuadTree'
 import ScrollDemo from '../views/ScrollDemo'
 import Sku from '../views/Sku'
 import VSelect from '../views/VSelect'
@@ -23,8 +21,6 @@ import Pixi from '@/views/Canvas/Pixi/Pixi'
 import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
 import PickerView from '@/views/PickerView'
-import DndKitDd from '@/views/DndkitDemo/DndKitDd'
-import PrMap from '@/views/Canvas/_PrMap'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -35,20 +31,17 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'rmst', element: <Rmst /> },
-      { path: 'DndKitDd', element: <DndKitDd /> },
       { path: 'ZrDrag', element: <ZrDragIndex /> },
       { path: 'PickerView', element: <PickerView /> },
       { path: 'Sokoban', element: <Sokoban /> },
       { path: 'contextSelector', element: <ContextSelector /> },
       { path: 'Hooks18', element: <Hooks18 /> },
-      { path: 'QuadTree', element: <QuadTree /> }
     ]
   },
   {
     path: '/canvas',
     element: <LayoutView />,
     children: [
-      { path: 'PrMap', element: <PrMap /> },
       { path: 'gl', element: <Webgl /> },
       { path: 'YogaLayout', element: <YogaLayout /> },
       { path: 'Pixi', element: <Pixi /> },
@@ -64,8 +57,7 @@ const routes: IRouteObject[] = [
       { path: 'myPortalTest', element: <MyPortalTest /> },
       { path: 'ScrollDemo', element: <ScrollDemo /> },
       { path: 'VSelect', element: <VSelect /> },
-      { path: 'dm', element: <Dm /> },
-      { path: 'svg-ruler', element: <Svg /> }
+      { path: 'dm', element: <Dm /> }
     ]
   },
   {
