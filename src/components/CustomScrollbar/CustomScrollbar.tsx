@@ -13,6 +13,7 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
   const { children, onSyncScroll, ...htmlAttr } = props
 
   const [thumbHeight, setThumbHeight] = useState(0)
+  const [visible, setVisible] = useState(false)
 
   const viewportDomRef = useRef<HTMLDivElement>(null)
   const contentDomRef = useRef<HTMLDivElement>(null)
@@ -24,8 +25,13 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
     const viewportDom = viewportDomRef.current
 
     const ob = new ResizeObserver(() => {
-      const h = (viewportDom.offsetHeight / contentDomRef.current.offsetHeight) * trackDomRef.current.offsetHeight
-      setThumbHeight(h)
+      const ratio = viewportDom.offsetHeight / contentDomRef.current.offsetHeight
+
+      setVisible(ratio < 1)
+      requestAnimationFrame(() => {
+        const h = ratio * trackDomRef.current.offsetHeight
+        setThumbHeight(h)
+      })
     })
     ob.observe(contentDomRef.current)
 
@@ -108,7 +114,11 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
         </div>
       </section>
 
-      <div className="absolute right-[20px] top-[100px] h-[100px] w-[30px] bg-gray-200" ref={trackDomRef}>
+      <div
+        className="absolute right-[20px] top-[100px] h-[100px] w-[30px] bg-gray-200"
+        ref={trackDomRef}
+        style={{ display: visible ? 'block' : 'none' }}
+      >
         <div
           ref={thumbDomRef}
           className="h-[20px] w-full touch-none bg-purple-400"
