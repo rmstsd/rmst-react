@@ -55,7 +55,7 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
       let thumbY = evt.clientY - trackDomRect.top - thumbDomDownOffsetY
       thumbY = getNumberInRange(thumbY, 0, trackDomRect.height - thumbDomRect.height)
 
-      setDomThumbY(thumbY)
+      // setDomThumbY(thumbY)
 
       const scrollTop =
         (thumbY / (trackDomRect.height - thumbDomRect.height)) * (contentDomRect.height - viewportDomRect.height)
@@ -76,10 +76,23 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
   return (
     <main
       {...htmlAttr}
-      className={clsx('scroll-container grow shrink-0', htmlAttr.className)}
+      className={clsx('scroll-container shrink-0 grow', htmlAttr.className)}
       style={{ position: 'relative', ...htmlAttr.style }}
     >
-      <section className="scrollbar-view h-full overflow-hidden" ref={viewportDomRef}>
+      <section
+        className="scrollbar-view h-full overflow-auto"
+        style={{ scrollbarWidth: 'none' }}
+        ref={viewportDomRef}
+        onScroll={() => {
+          const r =
+            viewportDomRef.current.scrollTop /
+            (viewportDomRef.current.scrollHeight - viewportDomRef.current.clientHeight) // 可滚动的高度
+
+          const y = r * (trackDomRef.current.clientHeight - thumbDomRef.current.clientHeight)
+
+          setDomThumbY(y)
+        }}
+      >
         <div
           ref={contentDomRef}
           className="content"
@@ -95,10 +108,10 @@ const CustomScrollbar = forwardRef((props: CustomScrollbarProps, ref: CustomScro
         </div>
       </section>
 
-      <div className="absolute right-0 top-[100px] h-[100px] bg-gray-200 w-[30px]" ref={trackDomRef}>
+      <div className="absolute right-[20px] top-[100px] h-[100px] w-[30px] bg-gray-200" ref={trackDomRef}>
         <div
           ref={thumbDomRef}
-          className="w-full bg-purple-400 h-[20px] touch-none"
+          className="h-[20px] w-full touch-none bg-purple-400"
           style={{ height: thumbHeight }}
           onPointerDown={onThumbMouseDown}
         />
