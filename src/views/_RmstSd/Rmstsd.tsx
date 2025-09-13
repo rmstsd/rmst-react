@@ -17,6 +17,8 @@ export default function Rmstsd() {
     return new UndoRedoManager(initialState)
   })
 
+  console.log(manager)
+
   return (
     <div className="flex">
       <div>
@@ -50,9 +52,15 @@ export default function Rmstsd() {
         >
           重做
         </button>
-
+        <button
+          onClick={() => {
+            manager.clearHistory()
+            update()
+          }}
+        >
+          clear
+        </button>
         <hr />
-
         <pre>{JSON.stringify(manager.getState(), null, 2)}</pre>
       </div>
     </div>
@@ -61,8 +69,8 @@ export default function Rmstsd() {
 
 class UndoRedoManager<T extends any> {
   state: T
-  patches: Patch[][] = []
-  inversePatches: Patch[][] = []
+  patches: Patch[][] = [] // 用于重做
+  inversePatches: Patch[][] = [] // 用于撤销
   historyPosition = -1
 
   constructor(initialState: T) {
