@@ -26,6 +26,9 @@ export default function Rmstsd() {
           onClick={() => {
             manager.produce(draft => {
               draft.count = draft.count + 1
+
+              draft.count = draft.count - 2
+
               draft.todos.push(draft.count)
             })
 
@@ -59,6 +62,17 @@ export default function Rmstsd() {
           }}
         >
           clear
+        </button>
+
+        <button
+          onClick={() => {
+            manager.produce(draft => {
+              draft.todos.splice(2, 1)
+            })
+            update()
+          }}
+        >
+          remove index 2
         </button>
         <hr />
         <pre>{JSON.stringify(manager.getState(), null, 2)}</pre>
