@@ -12,7 +12,7 @@ export default function Rmstsd() {
   const update = useUpdate()
 
   const [manager] = useState(() => {
-    const initialState = { count: 0, todos: [] }
+    const initialState = { count: 0, todos: [], user: { name: 'xxx' } }
 
     return new UndoRedoManager(initialState)
   })
@@ -63,7 +63,6 @@ export default function Rmstsd() {
         >
           clear
         </button>
-
         <button
           onClick={() => {
             manager.produce(draft => {
@@ -73,6 +72,16 @@ export default function Rmstsd() {
           }}
         >
           remove index 2
+        </button>
+        <button
+          onClick={() => {
+            manager.produce(draft => {
+              draft.user = { name: 'bb' }
+            })
+            update()
+          }}
+        >
+          update user
         </button>
         <hr />
         <pre>{JSON.stringify(manager.getState(), null, 2)}</pre>
