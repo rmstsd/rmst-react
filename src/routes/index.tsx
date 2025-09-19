@@ -1,6 +1,5 @@
 import type { RouteObject } from 'react-router-dom'
 
-import ContextSelector from '@/views/ContextSelector'
 import Cart from '@/views/Sku/Cart'
 import Webgl from '@/views/Canvas/Webgl/Webgl'
 import YogaLayout from '@/views/Canvas/YogaLayout'
@@ -8,19 +7,13 @@ import ZrDragIndex from '@/views/ZrDrag/ZrDragIndex'
 import { Navigate } from 'react-router-dom'
 
 import LayoutView from '../layout/Layout'
-import Dm from '../views/Dm/Dm'
-import Hooks18 from '../views/Hooks18'
 import Rmst from '../views/_RmstSd/Rmstsd'
 import OrPortalTest from '../views/OrPortalTest'
 import MyPortalTest from '../views/PortalTest/MyPortalTest'
-import ScrollDemo from '../views/ScrollDemo'
 import Sku from '../views/Sku'
-import VSelect from '../views/VSelect'
-import Sokoban from '@/views/Sokoban'
 import Pixi from '@/views/Canvas/Pixi/Pixi'
 import Native from '@/views/Canvas/Native/Native'
 import LeaferDemo from '@/views/Canvas/Leafer/Leafer'
-import PickerView from '@/views/PickerView'
 
 type IRouteObject = RouteObject & { hidden?: boolean }
 const routes: IRouteObject[] = [
@@ -31,11 +24,7 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'rmst', element: <Rmst /> },
-      { path: 'ZrDrag', element: <ZrDragIndex /> },
-      { path: 'PickerView', element: <PickerView /> },
-      { path: 'Sokoban', element: <Sokoban /> },
-      { path: 'contextSelector', element: <ContextSelector /> },
-      { path: 'Hooks18', element: <Hooks18 /> },
+      { path: 'ZrDrag', element: <ZrDragIndex /> }
     ]
   },
   {
@@ -54,10 +43,7 @@ const routes: IRouteObject[] = [
     element: <LayoutView />,
     children: [
       { path: 'orPortalTest', element: <OrPortalTest /> },
-      { path: 'myPortalTest', element: <MyPortalTest /> },
-      { path: 'ScrollDemo', element: <ScrollDemo /> },
-      { path: 'VSelect', element: <VSelect /> },
-      { path: 'dm', element: <Dm /> }
+      { path: 'myPortalTest', element: <MyPortalTest /> }
     ]
   },
   {

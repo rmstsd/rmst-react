@@ -19,6 +19,20 @@ export default function Rmstsd() {
 
   console.log(manager)
 
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div>
+      <button onClick={() => setOpen(!open)}>open</button>
+
+      <div className="grid overflow-hidden" style={{ gridTemplateRows: open ? '1fr' : '0fr' }}>
+        <div>hello world</div>
+      </div>
+
+      <div>华府国际规划局</div>
+    </div>
+  )
+
   return (
     <div className="flex">
       <div>

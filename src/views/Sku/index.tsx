@@ -14,12 +14,10 @@ const attr_name_value = {
   状态: ['a', 'b', 'c']
 }
 
-type ff = SkuBase []
-
 const attrs = Object.keys(attr_name_value)
 
 function Sku() {
-  const [selected, setSelected] = useState< SkuBase [] >([]) // asdas
+  const [selected, setSelected] = useState<SkuBase[]>([]) // asdas
 
   const [data, setData] = useState([])
   console.log('data', data)

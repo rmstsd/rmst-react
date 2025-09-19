@@ -8,11 +8,9 @@ const loginParameter = {
   password: 'TAolPwsK302qSHlw4KAHtg==',
   remember: 1,
   source: 2,
-  clientId: '5ca7e713-03de-4d67-8282-bd64e042e64e',
+  clientId: '5ca7e713-03de-4d67-8282-bd64e042e64e'
 }
 
 export function refreshToken(): Promise<string> {
   return axiosRequest.post<any, any>('/user/eu/v4/login', loginParameter).then(res => res.token)
 }
-
-type ff = number []
