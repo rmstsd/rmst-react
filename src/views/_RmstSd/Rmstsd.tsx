@@ -3,6 +3,7 @@ import { initCustomFormatter } from './cc/customFormatter'
 import { applyPatches, Draft, enablePatches, Patch, Producer, produceWithPatches } from 'immer'
 import { useUpdate } from 'ahooks'
 import { useState } from 'react'
+import { Button, Input, Skeleton, Trigger, Typography } from '@arco-design/web-react'
 
 initCustomFormatter()
 
@@ -20,6 +21,31 @@ export default function Rmstsd() {
   console.log(manager)
 
   const [open, setOpen] = useState(false)
+
+  return (
+    <Trigger
+      trigger="click"
+      popup={() => {
+        return (
+          <div className="bg-pink-100 p-10">
+            <Trigger
+              popup={() => (
+                <div className="bg-orange-200 p-10" style={{ width: 300 }}>
+                  <Trigger blurToHide={false} popup={() => <div className="bg-red-300 p-10">3</div>}>
+                    <div>2</div>
+                  </Trigger>
+                </div>
+              )}
+            >
+              <button>1</button>
+            </Trigger>
+          </div>
+        )
+      }}
+    >
+      <Button>Hover Me</Button>
+    </Trigger>
+  )
 
   return (
     <div>
