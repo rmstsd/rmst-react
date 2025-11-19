@@ -23,34 +23,50 @@ export default function Rmstsd() {
   const [open, setOpen] = useState(false)
 
   return (
-    <Trigger
-      trigger="click"
-      popup={() => {
-        return (
-          <div className="bg-pink-100 p-10">
-            <Trigger
-              popup={() => (
-                <div className="bg-orange-200 p-10" style={{ width: 300 }}>
-                  <Trigger blurToHide={false} popup={() => <div className="bg-red-300 p-10">3</div>}>
-                    <div>2</div>
-                  </Trigger>
-                </div>
-              )}
-            >
-              <button>1</button>
-            </Trigger>
-          </div>
-        )
-      }}
-    >
-      <Button>Hover Me</Button>
-    </Trigger>
+    <div>
+      <button onClick={() => setOpen(!open)}>open</button>
+
+      {open && (
+        <Trigger
+          popupVisible
+          classNames="zoomInBottom"
+          trigger="click"
+          popupAlign={{ bottom: 20 }}
+          popup={() => {
+            return (
+              <div className="bg-pink-100 p-10">
+                <Trigger
+                  popupVisible
+                  classNames="zoomInBottom"
+                  popupAlign={{ bottom: 20 }}
+                  popup={() => (
+                    <div className="bg-orange-200 p-10" style={{ width: 300 }}>
+                      <Trigger
+                        popupVisible
+                        classNames="zoomInBottom"
+                        blurToHide={false}
+                        popupAlign={{ bottom: 20 }}
+                        popup={() => <div className="bg-red-300 p-10">3</div>}
+                      >
+                        <div>2</div>
+                      </Trigger>
+                    </div>
+                  )}
+                >
+                  <button>1</button>
+                </Trigger>
+              </div>
+            )
+          }}
+        >
+          <Button>Hover Me</Button>
+        </Trigger>
+      )}
+    </div>
   )
 
   return (
     <div>
-      <button onClick={() => setOpen(!open)}>open</button>
-
       <div className="grid overflow-hidden" style={{ gridTemplateRows: open ? '1fr' : '0fr' }}>
         <div>hello world</div>
       </div>
