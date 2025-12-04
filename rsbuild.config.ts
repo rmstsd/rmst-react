@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   dev: {
     assetPrefix: './',
-    hmr: false
+    // hmr: false
   },
   html: {
     template: './index.html'

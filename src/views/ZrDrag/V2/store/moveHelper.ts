@@ -14,6 +14,7 @@ import {
 } from '../v2_utils'
 
 export const Indicator_Height = 2
+export const Item_Gap = 10
 export const Indicator_BgColor = 'rgb(24, 144, 255)'
 export const Indicator_Inner_BgColor = 'rgba(24, 144, 255, 0.6)'
 
@@ -226,9 +227,9 @@ class MoveHelper {
 
     const { closestPosition } = this
     if (closestPosition === ClosestPosition.Beforebegin) {
-      this.indicatorStyle.top = closestRect.y - Indicator_Height / 2 - 10
+      this.indicatorStyle.top = closestRect.y - Indicator_Height / 2 - Item_Gap / 2
     } else if (closestPosition === ClosestPosition.Afterend) {
-      this.indicatorStyle.top = closestRect.y + closestRect.height - Indicator_Height / 2 + 10
+      this.indicatorStyle.top = closestRect.y + closestRect.height - Indicator_Height / 2 + Item_Gap / 2
     } else if (closestPosition === ClosestPosition.Inner) {
       this.indicatorStyle.top = closestRect.y
       this.indicatorStyle.height = closestRect.height

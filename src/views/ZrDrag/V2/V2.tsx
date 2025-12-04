@@ -4,6 +4,8 @@ import Aside from './panels/Aside'
 import Flow from './panels/Flow'
 import Ghost from './Ghost'
 
+import './style.less'
+
 function V2() {
   return (
     <div className="flex h-full">

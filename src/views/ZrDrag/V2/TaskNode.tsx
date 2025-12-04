@@ -22,13 +22,13 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
       {...{ [DataNodeAttrName]: node.id }}
       data-is-root={isRoot}
       className={cn(
-        'task-node-item mb-20 flow-root border border-gray-500 p-6',
+        'task-node-item flow-root border border-gray-500',
         isRoot && 'mb-0 min-h-full border-red-400',
         moveHelper.isDragging && moveHelper.draggedNode === node && 'opacity-50'
       )}
     >
       {!isRoot && (
-        <div className="node-title flex justify-between">
+        <div className="node-title flex justify-between p-6">
           <div>
             {/* <Button data-drag={true} icon={<IconDragArrow />} type="default" size="mini" className="mr-4 cursor-move" /> */}
             {node.id}-{node.oriId}-{node.title}
@@ -52,7 +52,7 @@ const TaskNode = observer(({ node }: TaskNodeProps) => {
       )}
 
       {isAllowAppend && node.expanded && (
-        <section className={cn('node-body mt-20', !isRoot && 'pl-20')}>
+        <section className={cn('node-body mt-10', !isRoot && 'pl-10', isRoot && 'p-10')}>
           {node.children.map(item => (
             <TaskNode node={item} key={item.id} />
           ))}
