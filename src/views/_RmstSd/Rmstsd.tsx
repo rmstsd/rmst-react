@@ -1,15 +1,18 @@
 import { initCustomFormatter } from './cc/customFormatter'
+import { faUser, faBoxFull } from '@fortawesome/sharp-duotone-thin-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { applyPatches, Draft, enablePatches, Patch, Producer, produceWithPatches } from 'immer'
 import { useUpdate } from 'ahooks'
 import { useState } from 'react'
 import { Button, Input, Skeleton, Trigger, Typography } from '@arco-design/web-react'
+import Rts from './Rts'
 
 initCustomFormatter()
 
 enablePatches()
 
-export default function Rmstsd() {
+function Rmstsd() {
   const update = useUpdate()
 
   const [manager] = useState(() => {
@@ -24,6 +27,8 @@ export default function Rmstsd() {
 
   return (
     <div>
+      <FontAwesomeIcon icon={faBoxFull} />
+
       <button onClick={() => setOpen(!open)}>open</button>
 
       {open && (
@@ -223,4 +228,8 @@ class UndoRedoManager<T extends any> {
     this.inversePatches = []
     this.historyPosition = -1
   }
+}
+
+export default function Tt() {
+  return <Rts />
 }
