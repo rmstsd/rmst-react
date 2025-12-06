@@ -1,12 +1,10 @@
 import { initCustomFormatter } from './cc/customFormatter'
-import { faUser, faBoxFull } from '@fortawesome/sharp-duotone-thin-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import { applyPatches, Draft, enablePatches, Patch, Producer, produceWithPatches } from 'immer'
 import { useUpdate } from 'ahooks'
-import { useState } from 'react'
+import { PropsWithChildren, Suspense, useState } from 'react'
 import { Button, Input, Skeleton, Trigger, Typography } from '@arco-design/web-react'
 import Rts from './Rts'
+import { noop } from 'es-toolkit'
 
 initCustomFormatter()
 
@@ -27,8 +25,6 @@ function Rmstsd() {
 
   return (
     <div>
-      <FontAwesomeIcon icon={faBoxFull} />
-
       <button onClick={() => setOpen(!open)}>open</button>
 
       {open && (
@@ -231,5 +227,32 @@ class UndoRedoManager<T extends any> {
 }
 
 export default function Tt() {
-  return <Rts />
+  console.log('tt')
+
+  return (
+    <Layout>
+      <>Layout</>
+
+      <Suspense fallback={<div>loading</div>} name="哈哈哈哈">
+        <Child />
+      </Suspense>
+    </Layout>
+  )
+}
+
+const Layout = (props: PropsWithChildren) => {
+  console.log('layout render')
+
+  return <div>{props.children}</div>
+}
+
+const Child = () => {
+  const x = 100 / (1920 / 16)
+
+  return (
+    <div>
+      <div style={{ fontSize: `clamp(16px, ${x}vw, 100px)` }}>dff</div>
+      <div style={{ fontSize: `16px` }}>dff</div>
+    </div>
+  )
 }
