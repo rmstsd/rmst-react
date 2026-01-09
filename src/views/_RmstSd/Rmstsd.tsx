@@ -2,9 +2,11 @@ import { initCustomFormatter } from './cc/customFormatter'
 import { applyPatches, Draft, enablePatches, Patch, Producer, produceWithPatches } from 'immer'
 import { useUpdate } from 'ahooks'
 import { PropsWithChildren, Suspense, useState } from 'react'
-import { Button, Input, Skeleton, Trigger, Typography } from '@arco-design/web-react'
+import { Button, Input, Select, Skeleton, Trigger, Typography } from '@arco-design/web-react'
 import Rts from './Rts'
 import { noop } from 'es-toolkit'
+import Quark from './Quark'
+import VirtualList from '@/components/virtual-scroll-list'
 
 initCustomFormatter()
 
@@ -230,13 +232,24 @@ export default function Tt() {
   console.log('tt')
 
   return (
-    <Layout>
-      <>Layout</>
-
-      <Suspense fallback={<div>loading</div>} name="哈哈哈哈">
-        <Child />
-      </Suspense>
-    </Layout>
+    <div style={{ overflow: 'auto', height: 400 }}>
+      <div style={{ height: 900 }}></div>
+      <div style={{ height: 900 }}></div>
+      <Select
+        triggerProps={{ updateOnScroll: true }}
+        options={[
+          {
+            label: '选项1',
+            value: '1'
+          },
+          {
+            label: '选项2',
+            value: '2'
+          }
+        ]}
+      ></Select>
+      <div style={{ height: 900 }}></div>
+    </div>
   )
 }
 
@@ -244,15 +257,4 @@ const Layout = (props: PropsWithChildren) => {
   console.log('layout render')
 
   return <div>{props.children}</div>
-}
-
-const Child = () => {
-  const x = 100 / (1920 / 16)
-
-  return (
-    <div>
-      <div style={{ fontSize: `clamp(16px, ${x}vw, 100px)` }}>dff</div>
-      <div style={{ fontSize: `16px` }}>dff</div>
-    </div>
-  )
 }

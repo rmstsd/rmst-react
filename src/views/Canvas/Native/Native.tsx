@@ -10,7 +10,7 @@ export default function Native() {
 
     const ctx = canvas.getContext('2d')
 
-    const rects = genRects(10000, canvas.clientWidth, canvas.clientHeight)
+    const rects = genRects(1000, canvas.clientWidth, canvas.clientHeight)
 
     let dd
 
@@ -30,7 +30,7 @@ export default function Native() {
       prevY = event.clientY
     })
 
-    document.addEventListener('pointermove', event => {
+    const moveHandler = throttle(event => {
       if (isPointerDown) {
         event.clientX - prevX
         event.clientY - prevY
@@ -50,7 +50,9 @@ export default function Native() {
         drawCanvas()
         ctx.restore()
       }
-    })
+    }, 1000 / 144)
+
+    document.addEventListener('pointermove', moveHandler)
 
     let tx = 0
     let ty = 0
@@ -60,17 +62,21 @@ export default function Native() {
     })
 
     function drawRect(rect) {
-      ctx.beginPath()
+      // ctx.beginPath()
+
       const { x, y, width, height } = rect
       ctx.rect(x, y, width, height)
-      ctx.fillStyle = rect.fill
-      ctx.fill()
     }
 
     function drawCanvas() {
+      ctx.beginPath()
+
       rects.forEach(rect => {
         drawRect(rect)
       })
+
+      ctx.fillStyle = 'red'
+      ctx.fill()
 
       // dd = ctx.getImageData(0, 0, canvas.width, canvas.height)
     }

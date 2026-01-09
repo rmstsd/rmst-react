@@ -94,10 +94,20 @@ const VirtualList = (props: VirtualListProps) => {
   const [range, setRange] = useState({} as Virtual['range'])
 
   const [syncScrollTop, setSyncScrollTop] = useState(0)
-  const customScrollbarRef: CustomScrollbarRef = useRef(null)
+  const customScrollbarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     installVirtual()
+
+    document.addEventListener(
+      'scroll',
+      evt => {
+        if (evt.target === customScrollbarRef.current) {
+          onSyncScroll(evt.target[directionKey])
+        }
+      },
+      { capture: true }
+    )
   }, [])
 
   useEffect(() => {
@@ -106,7 +116,7 @@ const VirtualList = (props: VirtualListProps) => {
   }, [dataSources])
 
   useLayoutEffect(() => {
-    customScrollbarRef.current.scrollTo(syncScrollTop)
+    customScrollbarRef.current.scrollTo({ top: syncScrollTop })
   }, [syncScrollTop])
 
   const installVirtual = () => {
@@ -199,12 +209,7 @@ const VirtualList = (props: VirtualListProps) => {
   }
 
   return (
-    <CustomScrollbar
-      ref={customScrollbarRef}
-      className={clsx('v-n-list', className)}
-      style={{ ...style, height: 400 }}
-      onSyncScroll={onSyncScroll}
-    >
+    <div ref={customScrollbarRef} className={clsx('v-n-list', className)} style={{ ...style, height: 400 }}>
       {header && (
         <Slot {...universalProps} uniqueKey={Slot_Type.Header} event={Event_Type.Slot}>
           {header}
@@ -220,7 +225,7 @@ const VirtualList = (props: VirtualListProps) => {
           {footer}
         </Slot>
       )}
-    </CustomScrollbar>
+    </div>
   )
 
   return (

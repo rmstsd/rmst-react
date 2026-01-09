@@ -1,6 +1,6 @@
 import randomColor from 'randomcolor'
 
-export const genRects = (length, clientWidth, clientHeight, size = 10) => {
+export const genRects = (length, clientWidth, clientHeight, size = 20) => {
   const randomRects = Array.from({ length }, () => {
     const x = Math.floor(100 + Math.random() * (clientWidth - 200))
     const y = Math.floor(100 + Math.random() * (clientHeight - 200))
